@@ -1,0 +1,33 @@
+@font-face {
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter-SemiBold.eot");
+  src:
+    local("Inter Semi Bold"),
+    local("Inter-SemiBold"),
+    url("./assets/fonts/Inter-SemiBold.eot?#iefix") format("embedded-opentype"),
+    url("./assets/fonts/Inter-SemiBold.woff2") format("woff2"),
+    url("./assets/fonts/Inter-SemiBold.woff") format("woff"),
+    url("./assets/fonts/Inter-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter-SemiBold.eot");
+  src:
+    local("Inter Semi Bold"),
+    local("Inter-SemiBold"),
+    url("./assets/fonts/Inter-Medium.eot?#iefix") format("embedded-opentype"),
+    url("./assets/fonts/Inter-Medium.woff2") format("woff2"),
+    url("./assets/fonts/Inter-Medium.woff") format("woff"),
+    url("./assets/fonts/Inter-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+$main-text-color: #202020;
+$additional-text-color: #b7b7b7;
+$nutricion-color: #ff8551;
+$drugs-color: #00c187;
+$activity-color: #9747ff;

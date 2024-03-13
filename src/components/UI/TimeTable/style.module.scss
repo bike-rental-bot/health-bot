@@ -1,0 +1,122 @@
+@import "../../../index.scss";
+
+.header {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+
+    .btns {
+        display: flex;
+        gap: 32px;
+    }
+}
+.container {
+    display: flex;
+    flex-direction: column;
+
+    height: 209px;
+    overflow: auto;
+    margin: 48px 0 0 0;
+    padding: 8px 0 0 0;
+
+    .time {
+        display: flex;
+        gap: 12px;
+
+        span {
+            width: 37px;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 17px;
+            letter-spacing: -0.03em;
+            text-align: right;
+            margin-top: -8px;
+        }
+
+        .activitiesList {
+            min-height: 32px;
+            position: relative;
+            flex: 1 0 auto;
+
+            &::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: #dddddd;
+                top: 0px;
+            }
+
+            .activity {
+                display: flex;
+                height: 32px;
+                align-items: center;
+                width: 100%;
+                font-weight: 600;
+                border-radius: 4px;
+                padding: 0 12px;
+                position: relative;
+                margin-top: 2px;
+
+                &:first-child {
+                    margin-top: 4px;
+                }
+
+                &:last-of-type {
+                    margin-bottom: 4px;
+                }
+
+                &:before {
+                    border-top-left-radius: 4px;
+                    border-bottom-left-radius: 4px;
+                }
+
+                &.food {
+                    background: #fff0ea;
+                    color: $nutricion-color;
+
+                    &::before {
+                        content: "";
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        bottom: 0;
+                        background-color: $nutricion-color;
+                        width: 4px;
+                    }
+                }
+
+                &.drugs {
+                    background: #e0f8f1;
+                    color: $drugs-color;
+
+                    &::before {
+                        content: "";
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        bottom: 0;
+                        background-color: $drugs-color;
+                        width: 4px;
+                    }
+                }
+
+                &.act {
+                    background: #f3e9ff;
+                    color: $activity-color;
+
+                    &::before {
+                        content: "";
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        bottom: 0;
+                        background-color: $activity-color;
+                        width: 4px;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,42 @@
+@import "../../../index.scss";
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .fullBtn {
+        margin: 16px 0 0 0;
+        padding: 16px 48px 32px 48px;
+    }
+}
+.panelMonth {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    font-size: 16px;
+
+    div {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+    }
+}
+
+.weekDays {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    border-bottom: 1px solid #e9e9e9;
+    margin: 36px 0 0 0;
+
+    span {
+        width: 24px;
+        font-size: 12px;
+        color: #7e818c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 32px;
+    }
+}
