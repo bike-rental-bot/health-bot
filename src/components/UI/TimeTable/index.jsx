@@ -18,9 +18,9 @@ const MONTHS = [
 
 const DAYS = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
 
-const TimeTable = ({ date }) => {
+const TimeTable = ({ date, timetableRef }) => {
 	return (
-		<>
+		<div ref={timetableRef}>
 			<div className={styles.header}>
 				<span>
 					{`${DAYS[date.getDay()]}, ${date.getDate()}
@@ -87,7 +87,7 @@ const TimeTable = ({ date }) => {
 					<div className={styles.activitiesList}></div>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 };
 

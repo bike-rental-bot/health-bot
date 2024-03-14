@@ -1,7 +1,6 @@
 const ArrowSVG = ({ active, style }) => {
 	return (
-		<svg
-		    
+		<svg  
 			style={{ transform: active ? 'rotate(180deg)' : '', ...style }}
 			width="16"
 			height="16"

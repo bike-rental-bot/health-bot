@@ -203,8 +203,7 @@ const twoWeeksMonthDays = (year, month, currentDateValue) => {
 	}
 };
 
-const MyDatePicker = ({ value, onChange }) => {
-	const [full, setFull] = useState(false);
+const MyDatePicker = ({ value, onChange, calendarRef, full, setFull }) => {
 	const [dateValue, setDateValue] = useState(value);
 	const [transitionFull, setTransitionFull] = useState(null);
 	const [currentMonth, setCurrentMonth] = useState({
@@ -287,7 +286,7 @@ const MyDatePicker = ({ value, onChange }) => {
 	}, [dateValue]);
 
 	return (
-		<div className={styles.container}>
+		<div ref={calendarRef} className={styles.container}>
 			<div className={styles.panelMonth}>
 				<span>
 					{MONTHS[currentMonth.month]} {currentMonth.year}
