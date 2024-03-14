@@ -1,14 +1,4 @@
-import styles from './styles.module.scss';
-import TimeToggle from '../../components/TimeToggle';
-import { useRef } from 'react';
-
-const getPosition = (parentRef, childRef) => {
-	const parentRect = parentRef.current.getBoundingClientRect();
-	const childRect = childRef.current.getBoundingClientRect();
-
-	return childRect.left - parentRect.left;
-};
-const MainPage = () => {
+const NotifyToggle = () => {
 	const activityIndicatorRef = useRef();
 
 	const foodRef = useRef();
@@ -17,8 +7,7 @@ const MainPage = () => {
 	const actContRef = useRef();
 
 	return (
-		<div className={styles.containerHeader}>
-			<TimeToggle />
+		<>
 			<div ref={actContRef} className={styles.activityType}>
 				<div className={`container ${styles.container}`}>
 					<label ref={foodRef}>
@@ -69,8 +58,6 @@ const MainPage = () => {
 					<span ref={activityIndicatorRef} className={styles.activityTypeIndicator}></span>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 };
-
-export default MainPage;
