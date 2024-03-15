@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
 import './styles.scss';
 const WeekDays = ({ transitionFull, el, dateValue, setDateValue }) => {
-	useEffect(() => {
-		console.log('evfdw');
-	}, [dateValue]);
+
 	return (
 		<div
 			className={`date-picker__week ${!transitionFull ? 'app-date--from' : 'app-date--to'} ${

@@ -1,0 +1,98 @@
+@import "../../index.scss";
+.container {
+    display: flex;
+    padding: 16px 16px 24px 16px;
+    background-color: white;
+    border-radius: 10px;
+    flex-direction: column;
+    cursor: pointer;
+
+    -webkit-box-shadow: 1px 4px 11px -1px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 1px 4px 11px -1px rgba(0, 0, 0, 0.2);
+    box-shadow: 1px 4px 11px -1px rgba(0, 0, 0, 0.2);
+
+    &:last-of-type {
+        margin-bottom: 123px;
+    }
+
+    .header {
+        color: $main-text-color;
+        display: flex;
+        width: 100%;
+        position: relative;
+        padding-bottom: 8px;
+
+        &.drugs {
+            &::before {
+                background-color: $drugs-color;
+            }
+        }
+
+        &.activity {
+            &::before {
+                background-color: $activity-color;
+            }
+        }
+
+        &:before {
+            content: "";
+            left: 0;
+            right: 0;
+            position: absolute;
+            height: 1px;
+            bottom: 0;
+            background-color: $nutricion-color;
+            border-radius: 2px;
+        }
+
+        span {
+            display: flex;
+            align-items: center;
+            &:first-child {
+                flex: 1 0 auto;
+                font-weight: 600;
+                font-size: 18px;
+                line-height: 27px;
+            }
+
+            &:last-child {
+                font-size: 16px;
+            }
+        }
+    }
+
+    .text {
+        width: 83%;
+        font-family: Inter;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 20px;
+        text-align: left;
+        color: $additional-text-color;
+        margin: 24px 0 0 0;
+    }
+
+    .labelCont {
+        display: flex;
+        width: 100%;
+        justify-content: flex-end;
+        margin: 40px 0 0 0;
+    }
+    label {
+        input {
+            display: none;
+
+            &:checked + span {
+            }
+        }
+        span {
+            display: flex;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #d9d9d9;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+}

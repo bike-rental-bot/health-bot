@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import MyDatePicker from '../../components/UI/MyDatePicker';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -12,18 +12,31 @@ const TimeToggle = () => {
 	const [calendarDate, setCalendarDate] = useState(new Date());
 	const [type, setType] = useState(0);
 	const [calendarFull, setCalendarIsFull] = useState(false);
+	const [timetableFull, setTimeTableFull] = useState(false);
 	const indicatorRef = useRef();
 	const swiperRef = useRef();
 	const calendarRef = useRef();
 	const timetableRef = useRef();
 
-	useEffect(() => {
-		if (calendarFull) {
-			swiperRef.current.style.height = `432px`;
-		} else {
-			swiperRef.current.style.height = `273px`;
+	const resizeFunction = useCallback((height) => {
+		if (type === 1) {
+			swiperRef.current.style.transition = '0s';
+			swiperRef.current.style.height = `${height}px`;
 		}
-	}, [calendarFull]);
+	}, [type]); 
+
+	useEffect(() => {
+		if (type === 0) {
+			if (calendarFull) {
+				swiperRef.current.style.transition = '0.5s';
+				swiperRef.current.style.height = `432px`;
+			} else {
+				swiperRef.current.style.transition = '0.5s';
+				swiperRef.current.style.height = `273px`;
+			}
+		}
+	}, [calendarFull, type]);
+
 	return (
 		<div className="container">
 			<div className={styles.toggler}>
@@ -76,7 +89,6 @@ const TimeToggle = () => {
 						indicatorRef.current.style.left = '-2px';
 					} else {
 						indicatorRef.current.style.left = '2px';
-						console.log(calendarRef.current.offsetHeight, calendarRef);
 					}
 				}}
 				onProgress={(swiper) => {
@@ -96,7 +108,13 @@ const TimeToggle = () => {
 					/>
 				</SwiperSlide>
 				<SwiperSlide>
-					<TimeTable timetableRef={timetableRef} date={calendarDate} />
+					<TimeTable
+						resizeFunction={resizeFunction}
+						full={timetableFull}
+						setFull={setTimeTableFull}
+						timetableRef={timetableRef}
+						date={calendarDate}
+					/>
 				</SwiperSlide>
 			</Swiper>
 		</div>

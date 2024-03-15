@@ -1,0 +1,81 @@
+@import "../../index.scss";
+.activityType {
+    width: 100%;
+    display: flex;
+
+    position: relative;
+
+    background-color: white;
+
+    box-shadow: 0px 4px 4px 0px #0000001a;
+
+    &.sticky {
+        position: sticky;
+        left: 0;
+        right: 0;
+        top: 0;
+        background-color: white;
+        z-index: 10;
+    }
+
+    .container {
+        flex-direction: row;
+        // justify-content: space-between;
+        padding-top: 14px;
+        padding-bottom: 14px;
+        gap: 30px;
+        position: relative;
+
+        @media (max-width: 368px) {
+            gap: 20px;
+        }
+
+        label {
+            input {
+                display: none;
+
+                &:checked + span {
+                    font-weight: 600;
+                    color: $main-text-color;
+                }
+            }
+
+            span {
+                color: #a6a6a6;
+                font-size: 15px;
+                font-weight: 500;
+                line-height: 20px;
+                transition:
+                    color 0.5s,
+                    font-weight 0s;
+
+                @media (max-width: 368px) {
+                    font-size: 12px;
+                }
+            }
+        }
+    }
+
+    .activityTypeIndicator {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 30px;
+        background: #ff8551;
+        width: 60px;
+        height: 6px;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+    }
+}
+
+.notifyList {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding-top: 36px;
+}
+
+.swiperCont {
+    background: #f6f6f6;
+}

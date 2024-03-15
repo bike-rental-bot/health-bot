@@ -1,75 +1,24 @@
 import styles from './styles.module.scss';
 import TimeToggle from '../../components/TimeToggle';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import NotifyToggle from '../../components/NotifyToggle';
+import BottomButton from '../../components/UI/BottomButton';
+import Modal from '../../components/UI/Modal';
+import NotifyDescription from '../../components/NotifyDescription';
 
-const getPosition = (parentRef, childRef) => {
-	const parentRect = parentRef.current.getBoundingClientRect();
-	const childRect = childRef.current.getBoundingClientRect();
-
-	return childRect.left - parentRect.left;
-};
 const MainPage = () => {
-	const activityIndicatorRef = useRef();
-
-	const foodRef = useRef();
-	const drugsRef = useRef();
-	const activityRef = useRef();
-	const actContRef = useRef();
-
 	return (
-		<div className={styles.containerHeader}>
-			<TimeToggle />
-			<div ref={actContRef} className={styles.activityType}>
-				<div className={`container ${styles.container}`}>
-					<label ref={foodRef}>
-						<input
-							onChange={() => {
-								activityIndicatorRef.current.style.transform = `translate(0)`;
-								activityIndicatorRef.current.style.background = `#FF8551`;
-								activityIndicatorRef.current.style.width = `${foodRef.current.offsetWidth}px`;
-							}}
-							defaultChecked
-							type="radio"
-							name={'notifyType'}
-							value={'food'}
-						/>
-						<span>Питание</span>
-					</label>
-
-					<label ref={drugsRef}>
-						<input
-							onChange={() => {
-								activityIndicatorRef.current.style.background = `#00C187`;
-								activityIndicatorRef.current.style.width = `${drugsRef.current.offsetWidth}px`;
-								const left = getPosition(actContRef, drugsRef) - 20;
-								activityIndicatorRef.current.style.transform = `translate(${left}px)`;
-							}}
-							type="radio"
-							name={'notifyType'}
-							value={'drugs'}
-						/>
-						<span>Медикаменты</span>
-					</label>
-
-					<label ref={activityRef}>
-						<input
-							onChange={() => {
-								activityIndicatorRef.current.style.background = `#9747FF`;
-								activityIndicatorRef.current.style.width = `${activityRef.current.offsetWidth}px`;
-								const left = getPosition(actContRef, activityRef) - 20;
-								activityIndicatorRef.current.style.transform = `translate(${left}px)`;
-							}}
-							type="radio"
-							name={'notifyType'}
-							value={'activity'}
-						/>
-						<span>Активность</span>
-					</label>
-
-					<span ref={activityIndicatorRef} className={styles.activityTypeIndicator}></span>
-				</div>
+		<>
+			<div className={styles.containerHeader}>
+				<TimeToggle />
 			</div>
-		</div>
+
+			<NotifyToggle />
+
+			<BottomButton />
+
+
+		</>
 	);
 };
 

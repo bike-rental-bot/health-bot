@@ -21,7 +21,7 @@
         }
     }
 
-    span{
+    span {
         display: flex;
         align-items: center;
     }
@@ -135,4 +135,10 @@
             }
         }
     }
+}
+
+.fullBtn {
+    margin-top: 16px;
+    margin: 0 auto;
+    padding: 16px 48px 32px 48px;
 }
