@@ -102,7 +102,6 @@ const NotifyToggle = () => {
 								swiperRef.current.swiper.slideTo(0);
 							}}
 							checked={type === 0}
-							defaultChecked
 							type="radio"
 							name={'notifyType'}
 							value={'food'}

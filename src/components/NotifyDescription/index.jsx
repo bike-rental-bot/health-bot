@@ -37,7 +37,7 @@ const NotifyDescription = ({
 					if (typeof fullFillClick === 'function') fullFillClick();
 				}}
 				className={`${styles.fullFillBtn} ${styles[type]}`}>
-				Исполнить
+				<span>Исполнить</span>
 			</button>
 
 			<button

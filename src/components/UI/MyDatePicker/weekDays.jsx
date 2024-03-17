@@ -1,12 +1,8 @@
 import { useEffect } from 'react';
 import './styles.scss';
-const WeekDays = ({ transitionFull, el, dateValue, setDateValue }) => {
-
+const WeekDays = ({ el, dateValue, setDateValue, show }) => {
 	return (
-		<div
-			className={`date-picker__week ${!transitionFull ? 'app-date--from' : 'app-date--to'} ${
-				transitionFull === null && 'start'
-			}`}>
+		<div className={`${show ? 'date-picker__week--show' : 'date-picker__week'}`}>
 			{el.map((el1) => {
 				return (
 					<span

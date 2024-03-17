@@ -8,6 +8,9 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 // Import Swiper styles
 import 'swiper/css';
 import WeekDays from './weekDays';
+import Month from './month';
+import MonthDays from './monthDays';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 const MONTHS = [
 	'Январь',
@@ -203,124 +206,246 @@ const twoWeeksMonthDays = (year, month, currentDateValue) => {
 	}
 };
 
+function getWeekNumber(year, month, date) {
+	const curMonth = date.getMonth();
+	const curYear = date.getFullYear();
+
+	if (month !== curMonth || year !== curYear) {
+		return new Date(year, month, 1).getTime() > date.getTime() ? 1 : 6;
+	} else {
+		const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+		const dayOfWeekFirstDay = firstDayOfMonth.getDay();
+		const offset = (dayOfWeekFirstDay + date.getDate() - 1) / 7;
+
+		return Math.ceil(offset);
+	}
+}
+
+const selectMonthDays = (year, month, currentDateValue, weekNumber) => {
+	const days = getMonthDays(year, month, currentDateValue);
+	weekNumber = weekNumber - 1;
+
+	const curMonth = currentDateValue.getMonth();
+	const curYear = currentDateValue.getFullYear();
+
+	if (curMonth === month && curYear === year) {
+		if (weekNumber === 0) {
+			const value = days.map((el, index) => {
+				return {
+					select: index === 0 || index === 1,
+					days: el,
+				};
+			});
+			return value;
+		}
+		if (weekNumber >= 1 && weekNumber <= 4) {
+			const value = days.map((el, index) => {
+				return {
+					select: weekNumber === index || weekNumber + 1 === index,
+					days: el,
+				};
+			});
+			return value;
+		}
+
+		const value = days.map((el, index) => {
+			return {
+				select: index === 4 || index === 5,
+				days: el,
+			};
+		});
+	} else {
+		weekNumber = getWeekNumber(year, month, currentDateValue);
+
+		if (weekNumber === 1) {
+			const value = days.map((el, index) => {
+				return {
+					select: index === 0 || index === 1,
+					days: el,
+				};
+			});
+
+			return value;
+		}
+
+		if (weekNumber === 6) {
+			const value = days.map((el, index) => {
+				return {
+					select: index === 4 || index === 5,
+					days: el,
+				};
+			});
+
+			return value;
+		}
+	}
+
+	return [];
+};
+
 const MyDatePicker = ({ value, onChange, calendarRef, full, setFull }) => {
 	const [dateValue, setDateValue] = useState(value);
-	const [transitionFull, setTransitionFull] = useState(null);
+	const [slide, setSlide] = useState(null);
+	const [slideCal, setSlideCal] = useState(null);
+	const weekDaysRef = useRef(null);
 	const [currentMonth, setCurrentMonth] = useState({
 		month: value ? value.getMonth() : new Date().getMonth(),
 		year: value ? value.getFullYear() : new Date().getFullYear(),
 	});
 
-	const [monthDays, setMonthDays] = useState(
-		twoWeeksMonthDays(currentMonth.year, currentMonth.month),
+	const currentWeek = useRef(
+		getWeekNumber(currentMonth.year, currentMonth.month, dateValue ? dateValue : new Date()),
 	);
 
-	const weekDaysRef = useRef(null);
+	const [monthDays, setMonthDays] = useState(
+		selectMonthDays(
+			currentMonth.year,
+			currentMonth.month,
+			dateValue ? dateValue : new Date(),
+			currentWeek.current,
+		),
+	);
 
 	const handlePrevMonth = () => {
-		setCurrentMonth((prev) => ({
-			month: prev.month === 0 ? 11 : prev.month - 1,
-			year: prev.month === 0 ? prev.year - 1 : prev.year,
-		}));
+		const prevMonth = { ...currentMonth };
 
-		if (full) {
-			setMonthDays(
-				getMonthDays(
-					currentMonth.month === 0 ? currentMonth.year - 1 : currentMonth.year,
-					currentMonth.month === 0 ? 11 : currentMonth.month - 1,
-				),
-			);
-		} else {
-			setMonthDays(
-				twoWeeksMonthDays(
-					currentMonth.month === 0 ? currentMonth.year - 1 : currentMonth.year,
-					currentMonth.month === 0 ? 11 : currentMonth.month - 1,
-				),
-			);
-		}
+		const addMonth = {
+			month: prevMonth.month === 0 ? 11 : prevMonth.month - 1,
+			year: prevMonth.month === 0 ? prevMonth.year - 1 : prevMonth.year,
+		};
+
+		setSlide('prev');
+
+		requestAnimationFrame(() => {
+			setCurrentMonth(addMonth);
+		});
+
+		const monthsDaysPrev = [...monthDays];
+
+		setMonthDays((prev) =>
+			selectMonthDays(
+				addMonth.year,
+				addMonth.month,
+				dateValue ? dateValue : new Date(),
+				currentWeek.current,
+			),
+		);
 	};
 
 	const handleNextMonth = () => {
-		setCurrentMonth((prev) => ({
-			month: prev.month === 11 ? 0 : prev.month + 1,
-			year: prev.month === 11 ? prev.year + 1 : prev.year,
-		}));
+		const prevMonth = { ...currentMonth };
 
-		if (full) {
-			setMonthDays(
-				getMonthDays(
-					currentMonth.month === 11 ? currentMonth.year + 1 : currentMonth.year,
-					currentMonth.month === 11 ? 0 : currentMonth.month + 1,
-				),
-			);
-		} else {
-			setMonthDays(
-				twoWeeksMonthDays(
-					currentMonth.month === 11 ? currentMonth.year + 1 : currentMonth.year,
-					currentMonth.month === 11 ? 0 : currentMonth.month + 1,
-				),
-			);
-		}
+		const addMonth = {
+			month: prevMonth.month === 11 ? 0 : prevMonth.month + 1,
+			year: prevMonth.month === 11 ? prevMonth.year + 1 : prevMonth.year,
+		};
+
+		setSlide('next');
+
+		requestAnimationFrame(() => {
+			setCurrentMonth(addMonth);
+		});
+
+		const monthsDaysPrev = [...monthDays];
+
+		setMonthDays((prev) =>
+			selectMonthDays(
+				addMonth.year,
+				addMonth.month,
+				dateValue ? dateValue : new Date(),
+				currentWeek.current,
+			),
+		);
 	};
 
 	const fullBtnClick = () => {
 		setFull(!full);
-
 		if (!full) {
-			setMonthDays(getMonthDays(currentMonth.year, currentMonth.month));
-
-			setTransitionFull(false);
-
-			requestAnimationFrame(() => {
-				setTransitionFull(true);
-			});
+			setMonthDays(
+				selectMonthDays(
+					currentMonth.year,
+					currentMonth.month,
+					dateValue ? dateValue : new Date(),
+					currentWeek.current,
+				),
+			);
 		} else {
-			setMonthDays(twoWeeksMonthDays(currentMonth.year, currentMonth.month));
+			setMonthDays(
+				selectMonthDays(
+					currentMonth.year,
+					currentMonth.month,
+					dateValue ? dateValue : new Date(),
+					currentWeek.current,
+				),
+			);
 		}
 	};
 
 	useEffect(() => {
 		if (typeof onChange === 'function') {
 			onChange(dateValue);
+
+			if (full) {
+				currentWeek.current = getWeekNumber(
+					currentMonth.year,
+					currentMonth.month,
+					dateValue ? dateValue : new Date(),
+				);
+			}
 		}
 	}, [dateValue]);
 
 	return (
 		<div ref={calendarRef} className={styles.container}>
 			<div className={styles.panelMonth}>
-				<span>
-					{MONTHS[currentMonth.month]} {currentMonth.year}
-				</span>
-
+				<button key={'btnPrev'} onClick={handlePrevMonth}>
+					<ArrowSVG style={{ transform: 'rotate(90deg)' }} />
+				</button>
 				<div>
-					<button key={'btnPrev'} onClick={handlePrevMonth}>
-						<ArrowSVG style={{ transform: 'rotate(90deg)' }} />
-					</button>
-					<button key={'btnNext'} onClick={handleNextMonth}>
-						<ArrowSVG style={{ transform: 'rotate(-90deg)' }} />
-					</button>
+					<TransitionGroup>
+						<CSSTransition
+							key={`${MONTHS[currentMonth.month]} ${currentMonth.year}`}
+							timeout={250}
+							classNames={`slide-month-${slide}`}>
+							<Month>
+								{MONTHS[currentMonth.month]} {currentMonth.year}
+							</Month>
+						</CSSTransition>
+					</TransitionGroup>
 				</div>
+				<button key={'btnNext'} onClick={handleNextMonth}>
+					<ArrowSVG style={{ transform: 'rotate(-90deg)' }} />
+				</button>
 			</div>
 
-			<div className={styles.weekDays}>
-				{DAYS.map((el) => (
-					<span>{el}</span>
-				))}
-			</div>
+			<div className="container">
+				<div className={styles.weekDays}>
+					{DAYS.map((el, i) => (
+						<span key={i}>{el}</span>
+					))}
+				</div>
 
-			<div style={{ width: '100%', position: 'relative', overflow: 'hidden' }}>
-				<div ref={weekDaysRef} className="date-picker__week-days">
-					{monthDays.map((el, i) => {
-						return (
-							<WeekDays
-								key={i}
-								el={el}
+				<div
+					style={{
+						width: '100%',
+						position: 'relative',
+						overflow: 'hidden',
+						height: full ? 240 : 80,
+						transition: '0.5s',
+					}}>
+					<TransitionGroup>
+						<CSSTransition
+							key={monthDays[0].days[0].value.getTime()}
+							timeout={500}
+							classNames="slide">
+							<MonthDays
+								monthDays={monthDays}
 								dateValue={dateValue}
 								setDateValue={setDateValue}
-								transitionFull={transitionFull}
+								full={full}
 							/>
-						);
-					})}
+						</CSSTransition>
+					</TransitionGroup>
 				</div>
 			</div>
 

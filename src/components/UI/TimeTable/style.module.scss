@@ -1,29 +1,25 @@
 @import "../../../index.scss";
 
-.header {
+.panelMonth {
     display: flex;
     width: 100%;
     justify-content: space-between;
+    font-size: 16px;
+    overflow: hidden;
 
-    .btns {
-        display: flex;
-
-        gap: 16px;
-
-        button {
-            &:first-of-type {
-                padding: 16px 16px 16px 16px;
-            }
-
-            &:last-of-type {
-                padding: 16px 0px 16px 32px;
-            }
-        }
-    }
-
-    span {
+    div {
         display: flex;
         align-items: center;
+        position: relative;
+        flex: 1 0 auto;
+
+    
+    }
+
+    button {
+        padding: 20px;
+        background-color: white;
+        z-index: 1;
     }
 }
 .container {
