@@ -32,6 +32,7 @@
 
         position: relative;
         overflow: hidden;
+        transform: translateZ(0);
 
         span {
             z-index: 1;
@@ -52,7 +53,7 @@
                 rgba(255, 255, 255, 0) 100%
             );
 
-            transform: translateX(0);
+            transform: translate3D(0);
             animation: bgMove 2s linear infinite;
         }
     }
@@ -60,9 +61,9 @@
 
 @keyframes bgMove {
     0% {
-        transform: translateX(-100%);
+        transform: translate3D(-100%, 0, 0);
     }
     100% {
-        transform: translate(100%);
+        transform: translate3D(100%, 0, 0);
     }
 }
