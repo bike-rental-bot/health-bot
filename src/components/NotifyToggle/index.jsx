@@ -36,24 +36,11 @@ const NotifyToggle = () => {
 	const actContRef = useRef();
 	const swiperRef = useRef();
 
-	const [isSticky, setIsSticky] = useState(false);
-
 	const [type, setType] = useState(0);
 
 	useEffect(() => {
-		function scrollWindow() {
-			if (actContRef.current) {
-				const elementTop = actContRef.current.getBoundingClientRect().top;
-				setIsSticky(elementTop <= 0);
-			}
-		}
-		window.addEventListener('scroll', scrollWindow);
-		return () => window.removeEventListener('scroll', scrollWindow);
-	}, []);
-
-	useEffect(() => {
 		activityIndicatorRef.current.style.transform = 'translate(20px)';
-		activityIndicatorRef.current.style.width = `${foodRef.current.offsetWidth}px`;
+		activityIndicatorRef.current.style.width = `63px`;
 	}, []);
 
 	useEffect(() => {
@@ -64,13 +51,13 @@ const NotifyToggle = () => {
 
 			switch (swiper.activeIndex) {
 				case 0:
-					activityIndicatorRef.current.style.transition = '0.25s';
+					activityIndicatorRef.current.style.transition = '0s';
 					activityIndicatorRef.current.style.transform = `translate(20px)`;
 					activityIndicatorRef.current.style.background = `#FF8551`;
 					activityIndicatorRef.current.style.width = `${foodRef.current.offsetWidth}px`;
 					return;
 				case 1:
-					activityIndicatorRef.current.style.transition = '0.25s';
+					activityIndicatorRef.current.style.transition = '0s';
 					activityIndicatorRef.current.style.background = `#00C187`;
 					activityIndicatorRef.current.style.width = `${drugsRef.current.offsetWidth}px`;
 					left = getPosition(actContRef, drugsRef);
@@ -78,7 +65,7 @@ const NotifyToggle = () => {
 
 					return;
 				case 2:
-					activityIndicatorRef.current.style.transition = '0.25s';
+					activityIndicatorRef.current.style.transition = '0s';
 					activityIndicatorRef.current.style.background = `#9747FF`;
 					activityIndicatorRef.current.style.width = `${activityRef.current.offsetWidth}px`;
 					left = getPosition(actContRef, activityRef);
@@ -94,7 +81,7 @@ const NotifyToggle = () => {
 
 	return (
 		<>
-			<div className={`${styles.activityType} ${isSticky && styles.sticky}`}>
+			<div className={`${styles.activityType} ${styles.sticky}`}>
 				<div ref={actContRef} className={`container ${styles.container}`}>
 					<label ref={foodRef}>
 						<input

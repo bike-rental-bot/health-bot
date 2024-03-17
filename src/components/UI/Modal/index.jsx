@@ -10,13 +10,16 @@ const Modal = ({ active, children, hiddenZindex = -1, activeZindex = 10 }) => {
 			requestAnimationFrame(() => {
 				elRef.current.style.zIndex = activeZindex;
 				elRef?.current?.classList.toggle(styles.active);
+				document.body.style.overflow = 'hidden'
 			});
 		} else {
 			requestAnimationFrame(() => {
 				elRef?.current?.classList?.toggle(styles.active);
+				document.body.style.overflow = '';
 			});
 		}
 	}, [active]);
+
 
 	const condition = () => {
 		return active || (!active && open);
