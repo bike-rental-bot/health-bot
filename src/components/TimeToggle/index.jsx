@@ -10,7 +10,7 @@ import styles from './styles.module.scss';
 
 const TimeToggle = () => {
 	const [calendarDate, setCalendarDate] = useState(
-		new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()),
+		new Date(),
 	);
 	const [type, setType] = useState(0);
 	const [calendarFull, setCalendarIsFull] = useState(false);
@@ -23,7 +23,7 @@ const TimeToggle = () => {
 	const resizeFunction = useCallback(
 		(height) => {
 			if (type === 1) {
-				swiperRef.current.style.transition = '0s';
+				swiperRef.current.style.transition = '0s linear';
 				swiperRef.current.style.height = `${height}px`;
 			}
 		},
@@ -40,8 +40,7 @@ const TimeToggle = () => {
 				swiperRef.current.style.height = `273px`;
 			}
 		}
-	}, [calendarFull, type]);
-
+	}, [calendarFull]);
 
 	return (
 		<div className={`container ${styles.container}`}>
@@ -88,9 +87,10 @@ const TimeToggle = () => {
 				slidesPerView={1}
 				style={{ width: '100%', marginTop: 20 }}
 				onSlideChangeTransitionStart={(swiper) => {
-					if (swiper.activeIndex === 0)
+					swiperRef.current.style.transition = '0.5s linear';
+					if (swiper.activeIndex === 0) {
 						swiperRef.current.style.height = `${calendarRef?.current.offsetHeight}px`;
-					else swiperRef.current.style.height = `${timetableRef?.current.offsetHeight}px`;
+					} else swiperRef.current.style.height = `${timetableRef?.current.offsetHeight}px`;
 				}}
 				onSlideChangeTransitionEnd={(swiper) => {
 					setType(swiper.activeIndex);

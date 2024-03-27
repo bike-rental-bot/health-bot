@@ -95,8 +95,6 @@ const TimeTable = ({ date, timetableRef, full, setFull, resizeFunction }) => {
 		});
 	};
 
-	console.log('slide', slide);
-
 	return (
 		<>
 			<div ref={timetableRef}>
