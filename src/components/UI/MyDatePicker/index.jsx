@@ -322,12 +322,20 @@ const MyDatePicker = ({ value, onChange, calendarRef, full, setFull }) => {
 
 		const monthsDaysPrev = [...monthDays];
 
-		if (dateValue.getFullYear() === addMonth.year && dateValue.getMonth() === addMonth.month) {
+		if (!dateValue) {
 			currentWeek.current = getWeekNumber(
 				addMonth.year,
 				addMonth.month,
 				dateValue ? dateValue : new Date(),
 			);
+		} else {
+			if (dateValue.getFullYear() === addMonth.year && dateValue.getMonth() === addMonth.month) {
+				currentWeek.current = getWeekNumber(
+					addMonth.year,
+					addMonth.month,
+					dateValue ? dateValue : new Date(),
+				);
+			}
 		}
 
 		setMonthDays((prev) =>
@@ -356,12 +364,20 @@ const MyDatePicker = ({ value, onChange, calendarRef, full, setFull }) => {
 
 		const monthsDaysPrev = [...monthDays];
 
-		if (dateValue.getFullYear() === addMonth.year && dateValue.getMonth() === addMonth.month) {
+		if (!dateValue) {
 			currentWeek.current = getWeekNumber(
 				addMonth.year,
 				addMonth.month,
 				dateValue ? dateValue : new Date(),
 			);
+		} else {
+			if (dateValue.getFullYear() === addMonth.year && dateValue.getMonth() === addMonth.month) {
+				currentWeek.current = getWeekNumber(
+					addMonth.year,
+					addMonth.month,
+					dateValue ? dateValue : new Date(),
+				);
+			}
 		}
 
 		setMonthDays((prev) =>

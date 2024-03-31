@@ -26,8 +26,22 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter-Regular.eot");
+  src:
+    url("./assets/fonts/Inter-Regular.eot?#iefix") format("embedded-opentype"),
+    url("./assets/fonts/Inter-Regular.woff2") format("woff2"),
+    url("./assets/fonts/Inter-Regular.woff") format("woff"),
+    url("./assets/fonts/Inter-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
 $main-text-color: #202020;
 $additional-text-color: #b7b7b7;
 $nutricion-color: #ff8551;
 $drugs-color: #00c187;
 $activity-color: #9747ff;
+$tg-color: #3192fd;
+$admin-text-color: #1f1e1e;

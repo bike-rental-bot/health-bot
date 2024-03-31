@@ -1,0 +1,114 @@
+@mixin placeholder($selector, $color) {
+    #{$selector}::-webkit-input-placeholder {
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 15.73px;
+        text-align: left;
+        color: $color;
+    }
+    #{$selector}::-moz-placeholder {
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 15.73px;
+        text-align: left;
+        color: $color;
+    }
+    #{$selector}:-ms-input-placeholder {
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 15.73px;
+        text-align: left;
+        color: $color;
+    }
+}
+
+.textField {
+    border-bottom: 1px solid #0000001a;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16.94px;
+    letter-spacing: -0.02em;
+    text-align: left;
+
+    // &.attachment {
+    //     padding: 0;
+    //     background-color: white;
+    //     border: 0;
+    //     border-bottom-left-radius: 8px;
+    //     border-bottom-right-radius: 8px;
+
+    //     button {
+    //         padding-left: 12px;
+    //         padding-top: 16px;
+    //         padding-bottom: 14px;
+    //         padding-right: 28px;
+    //     }
+    // }
+
+    & > button {
+        justify-content: space-between;
+        width: 100%;
+        padding-right: 16px;
+        padding-top: 16px;
+        padding-bottom: 14px;
+
+        color: #1f1e1e;
+
+        .arrow {
+            transform: rotate(270deg);
+            transition: 0.25s;
+            path {
+                stroke: #a0a0a0;
+            }
+
+            &.active {
+                transform: rotate(360deg);
+            }
+        }
+    }
+
+    label {
+        margin-top: 2px;
+        display: block;
+        width: 100%;
+        padding-right: 20px;
+        padding-bottom: 14px;
+
+        textarea {
+            color: #1f1e1e;
+            border: 0;
+            outline: none;
+            width: 100%;
+            resize: none;
+            height: 17px;
+        }
+
+        @include placeholder("textarea", #b3b3b3);
+    }
+
+    .inputAttachment {
+        display: flex;
+        padding-right: 16px;
+        padding-bottom: 16px;
+        margin-top: 8px;
+        .inputFile {
+            input {
+                display: none;
+            }
+
+            padding-left: 12px;
+            padding-right: 14px;
+            width: auto;
+        }
+
+        label {
+            margin-top: 0px;
+            display: flex;
+            align-items: center;
+
+            &:last-of-type {
+                padding-right: 16px;
+            }
+        }
+    }
+}

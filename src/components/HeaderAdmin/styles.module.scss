@@ -1,0 +1,26 @@
+@import "../../index.scss";
+.container {
+    display: flex;
+    padding: 0;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+
+    h2 {
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 19.36px;
+        letter-spacing: -0.02em;
+        text-align: center;
+    }
+
+    button {
+        padding: 20px 16px;
+        color: $tg-color;
+        font-size: 17px;
+        font-weight: 600;
+        line-height: 20.57px;
+        letter-spacing: -0.02em;
+        text-align: center;
+    }
+}

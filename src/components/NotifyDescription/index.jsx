@@ -1,6 +1,7 @@
 import styles from './style.module.scss';
 import linkIMG from '../../assets/images/tgImg.png';
 import BoltSVG from '../Icons/Bolt';
+import LinkPreview from '../UI/LinkPreview';
 const NotifyDescription = ({
 	header,
 	time,
@@ -19,7 +20,7 @@ const NotifyDescription = ({
 					<p>09:00</p>
 				</div>
 
-				<a
+				{/* <a
 					href={'https://telegra.ph/fbdvscfas-03-15'}
 					className={`${styles.block} ${styles.tgLink} ${styles[type]}`}>
 					<div className={`${styles[type]} ${styles.siteName}`}>Telegraph</div>
@@ -31,7 +32,9 @@ const NotifyDescription = ({
 					<div className={`${styles.watch} ${styles[type]} `}>
 						<BoltSVG /> ПОСМОТРЕТЬ
 					</div>
-				</a>
+				</a> */}
+
+				<LinkPreview type={type} href={'https://telegra.ph/fbdvscfas-03-15'} />
 
 				<button
 					onClick={() => {

@@ -10,6 +10,12 @@
   text-decoration: none;
 }
 
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 body {
   background: #f6f6f6;
 }

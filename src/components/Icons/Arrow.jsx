@@ -1,9 +1,10 @@
-const ArrowSVG = ({ active, style }) => {
+const ArrowSVG = ({ active, style, className, width = 16, height = 16 }) => {
 	return (
-		<svg  
+		<svg
+		    className={className}
 			style={{ transform: active ? 'rotate(180deg)' : '', ...style }}
-			width="16"
-			height="16"
+			width={width}
+			height={height}
 			viewBox="0 0 16 16"
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg">
@@ -18,4 +19,4 @@ const ArrowSVG = ({ active, style }) => {
 	);
 };
 
-export default ArrowSVG
+export default ArrowSVG;

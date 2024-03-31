@@ -12,12 +12,8 @@ const MainPage = () => {
 			<div className={styles.containerHeader}>
 				<TimeToggle />
 			</div>
-
 			<NotifyToggle />
-
 			<BottomButton />
-
-
 		</>
 	);
 };

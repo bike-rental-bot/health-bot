@@ -120,28 +120,6 @@ const NotifyToggle = () => {
 					className="container"
 					onSlideChangeTransitionStart={(swiper) => {
 						setType(swiper.activeIndex);
-						// switch (swiper.activeIndex) {
-						// 	case 0:
-						// 		activityIndicatorRef.current.style.transition = '0.25s';
-						// 		activityIndicatorRef.current.style.transform = `translate(20px)`;
-						// 		activityIndicatorRef.current.style.background = `#FF8551`;
-						// 		activityIndicatorRef.current.style.width = `${foodRef.current.offsetWidth}px`;
-						// 		return;
-						// 	case 1:
-						// 		activityIndicatorRef.current.style.transition = '0.25s';
-						// 		activityIndicatorRef.current.style.background = `#00C187`;
-						// 		activityIndicatorRef.current.style.width = `${drugsRef.current.offsetWidth}px`;
-						// 		left = getPosition(actContRef, drugsRef);
-						// 		activityIndicatorRef.current.style.transform = `translate(${left}px)`;
-						// 		return;
-						// 	case 2:
-						// 		activityIndicatorRef.current.style.transition = '0.25s';
-						// 		activityIndicatorRef.current.style.background = `#9747FF`;
-						// 		activityIndicatorRef.current.style.width = `${activityRef.current.offsetWidth}px`;
-						// 		left = getPosition(actContRef, activityRef);
-						// 		activityIndicatorRef.current.style.transform = `translate(${left}px)`;
-						// 		return;
-						// }
 					}}
 					onProgress={(swiper) => {
 						firstRender.current = true

@@ -1,0 +1,156 @@
+@import "../../index.scss";
+
+@mixin placeholder($selector, $color) {
+    #{$selector}::-webkit-input-placeholder {
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 15.73px;
+        text-align: left;
+        color: $color;
+    }
+    #{$selector}::-moz-placeholder {
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 15.73px;
+        text-align: left;
+        color: $color;
+    }
+    #{$selector}:-ms-input-placeholder {
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 15.73px;
+        text-align: left;
+        color: $color;
+    }
+}
+
+.container {
+    background-color: white;
+    margin-top: 10px;
+
+    padding-left: 12px;
+    padding-right: 12px;
+
+    &:first-child {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+}
+
+.textField {
+    border-bottom: 1px solid #0000001a;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16.94px;
+    letter-spacing: -0.02em;
+    text-align: left;
+    padding-top: 16px;
+    padding-bottom: 14px;
+
+    &.attachment {
+        padding: 0;
+        background-color: white;
+        border: 0;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+
+        .attachmentBtn {
+            padding-left: 12px;
+            padding-top: 16px;
+            padding-bottom: 14px;
+            padding-right: 28px;
+        }
+    }
+
+    & > button {
+        justify-content: space-between;
+        width: 100%;
+        padding-right: 16px;
+
+        color: #1f1e1e;
+
+        .arrow {
+            transform: rotate(270deg);
+            transition: 0.25s;
+            path {
+                stroke: #a0a0a0;
+            }
+
+            &.active {
+                transform: rotate(360deg);
+            }
+        }
+    }
+
+    label {
+        margin-top: 16px;
+        display: block;
+        width: 100%;
+        padding-right: 20px;
+
+        textarea,
+        input {
+            color: #1f1e1e;
+            border: 0;
+            outline: none;
+            width: 100%;
+            resize: none;
+            height: 17px;
+        }
+
+        @include placeholder("input", #b3b3b3);
+    }
+
+    .inputAttachment {
+        display: flex;
+        padding-right: 16px;
+        padding-bottom: 16px;
+        margin-top: 8px;
+        .inputFile {
+            input {
+                display: none;
+            }
+
+            padding-left: 12px;
+            padding-right: 14px;
+            width: auto;
+        }
+
+        label {
+            margin-top: 0px;
+            display: flex;
+            align-items: center;
+
+            &:last-of-type {
+                padding-right: 16px;
+            }
+        }
+    }
+}
+
+.containerPreview {
+    padding: 0 20px 0 12px;
+    position: relative;
+    margin-bottom: 13px;
+
+    & > button {
+        background-color: $nutricion-color;
+        position: absolute;
+        right: 24px;
+        top: 4px;
+        z-index: 1;
+        padding: 0;
+    }
+}
+
+.linkPreviewTitle {
+    max-width: calc(100% - 30px);
+}
+
+.imageList {
+    margin-top: 24px;
+    display: flex;
+    gap: 15px;
+    margin-bottom: 24px;
+    padding: 0 20px 0 12px;
+}
