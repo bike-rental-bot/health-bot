@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import styles from './styles.module.scss';
 import ArrowSVG from '../../Icons/Arrow';
-const TextField = ({ name, placeholder, onChange, value = '' }) => {
+const TextField = ({ name, placeholder, onChange, value = '', onBlur, onFocus }) => {
 	const [active, setActive] = useState(false);
 	const textareaRef = useRef(null);
 	const [text, setText] = useState(value);
+	const [focus, setFocus] = useState(false);
 
 	useEffect(() => {
 		if (typeof onChange === 'function') {
@@ -30,6 +31,7 @@ const TextField = ({ name, placeholder, onChange, value = '' }) => {
 			textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
 		}
 	}, [active]);
+
 	return (
 		<div className={styles.textField}>
 			<button
@@ -43,12 +45,14 @@ const TextField = ({ name, placeholder, onChange, value = '' }) => {
 			{active && (
 				<label>
 					<textarea
-						onFocus={(e) => {
-							e.preventDefault();
-							window.scrollTo(0, 0);
-						}}
 						value={text}
 						ref={textareaRef}
+						onFocus={() => {
+							if (typeof onFocus === 'function') onFocus();
+						}}
+						onBlur={() => {
+							if (typeof onFocus === 'function') onBlur();
+						}}
 						onChange={(e) => {
 							setText(e.target.value);
 

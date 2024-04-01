@@ -1,0 +1,100 @@
+@import "../../../index.scss";
+.container {
+    position: relative;
+    border: 1px solid #e5e5e5;
+    border-radius: 15px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.select {
+    display: flex;
+    padding: 0 16px;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 54px;
+
+    span {
+        color: $admin-text-color;
+    }
+
+    svg {
+        path {
+            stroke: black;
+        }
+    }
+}
+
+.dropDown {
+    height: 0;
+    position: absolute;
+    overflow: hidden;
+    opacity: 0;
+    width: 100%;
+    z-index: 1;
+
+    background-color: white;
+    box-shadow: 0px 0px 27px 0px #0000001a;
+    border-radius: 20px;
+
+    transition:
+        height 0.5s,
+        opacity 0.5s;
+
+    &.active {
+        height: 176px;
+        opacity: 1;
+    }
+}
+
+.userInfo {
+    display: flex;
+    align-items: center;
+
+    img {
+        margin-right: 8px;
+        border-radius: 50%;
+    }
+
+    p {
+        &:first-of-type {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 15.4px;
+            letter-spacing: -0.02em;
+            text-align: left;
+            color: $admin-text-color;
+        }
+
+        &:last-of-type {
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 15.4px;
+            letter-spacing: -0.02em;
+            text-align: left;
+            color: $additional-text-color;
+        }
+    }
+}
+
+.dropDownItem {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid #0000001a;
+    transition: 0.25s;
+
+    &:last-of-type {
+        border-bottom: 0;
+    }
+
+    &.checked,
+    &:hover {
+        background: #f3f3f3;
+    }
+}

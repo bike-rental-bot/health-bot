@@ -14,15 +14,19 @@ const dateConfig = {
 	},
 	minute: {
 		format: 'mm',
-		step: 1,
+		step: 5,
 	},
 };
 
+const curDate = new Date();
+let dateWithTime = new Date(curDate.getFullYear(), curDate.getMonth(), curDate.getDate(), 12, 0, 0);
 const TimePick = () => {
 	return (
 		<>
 			<DatePicker
+				onChange={(e) => console.log(e)}
 				theme={'ios'}
+				value={dateWithTime}
 				showCaption={false}
 				showFooter={false}
 				showHeader={false}

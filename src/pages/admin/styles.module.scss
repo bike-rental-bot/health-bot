@@ -143,7 +143,7 @@
         border-top-right-radius: 4px;
 
         @media (max-width: 368px) {
-            width: 50px;
+            width: 29px;
         }
     }
 }
@@ -167,11 +167,38 @@
 
     position: fixed;
 
-    label {
-        flex: 1 0 auto;
+    .container {
+        flex-direction: row;
+        padding-left: 0;
+        padding-right: 16px;
+        align-items: center;
 
-        input {
-            font-size: 16px;
+        & > button {
+            height: 40px;
+            padding-left: 24px;
+            padding-right: 12px;
+
+            @media (max-width: 343px) {
+                padding-left: 16px;
+            }
+        }
+        label {
+            flex: 1 0 auto;
+            position: relative;
+            background: #7676801f;
+            display: flex;
+            height: 40px;
+            border-radius: 10px;
+            align-items: center;
+            padding: 0 12px;
+            input {
+                font-size: 15px;
+                background: transparent;
+                outline: 0;
+                border: 0;
+                width: 100%;
+                margin-right: 6px;
+            }
         }
     }
 }

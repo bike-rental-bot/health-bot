@@ -6,6 +6,9 @@ import styles from './styles.module.scss';
 import { useEffect, useRef, useState } from 'react';
 import TimePicker from '../../components/UI/TimePicker';
 import useDebounce from '../../hooks/useDebounce';
+import ArrowLeft from '../../components/Icons/ArrowLeft';
+import SearchSVG from '../../components/Icons/Search';
+import Archieve from '../../components/Archieve';
 
 const tg = window.Telegram.WebApp;
 
@@ -17,10 +20,12 @@ const getPosition = (parentRef, childRef) => {
 };
 
 const AdminPage = () => {
-	const indicatorTextareaRef = useRef(null);
 	const [date, setDate] = useState(new Date());
 	const [calendarFull, setCalendarFull] = useState(false);
 	const [type, setType] = useState(0);
+	const [search, setSearch] = useState(false);
+
+	const indicatorTextareaRef = useRef(null);
 	const swiperRef = useRef();
 	const typeSwiperContRef = useRef();
 	const dateRef = useRef();
@@ -30,10 +35,52 @@ const AdminPage = () => {
 	const firstRender = useRef(false);
 	const mainRef = useRef(null);
 	const searchInputRef = useRef();
-	const [search, setSearch] = useState(false);
 
 	const clickSearch = () => {
 		setSearch(!search);
+		swiperRef?.current.swiper.slideTo(2);
+	};
+
+	const progressSwiper = (swiper) => {
+		firstRender.current = true;
+		if (firstRender.current) {
+			if (swiper.progress === 0) {
+				activityIndicatorRef.current.style.transition = '0.25s';
+				activityIndicatorRef.current.style.transform = `translate(20px)`;
+
+				activityIndicatorRef.current.style.width = ``;
+			}
+			if (swiper.progress > 0 && swiper.progress < 0.5) {
+				let left = getPosition(typeSwiperContRef, dateRef);
+				let width =
+					(swiper.progress * timeRef.current.offsetWidth) / 0.5 +
+					((0.5 - swiper.progress) * dateRef.current.offsetWidth) / 0.5;
+				let pos = (left + 20 * swiper.progress) / 0.5;
+				activityIndicatorRef.current.style.width = `${width}px`;
+				activityIndicatorRef.current.style.transform = `translate(${20 + pos}px)`;
+			}
+			if (swiper.progress === 0.5) {
+				activityIndicatorRef.current.style.transition = '0.25s';
+				activityIndicatorRef.current.style.width = `${timeRef.current.offsetWidth}px`;
+				let left = getPosition(typeSwiperContRef, timeRef);
+				activityIndicatorRef.current.style.transform = `translate(${left}px)`;
+			}
+			if (swiper.progress > 0.5 && swiper.progress < 1) {
+				let left = getPosition(typeSwiperContRef, archiveRef);
+				let width =
+					(swiper.progress * archiveRef.current.offsetWidth) / 1 +
+					((1 - swiper.progress) * timeRef.current.offsetWidth) / 1;
+				let pos = (left * swiper.progress * 0.5) / 1;
+				let leftPos = getPosition(typeSwiperContRef, timeRef);
+				activityIndicatorRef.current.style.transform = `translate(${leftPos + pos}px)`;
+			}
+			if (swiper.progress === 1) {
+				activityIndicatorRef.current.style.transition = '0.25s';
+				activityIndicatorRef.current.style.width = `${archiveRef.current.offsetWidth}px`;
+				let left = getPosition(typeSwiperContRef, archiveRef);
+				activityIndicatorRef.current.style.transform = `translate(${left}px)`;
+			}
+		}
 	};
 
 	useEffect(() => {
@@ -43,18 +90,44 @@ const AdminPage = () => {
 				const y = window.scrollY;
 				mainRef.current.style.minHeight = '149px';
 				searchInputRef.current.focus();
-
-				// requestAnimationFrame(() => {
-				// 	typeSwiperContRef.current.scrollIntoView();
-				// });
 			}
 		} else {
 			mainRef.current.style.minHeight = '';
 		}
 	}, [search]);
 
+	const toggleIndicator1 = () => {
+		activityIndicatorRef.current.style.transition = '0.25s';
+		activityIndicatorRef.current.style.transform = `translate(20px)`;
+		activityIndicatorRef.current.style.width = ``;
+	};
+
+	const toggleIndicator2 = () => {
+		activityIndicatorRef.current.style.transition = '0.25s';
+		activityIndicatorRef.current.style.width = `${timeRef.current.offsetWidth}px`;
+		let left = getPosition(typeSwiperContRef, timeRef);
+		activityIndicatorRef.current.style.transform = `translate(${left}px)`;
+	};
+
+	const toggleIndicator3 = () => {
+		activityIndicatorRef.current.style.transition = '0.25s';
+		activityIndicatorRef.current.style.width = `${archiveRef.current.offsetWidth}px`;
+		let left = getPosition(typeSwiperContRef, archiveRef);
+		activityIndicatorRef.current.style.transform = `translate(${left}px)`;
+	};
+
 	useEffect(() => {
-		window.addEventListener('scroll', () => {});
+		function resizeWin() {
+			if (type === 0) {
+				toggleIndicator1();
+			}
+			if (type === 1) {
+				toggleIndicator2();
+			}
+			if (type === 2) {
+				toggleIndicator3();
+			}
+		}
 	}, []);
 
 	return (
@@ -66,16 +139,14 @@ const AdminPage = () => {
 					<AdminTextEditor />
 				</div>
 
-				<div className={`${styles.type} ${styles.sticky}`}>
+				<div className={`${styles.type}`}>
 					<div ref={typeSwiperContRef} className={`container ${styles.container}`}>
 						<label ref={dateRef}>
 							<input
 								onChange={() => {
 									if (swiperRef?.current?.swiper) swiperRef.current.swiper.slideTo(0);
 									else {
-										activityIndicatorRef.current.style.transition = '0.25s';
-										activityIndicatorRef.current.style.transform = `translate(20px)`;
-										activityIndicatorRef.current.style.width = ``;
+										toggleIndicator1();
 										setType(0);
 									}
 								}}
@@ -93,10 +164,7 @@ const AdminPage = () => {
 									if (swiperRef?.current?.swiper) {
 										swiperRef?.current?.swiper?.slideTo(1);
 									} else {
-										activityIndicatorRef.current.style.transition = '0.25s';
-										activityIndicatorRef.current.style.width = `${timeRef.current.offsetWidth}px`;
-										let left = getPosition(typeSwiperContRef, timeRef);
-										activityIndicatorRef.current.style.transform = `translate(${left}px)`;
+										toggleIndicator2();
 										setType(1);
 									}
 								}}
@@ -114,10 +182,7 @@ const AdminPage = () => {
 									if (swiperRef?.current?.swiper) {
 										swiperRef?.current?.swiper?.slideTo(2);
 									} else {
-										activityIndicatorRef.current.style.transition = '0.25s';
-										activityIndicatorRef.current.style.width = `${archiveRef.current.offsetWidth}px`;
-										let left = getPosition(typeSwiperContRef, archiveRef);
-										activityIndicatorRef.current.style.transform = `translate(${left}px)`;
+										toggleIndicator3();
 										setType(2);
 									}
 								}}
@@ -135,80 +200,40 @@ const AdminPage = () => {
 			</div>
 
 			<main ref={mainRef} className={styles.main}>
-				{!search && (
-					<Swiper
-						onSlideChangeTransitionStart={(swiper) => {
-							setType(swiper.activeIndex);
-						}}
-						initialSlide={type}
-						className="container"
-						onProgress={(swiper) => {
-							firstRender.current = true;
-							if (firstRender.current) {
-								if (swiper.progress === 0) {
-									activityIndicatorRef.current.style.transition = '0.25s';
-									activityIndicatorRef.current.style.transform = `translate(20px)`;
-
-									activityIndicatorRef.current.style.width = ``;
-								}
-								if (swiper.progress > 0 && swiper.progress < 0.5) {
-									let left = getPosition(typeSwiperContRef, dateRef);
-									let width =
-										(swiper.progress * timeRef.current.offsetWidth) / 0.5 +
-										((0.5 - swiper.progress) * dateRef.current.offsetWidth) / 0.5;
-									let pos = (left + 20 * swiper.progress) / 0.5;
-									activityIndicatorRef.current.style.width = `${width}px`;
-									activityIndicatorRef.current.style.transform = `translate(${20 + pos}px)`;
-								}
-								if (swiper.progress === 0.5) {
-									activityIndicatorRef.current.style.transition = '0.25s';
-									activityIndicatorRef.current.style.width = `${timeRef.current.offsetWidth}px`;
-									let left = getPosition(typeSwiperContRef, timeRef);
-									activityIndicatorRef.current.style.transform = `translate(${left}px)`;
-								}
-								if (swiper.progress > 0.5 && swiper.progress < 1) {
-									let left = getPosition(typeSwiperContRef, archiveRef);
-									let width =
-										(swiper.progress * archiveRef.current.offsetWidth) / 1 +
-										((1 - swiper.progress) * timeRef.current.offsetWidth) / 1;
-									let pos = (left * swiper.progress * 0.5) / 1;
-									let leftPos = getPosition(typeSwiperContRef, timeRef);
-									activityIndicatorRef.current.style.transform = `translate(${leftPos + pos}px)`;
-								}
-								if (swiper.progress === 1) {
-									activityIndicatorRef.current.style.transition = '0.25s';
-									activityIndicatorRef.current.style.width = `${archiveRef.current.offsetWidth}px`;
-									let left = getPosition(typeSwiperContRef, archiveRef);
-									activityIndicatorRef.current.style.transform = `translate(${left}px)`;
-								}
-							}
-						}}
-						ref={swiperRef}>
-						<SwiperSlide>
-							<div className={`container ${styles.noSidePadding}`}>
-								<MyDatePicker
-									full={calendarFull}
-									setFull={setCalendarFull}
-									value={date}
-									onChange={() => setDate(date)}
-								/>
-							</div>
-						</SwiperSlide>
-
-						<SwiperSlide>
-							<TimePicker />
-						</SwiperSlide>
-
-						<SwiperSlide>
+				<Swiper
+					onSlideChangeTransitionStart={(swiper) => {
+						setType(swiper.activeIndex);
+					}}
+					initialSlide={type}
+					className="container"
+					onProgress={progressSwiper}
+					ref={swiperRef}>
+					<SwiperSlide>
+						<div className={`container ${styles.noSidePadding}`}>
 							<MyDatePicker
 								full={calendarFull}
 								setFull={setCalendarFull}
 								value={date}
 								onChange={() => setDate(date)}
 							/>
-						</SwiperSlide>
-					</Swiper>
-				)}
+						</div>
+					</SwiperSlide>
+
+					<SwiperSlide>
+						<TimePicker />
+					</SwiperSlide>
+
+					<SwiperSlide>
+						{/* <MyDatePicker
+							full={calendarFull}
+							setFull={setCalendarFull}
+							value={date}
+							onChange={() => setDate(date)}
+						/> */}
+
+						<Archieve/>
+					</SwiperSlide>
+				</Swiper>
 			</main>
 
 			{!search && (
@@ -266,26 +291,20 @@ const AdminPage = () => {
 
 			{search && (
 				<div className={styles.searchInput}>
-					<button>
-						<svg
-							width="10"
-							height="18"
-							viewBox="0 0 10 18"
-							fill="none"
-							xmlns="http://www.w3.org/2000/svg">
-							<path
-								d="M9 17L1 9L9 1"
-								stroke="#3192FD"
-								strokeWidth="2"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-							/>
-						</svg>
-					</button>
+					<div className={`container  ${styles.container}`}>
+						<button
+							onClick={() => {
+								setSearch(false);
+							}}>
+							<ArrowLeft />
+						</button>
 
-					<label>
-						<input ref={searchInputRef} />
-					</label>
+						<label>
+							<input ref={searchInputRef} />
+
+							<SearchSVG stroke="#7F7F84" width={16} height={16} />
+						</label>
+					</div>
 				</div>
 			)}
 		</>
