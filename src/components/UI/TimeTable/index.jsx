@@ -132,7 +132,7 @@ const TimeTable = ({ date, timetableRef, full, setFull, resizeFunction }) => {
 
 							<div className={styles.activitiesList}>
 								<div className={`${styles.activity} ${styles.food}`}>Завтрак</div>
-								<div className={`${styles.activity} ${styles.drugs}`}>Медикаменты</div>
+								<div className={`${styles.activity} ${styles.drugs}`}>Витамины</div>
 								<div className={`${styles.activity} ${styles.act}`}>Прогулка</div>
 							</div>
 						</div>

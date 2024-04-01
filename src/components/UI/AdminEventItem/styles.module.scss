@@ -139,12 +139,13 @@
 
 .info {
     overflow: hidden;
-
+    padding: 0 6px;
     height: 0;
+    opacity: 0;
 
     &.open {
         height: auto;
-        padding: 12px 6px 20px 6px;
+        opacity: 1;
     }
 }
 
@@ -153,11 +154,13 @@
     font-weight: 400;
     line-height: 16.94px;
     text-align: left;
+    margin-top: 12px;
+    margin-bottom: 20px;
 }
 
 .imgBlock {
     display: flex;
-    margin: 24px 0 0 0;
+    margin: 24px 0 20px 0;
 
     gap: 12px;
 

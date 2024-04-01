@@ -94,7 +94,7 @@ const NotifyToggle = () => {
 							name={'notifyType'}
 							value={'drugs'}
 						/>
-						<span>Медикаменты</span>
+						<span>Витамины</span>
 					</label>
 
 					<label ref={activityRef}>

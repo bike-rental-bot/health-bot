@@ -10,6 +10,9 @@ const variants = [
 	{ id: 1, img: img1, name: 'Анастасия', nickname: '@nasty' },
 	{ id: 2, img: img2, name: 'Леонид', nickname: '@lenya' },
 	{ id: 3, img: img3, name: 'Александр', nickname: '@alex' },
+	{ id: 1, img: img1, name: 'Анастасия', nickname: '@nasty' },
+	{ id: 2, img: img2, name: 'Леонид', nickname: '@lenya' },
+	{ id: 3, img: img3, name: 'Александр', nickname: '@alex' }
 ];
 const Archieve = () => {
 	const [user, setUser] = useState(null);

@@ -224,12 +224,7 @@ const AdminPage = () => {
 					</SwiperSlide>
 
 					<SwiperSlide>
-						{/* <MyDatePicker
-							full={calendarFull}
-							setFull={setCalendarFull}
-							value={date}
-							onChange={() => setDate(date)}
-						/> */}
+				
 
 						<Archieve/>
 					</SwiperSlide>
@@ -266,7 +261,7 @@ const AdminPage = () => {
 									value={'drugs'}
 									name={'adminTypeEvent'}
 								/>
-								<span>Медикаменты</span>
+								<span>Витамины</span>
 							</label>
 
 							<label>

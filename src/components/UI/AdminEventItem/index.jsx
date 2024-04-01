@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import styles from './styles.module.scss';
 import img from '../../../assets/images/tgImg.png';
 import ArrowSVG from '../../Icons/Arrow';
@@ -24,9 +24,23 @@ const AdminEventItem = ({
 	time = '8:00',
 }) => {
 	const [isHidden, setIsHidden] = useState(true);
+	const infoRef = useRef();
+
+	useEffect(() => {
+		infoRef.current.style.transition = 'height 0.25s ease-in-out, opacity 0.25s linear, padding 0s';
+		if (isHidden) {
+			infoRef.current.style.height = '0';
+		} else {
+			infoRef.current.style.height = `${infoRef.current.scrollHeight}px`;
+		}
+	}, [isHidden]);
 
 	return (
-		<div onClick={() => setIsHidden(!isHidden)} className={`${styles.container} ${styles[type]}`}>
+		<div
+			onClick={() => {
+				setIsHidden(!isHidden);
+			}}
+			className={`${styles.container} ${styles[type]}`}>
 			<div className={`${styles.header} ${styles[type]} ${!isHidden && styles.open}`}>
 				{isHidden ? (
 					<div className={`${styles.hidden} ${styles[type]}`}>
@@ -54,7 +68,7 @@ const AdminEventItem = ({
 				)}
 			</div>
 
-			<div className={`${styles.info} ${styles[type]} ${!isHidden && styles.open}`}>
+			<div ref={infoRef} className={`${styles.info} ${styles[type]} ${!isHidden && styles.open}`}>
 				<div className={styles.text}>
 					<p>{text}</p>
 				</div>
