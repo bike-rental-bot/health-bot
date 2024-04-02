@@ -37,7 +37,6 @@ const AdminPage = () => {
 	const searchInputRef = useRef();
 	const footerRef = useRef();
 	const headerRef = useRef();
-	const observeTimeOut = useRef();
 
 	const clickSearch = () => {
 		setSearch(!search);
@@ -60,7 +59,6 @@ const AdminPage = () => {
 		func();
 
 		window.addEventListener('resize', func);
-		headerRef.current.addEventListener('resize', () => console.log('gbefvdwe'));
 
 		return () => {
 			window.removeEventListener('resize', func);
@@ -80,12 +78,20 @@ const AdminPage = () => {
 					const pageHeight = document.documentElement.scrollHeight;
 					const bottomCoordinate = pageHeight - mainRef.current.getBoundingClientRect().bottom;
 
-					mainRef.current.style.height = `${distance > 100 ? distance : 2}px`;
-					mainRef.current.style.paddingBottom = `${80 - bottomCoordinate}px`;
+					console.log(distance);
 
-					if (distance <= 100) {
-						window.scrollTo({
-							top: document.body.scrollHeight,
+					mainRef.current.style.height = `${distance > 75 ? distance : 2}px`;
+
+					// mainRef.current.style.paddingBottom = `${80 - bottomCoordinate}px`;
+
+					if (distance <= 75) {
+						const root = document.getElementById('root');
+						root.style.paddingBottom = '80px';
+
+						requestAnimationFrame(() => {
+							window.scrollTo({
+								top: document.body.scrollHeight,
+							});
 						});
 					}
 				}
