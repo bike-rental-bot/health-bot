@@ -82,6 +82,12 @@ const AdminPage = () => {
 
 					mainRef.current.style.height = `${distance > 100 ? distance : 2}px`;
 					mainRef.current.style.paddingBottom = `${80 - bottomCoordinate}px`;
+
+					if (distance <= 100) {
+						window.scrollTo({
+							top: document.body.scrollHeight,
+						});
+					}
 				}
 			}
 		});
