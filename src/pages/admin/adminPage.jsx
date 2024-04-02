@@ -79,8 +79,6 @@ const AdminPage = () => {
 
 					mainRef.current.style.height = `${distance}px`;
 					mainRef.current.style.paddingBottom = `${80 - bottomCoordinate}px`;
-
-					
 				}
 			}
 		});
@@ -282,10 +280,12 @@ const AdminPage = () => {
 					</SwiperSlide>
 
 					<SwiperSlide>
-						<TimePicker />
+						<div style={{ padding: '40px 0', height: '100%' }}>
+							<TimePicker />
+						</div>
 					</SwiperSlide>
 
-					<SwiperSlide>
+					<SwiperSlide style={{ overflow: 'auto' }}>
 						<Archieve />
 					</SwiperSlide>
 				</Swiper>

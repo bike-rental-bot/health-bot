@@ -4,12 +4,17 @@
 
 .datepicker.ios .datepicker-content {
     padding-top: 0 !important;
+    height: 100% !important;
 }
 
 .datepicker {
     position: static !important;
-    margin-top: 40px;
     background-color: white !important;
+    height: 100% !important;
+}
+
+.datepicker .datepicker-content {
+    padding: 0 !important;
 }
 
 .datepicker.ios .datepicker-viewport::after {
@@ -17,7 +22,7 @@
 }
 
 .datepicker .datepicker-viewport {
-    height: 417px !important;
+    height: 100% !important;
 }
 
 .datepicker .datepicker-scroll li {
