@@ -35,11 +35,33 @@ const AdminPage = () => {
 	const firstRender = useRef(false);
 	const mainRef = useRef(null);
 	const searchInputRef = useRef();
+	const footerRef = useRef();
+	const headerRef = useRef();
 
 	const clickSearch = () => {
 		setSearch(!search);
 		swiperRef?.current.swiper.slideTo(2);
 	};
+
+	useEffect(() => {
+		const func = () => {
+			if (footerRef.current && headerRef.current && mainRef.current) {
+				const block1Bottom = headerRef.current.getBoundingClientRect().bottom;
+				const block2Top = footerRef.current.getBoundingClientRect().top;
+				const distance = block2Top - block1Bottom;
+
+				mainRef.current.style.height = `${distance}px`;
+
+				console.log('Distance between blocks:', distance);
+			}
+		};
+
+		func();
+
+		window.addEventListener('resize', func);
+
+		return () => window.removeEventListener('resize', func);
+	}, []);
 
 	const progressSwiper = (swiper) => {
 		firstRender.current = true;
@@ -132,7 +154,7 @@ const AdminPage = () => {
 
 	return (
 		<>
-			<div className={styles.header}>
+			<div ref={headerRef} className={styles.header}>
 				<HeaderAdmin onClickSearch={clickSearch} />
 
 				<div className="container">
@@ -205,10 +227,11 @@ const AdminPage = () => {
 						setType(swiper.activeIndex);
 					}}
 					initialSlide={type}
+					style={{ height: '100%' }}
 					className="container"
 					onProgress={progressSwiper}
 					ref={swiperRef}>
-					<SwiperSlide>
+					<SwiperSlide style={{ overflow: 'auto' }}>
 						<div className={`container ${styles.noSidePadding}`}>
 							<MyDatePicker
 								full={calendarFull}
@@ -224,15 +247,13 @@ const AdminPage = () => {
 					</SwiperSlide>
 
 					<SwiperSlide>
-				
-
-						<Archieve/>
+						<Archieve />
 					</SwiperSlide>
 				</Swiper>
 			</main>
 
 			{!search && (
-				<footer className={styles.footer}>
+				<footer ref={footerRef} className={styles.footer}>
 					<div className={styles.container}>
 						<div className={styles.toggler}>
 							<label>
