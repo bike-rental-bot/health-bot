@@ -59,8 +59,43 @@ const AdminPage = () => {
 		func();
 
 		window.addEventListener('resize', func);
+		headerRef.current.addEventListener('resize', () => console.log('gbefvdwe'));
 
 		return () => window.removeEventListener('resize', func);
+	}, []);
+
+	useEffect(() => {
+		const firstElement = headerRef.current;
+		const secondElement = footerRef.current;
+
+		const resizeObserver = new ResizeObserver((entries) => {
+			for (let entry of entries) {
+				if (entry.target === firstElement) {
+					const { bottom } = entry.contentRect;
+					const topPosition = secondElement.getBoundingClientRect().top;
+					const distance = topPosition - bottom;
+					const pageHeight = document.documentElement.scrollHeight;
+					const bottomCoordinate = pageHeight - mainRef.current.getBoundingClientRect().bottom;
+
+					mainRef.current.style.height = `${distance}px`;
+					mainRef.current.style.paddingBottom = `${80 - bottomCoordinate}px`;
+
+					
+				}
+			}
+		});
+
+		if (firstElement) {
+			resizeObserver.observe(firstElement);
+		}
+
+		if (secondElement) {
+			resizeObserver.observe(secondElement);
+		}
+
+		return () => {
+			resizeObserver.disconnect();
+		};
 	}, []);
 
 	const progressSwiper = (swiper) => {
@@ -150,6 +185,10 @@ const AdminPage = () => {
 				toggleIndicator3();
 			}
 		}
+	}, []);
+
+	useEffect(() => {
+		document.body.style.background = 'white';
 	}, []);
 
 	return (
