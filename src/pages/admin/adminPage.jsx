@@ -9,6 +9,7 @@ import useDebounce from '../../hooks/useDebounce';
 import ArrowLeft from '../../components/Icons/ArrowLeft';
 import SearchSVG from '../../components/Icons/Search';
 import Archieve from '../../components/Archieve';
+import { useSelector } from 'react-redux';
 
 const tg = window.Telegram.WebApp;
 
@@ -24,7 +25,6 @@ const AdminPage = () => {
 	const [calendarFull, setCalendarFull] = useState(false);
 	const [type, setType] = useState(0);
 	const [search, setSearch] = useState(false);
-
 	const indicatorTextareaRef = useRef(null);
 	const swiperRef = useRef();
 	const typeSwiperContRef = useRef();
@@ -37,6 +37,7 @@ const AdminPage = () => {
 	const searchInputRef = useRef();
 	const footerRef = useRef();
 	const headerRef = useRef();
+	const observeTimeOut = useRef();
 
 	const clickSearch = () => {
 		setSearch(!search);
@@ -61,7 +62,9 @@ const AdminPage = () => {
 		window.addEventListener('resize', func);
 		headerRef.current.addEventListener('resize', () => console.log('gbefvdwe'));
 
-		return () => window.removeEventListener('resize', func);
+		return () => {
+			window.removeEventListener('resize', func);
+		};
 	}, []);
 
 	useEffect(() => {
@@ -77,7 +80,7 @@ const AdminPage = () => {
 					const pageHeight = document.documentElement.scrollHeight;
 					const bottomCoordinate = pageHeight - mainRef.current.getBoundingClientRect().bottom;
 
-					mainRef.current.style.height = `${distance}px`;
+					mainRef.current.style.height = `${distance > 100 ? distance : 2}px`;
 					mainRef.current.style.paddingBottom = `${80 - bottomCoordinate}px`;
 				}
 			}
@@ -183,10 +186,6 @@ const AdminPage = () => {
 				toggleIndicator3();
 			}
 		}
-	}, []);
-
-	useEffect(() => {
-		document.body.style.background = 'white';
 	}, []);
 
 	return (

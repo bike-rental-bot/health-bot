@@ -7,6 +7,8 @@ import { act } from 'react-dom/test-utils';
 import TextField from '../UI/TextField';
 import DeleteButton from '../UI/DeleteButton';
 import ImageLoadPreview from '../ImageLoadPreview';
+import { useDispatch } from 'react-redux';
+import { setFieldsState } from '../../redux/adminSlice.js';
 
 const regexLink = new RegExp(
 	'^(https?:\\/\\/)?' + // validate protocol
@@ -20,12 +22,15 @@ const regexLink = new RegExp(
 
 const AdminTextEditor = () => {
 	const [activeAttachment, setActiveAttachment] = useState(false);
+	const [activeHeader, setActiveHeader] = useState(false);
+	const [activeText, setActiveText] = useState(false);
 	const [textHeader, setTextHeader] = useState('');
 	const [textValue, setTextValue] = useState('');
 	const [textLink, setTextLink] = useState('');
 	const [previewImages, setPreviewImages] = useState([]);
 	const textareaRef = useRef(null);
 	const [metaData, setMetaData] = useState(null);
+	const dispatch = useDispatch();
 	async function getMetaDataPage() {
 		const url = 'https://www.youtube.com/watch?v=MzO-0IYkZMU';
 		const data = await fetch(
@@ -35,9 +40,17 @@ const AdminTextEditor = () => {
 		setMetaData(res);
 	}
 
-	useEffect(() => {
-		getMetaDataPage();
-	}, []);
+	const handleInputLink = (e) => {
+		setTextLink(e.target.value);
+
+		if (regexLink.test(e.target.value)) {
+			console.log('true');
+
+			fetch(`https://impulsrent.ru:8203/api/notify/getTelegraphData?url=${e.target.value}`)
+				.then((res) => res.json())
+				.then((res) => console.log(res));
+		}
+	};
 
 	const promFunc = (file) => {
 		const newPreviewImages = [...previewImages];
@@ -84,17 +97,9 @@ const AdminTextEditor = () => {
 		});
 	};
 
-	const handleInputLink = (e) => {
-		setTextLink(e.target.value);
-
-		if (regexLink.test(e.target.value)) {
-			console.log('true');
-
-			fetch(`https://impulsrent.ru:8203/api/notify/getTelegraphData?url=${e.target.value}`)
-				.then((res) => res.json())
-				.then((res) => console.log(res));
-		}
-	};
+	useEffect(() => {
+		getMetaDataPage();
+	}, []);
 
 	return (
 		<>
@@ -103,11 +108,15 @@ const AdminTextEditor = () => {
 					onChange={(value) => setTextHeader(value)}
 					name={'Заголовок'}
 					placeholder={'Введите заголовок'}
+					isOpen={activeHeader}
+					onChangeFull={(value) => setActiveHeader(value)}
 				/>
 
 				<TextField
 					onChange={(value) => setTextValue(value)}
+					onChangeFull={(value) => setActiveText(value)}
 					name={'Текст'}
+					isOpen={activeText}
 					placeholder={'Введите текст'}
 				/>
 			</div>
