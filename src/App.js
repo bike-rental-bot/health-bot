@@ -6,10 +6,16 @@ import MainPage from './pages/main/mainPage';
 import AdminPage from './pages/admin/adminPage';
 
 function App() {
+	const WebApp = window.Telegram.WebApp;
+
+	if (WebApp) {
+		WebApp.expand();
+		WebApp.enableClosingConfirmation();
+	}
 	return (
 		<Routes>
 			<Route exact path={''} element={<MainPage />} />
-			<Route exact path={'/admin'} element={<AdminPage/>} />
+			<Route exact path={'/admin'} element={<AdminPage />} />
 		</Routes>
 	);
 }
