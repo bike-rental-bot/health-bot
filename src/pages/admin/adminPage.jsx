@@ -37,79 +37,12 @@ const AdminPage = () => {
 	const searchInputRef = useRef();
 	const footerRef = useRef();
 	const headerRef = useRef();
+	const resizeObserverTimeout = useRef();
 
 	const clickSearch = () => {
 		setSearch(!search);
 		swiperRef?.current.swiper.slideTo(2);
 	};
-
-	useEffect(() => {
-		const func = () => {
-			if (footerRef.current && headerRef.current && mainRef.current) {
-				const block1Bottom = headerRef.current.getBoundingClientRect().bottom;
-				const block2Top = footerRef.current.getBoundingClientRect().top;
-				const distance = block2Top - block1Bottom;
-
-				mainRef.current.style.height = `${distance}px`;
-
-				console.log('Distance between blocks:', distance);
-			}
-		};
-
-		func();
-
-		window.addEventListener('resize', func);
-
-		return () => {
-			window.removeEventListener('resize', func);
-		};
-	}, []);
-
-	useEffect(() => {
-		const firstElement = headerRef.current;
-		const secondElement = footerRef.current;
-
-		const resizeObserver = new ResizeObserver((entries) => {
-			for (let entry of entries) {
-				if (entry.target === firstElement) {
-					const { bottom } = entry.contentRect;
-					const topPosition = secondElement.getBoundingClientRect().top;
-					const distance = topPosition - bottom;
-					const pageHeight = document.documentElement.scrollHeight;
-					const bottomCoordinate = pageHeight - mainRef.current.getBoundingClientRect().bottom;
-
-					console.log(distance);
-
-					mainRef.current.style.height = `${distance > 75 ? distance : 2}px`;
-
-					// mainRef.current.style.paddingBottom = `${80 - bottomCoordinate}px`;
-
-					if (distance <= 75) {
-						const root = document.getElementById('root');
-						root.style.paddingBottom = '80px';
-
-						requestAnimationFrame(() => {
-							window.scrollTo({
-								top: document.body.scrollHeight,
-							});
-						});
-					}
-				}
-			}
-		});
-
-		if (firstElement) {
-			resizeObserver.observe(firstElement);
-		}
-
-		if (secondElement) {
-			resizeObserver.observe(secondElement);
-		}
-
-		return () => {
-			resizeObserver.disconnect();
-		};
-	}, []);
 
 	const progressSwiper = (swiper) => {
 		firstRender.current = true;
@@ -153,19 +86,6 @@ const AdminPage = () => {
 		}
 	};
 
-	useEffect(() => {
-		if (search) {
-			if (searchInputRef && searchInputRef.current) {
-				const x = window.scrollX;
-				const y = window.scrollY;
-				mainRef.current.style.minHeight = '149px';
-				searchInputRef.current.focus();
-			}
-		} else {
-			mainRef.current.style.minHeight = '';
-		}
-	}, [search]);
-
 	const toggleIndicator1 = () => {
 		activityIndicatorRef.current.style.transition = '0.25s';
 		activityIndicatorRef.current.style.transform = `translate(20px)`;
@@ -187,6 +107,89 @@ const AdminPage = () => {
 	};
 
 	useEffect(() => {
+		const func = () => {
+			if (footerRef.current && headerRef.current && mainRef.current) {
+				const block1Bottom = headerRef.current.getBoundingClientRect().bottom;
+				const block2Top = footerRef.current.getBoundingClientRect().top;
+				const distance = block2Top - block1Bottom;
+
+				mainRef.current.style.height = `${distance}px`;
+
+				console.log('Distance between blocks:', distance);
+			}
+		};
+
+		func();
+
+		window.addEventListener('resize', func);
+
+		return () => {
+			window.removeEventListener('resize', func);
+		};
+	}, []);
+
+	useEffect(() => {
+		const firstElement = headerRef?.current;
+		const secondElement = footerRef?.current;
+		const searchElement = searchInputRef?.current;
+		const root = document.getElementById('root');
+
+		const resizeObserver = new ResizeObserver((entries) => {
+			clearTimeout(resizeObserverTimeout);
+
+			resizeObserverTimeout.current = setTimeout(() => {
+				for (let entry of entries) {
+					if (entry.target === firstElement) {
+						const { bottom } = entry.contentRect;
+						let topPosition = 0;
+						if (secondElement?.getBoundingClientRect()?.top) {
+							topPosition = secondElement?.getBoundingClientRect()?.top;
+						}
+						if (searchElement?.getBoundingClientRect().top) {
+							topPosition = searchElement?.getBoundingClientRect()?.top;
+						}
+
+						console.log(
+							'bottom',
+							firstElement?.getBoundingClientRect().bottom,
+							searchElement?.getBoundingClientRect(),
+						);
+
+						const distance = topPosition - bottom;
+						const pageHeight = document.documentElement.scrollHeight;
+						const bottomCoordinate = pageHeight - mainRef.current.getBoundingClientRect().bottom;
+
+						mainRef.current.style.height = `${distance > 50 ? distance : 2}px`;
+
+						if (distance <= 50) {
+							root.style.paddingBottom = !search ? '80px' : '72px';
+							requestAnimationFrame(() => {
+								window.scrollTo({
+									top: document.body.scrollHeight,
+								});
+							});
+						} else {
+							root.style.paddingBottom = '';
+						}
+					}
+				}
+			}, 0);
+		});
+
+		if (firstElement) {
+			resizeObserver.observe(firstElement);
+		}
+
+		if (secondElement) {
+			resizeObserver.observe(secondElement);
+		}
+
+		return () => {
+			resizeObserver.disconnect();
+		};
+	}, [search]);
+
+	useEffect(() => {
 		function resizeWin() {
 			if (type === 0) {
 				toggleIndicator1();
@@ -198,6 +201,17 @@ const AdminPage = () => {
 				toggleIndicator3();
 			}
 		}
+	}, []);
+
+	useEffect(() => {
+		function onBackKeyDown() {
+			if (search) {
+				setSearch(false);
+			}
+		}
+		window.addEventListener('backbutton', onBackKeyDown, false);
+
+		return () => window.removeEventListener('backbutton', onBackKeyDown, false);
 	}, []);
 
 	return (
@@ -356,9 +370,13 @@ const AdminPage = () => {
 			)}
 
 			{search && (
-				<div className={styles.searchInput}>
+				<form
+					onSubmit={(e) => e.preventDefault()}
+					ref={searchInputRef}
+					className={styles.searchInput}>
 					<div className={`container  ${styles.container}`}>
 						<button
+							type="button"
 							onClick={() => {
 								setSearch(false);
 							}}>
@@ -366,12 +384,13 @@ const AdminPage = () => {
 						</button>
 
 						<label>
-							<input ref={searchInputRef} />
-
-							<SearchSVG stroke="#7F7F84" width={16} height={16} />
+							<input />
+							<button type="submit">
+								<SearchSVG stroke="#7F7F84" width={16} height={16} />
+							</button>
 						</label>
 					</div>
-				</div>
+				</form>
 			)}
 		</>
 	);
