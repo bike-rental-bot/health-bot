@@ -23,6 +23,14 @@ const TextField = ({
 	}, [text]);
 
 	useEffect(() => {
+		setText(value);
+	}, [value]);
+
+	useEffect(() => {
+		setActive(isOpen);
+	}, [isOpen]);
+
+	useEffect(() => {
 		function resizeWin() {
 			if (textareaRef.current) {
 				textareaRef.current.style.height = `0px`;
@@ -55,7 +63,7 @@ const TextField = ({
 			{active && (
 				<label>
 					<textarea
-					    style={{maxHeight: 100}}
+						style={{ maxHeight: 100 }}
 						value={text}
 						ref={textareaRef}
 						onFocus={() => {

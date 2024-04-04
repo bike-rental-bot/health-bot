@@ -25,10 +25,7 @@ const FocusTextField = {
 	header: false,
 };
 
-const AdminTextEditor = ({ textForm, setTextForm }) => {
-	const [activeAttachment, setActiveAttachment] = useState(false);
-	const [activeHeader, setActiveHeader] = useState(false);
-	const [activeText, setActiveText] = useState(false);
+const AdminTextEditor = ({ textForm, setTextForm, activeTextFields, setActiveTextFields }) => {
 	const [focusTextFields, setFocusTextFields] = useState(FocusTextField);
 	const [previewImages, setPreviewImages] = useState([]);
 	const textareaRef = useRef(null);
@@ -106,6 +103,8 @@ const AdminTextEditor = ({ textForm, setTextForm }) => {
 		dispatch(setFocusTextField(focusTextFields.header || focusTextFields.text));
 	}, [focusTextFields]);
 
+	console.log('activeText', activeTextFields);
+
 	return (
 		<>
 			<div className={`${styles.container}`}>
@@ -115,8 +114,8 @@ const AdminTextEditor = ({ textForm, setTextForm }) => {
 					}}
 					name={'Заголовок'}
 					placeholder={'Введите заголовок'}
-					isOpen={activeHeader}
-					onChangeFull={(value) => setActiveHeader(value)}
+					isOpen={activeTextFields.title}
+					onChangeFull={(value) => setActiveTextFields({ ...activeTextFields, title: value })}
 					onFocus={() => {
 						setFocusTextFields({ ...focusTextFields, header: true });
 					}}
@@ -130,9 +129,9 @@ const AdminTextEditor = ({ textForm, setTextForm }) => {
 					onChange={(value) => {
 						setTextForm({ ...textForm, description: value });
 					}}
-					onChangeFull={(value) => setActiveText(value)}
 					name={'Текст'}
-					isOpen={activeText}
+					isOpen={activeTextFields.description}
+					onChangeFull={(value) => setActiveTextFields({ ...activeTextFields, description: value })}
 					placeholder={'Введите текст'}
 					onFocus={() => {
 						setFocusTextFields({ ...focusTextFields, text: true });
@@ -147,17 +146,17 @@ const AdminTextEditor = ({ textForm, setTextForm }) => {
 				<button
 					className={styles.attachmentBtn}
 					onClick={() => {
-						setActiveAttachment(!activeAttachment);
+						setActiveTextFields({ ...activeTextFields, link: !activeTextFields.link });
 					}}>
 					Вложение{' '}
 					<ArrowSVG
-						className={`${styles.arrow} ${activeAttachment && styles.active}`}
+						className={`${styles.arrow} ${activeTextFields.link && styles.active}`}
 						width={19}
 						height={19}
 					/>
 				</button>
 
-				{activeAttachment && (
+				{activeTextFields.link && (
 					<div className={styles.inputAttachment}>
 						<label className={styles.inputFile}>
 							<input
@@ -180,7 +179,7 @@ const AdminTextEditor = ({ textForm, setTextForm }) => {
 					</div>
 				)}
 
-				{activeAttachment && (
+				{activeTextFields.link && (
 					<div className={styles.containerPreview}>
 						<DeleteButton />
 
@@ -194,7 +193,7 @@ const AdminTextEditor = ({ textForm, setTextForm }) => {
 					</div>
 				)}
 
-				{activeAttachment && previewImages.length > 0 && (
+				{activeTextFields.link && previewImages.length > 0 && (
 					<div className={styles.imageList}>
 						{previewImages.map((el, index) => {
 							return (

@@ -33,11 +33,18 @@ const FORMSTATE = {
 	end_date: null,
 };
 
+const ACTIVETEXTFIELDS = {
+	title: false,
+	description: false,
+	link: false,
+};
+
 const AdminPage = () => {
 	const [date, setDate] = useState(new Date());
 	const [calendarFull, setCalendarFull] = useState(false);
 	const [type, setType] = useState(0);
 	const [search, setSearch] = useState(false);
+	const [activeTextFields, setActiveTextFields] = useState(ACTIVETEXTFIELDS);
 	const indicatorTextareaRef = useRef(null);
 	const swiperRef = useRef();
 	const typeSwiperContRef = useRef();
@@ -59,8 +66,6 @@ const AdminPage = () => {
 		token: token,
 		time: date.toISOString().substring(0, 10),
 	});
-
-	console.log('form', formState);
 
 	const focusTextarea = useSelector((state) => state.admin.focusTextField);
 
@@ -241,9 +246,13 @@ const AdminPage = () => {
 		post('/notify/addNotify', {}, formState)
 			.then((res) => {
 				console.log(res);
+				setFormState({ ...formState, title: '', link: '', description: '' });
+				setActiveTextFields({ ...ACTIVETEXTFIELDS });
 			})
 			.catch((err) => console.error(err));
 	};
+
+	console.log('form', formState);
 
 	return (
 		<>
@@ -252,6 +261,8 @@ const AdminPage = () => {
 
 				<div className="container">
 					<AdminTextEditor
+						activeTextFields={activeTextFields}
+						setActiveTextFields={setActiveTextFields}
 						textForm={formState}
 						setTextForm={setFormState}
 					/>
@@ -267,6 +278,9 @@ const AdminPage = () => {
 										toggleIndicator1();
 										setType(0);
 									}
+								}}
+								onClick={() => {
+									setActiveTextFields({ ...ACTIVETEXTFIELDS });
 								}}
 								checked={type === 0}
 								type="radio"
@@ -286,6 +300,9 @@ const AdminPage = () => {
 										setType(1);
 									}
 								}}
+								onClick={() => {
+									setActiveTextFields({ ...ACTIVETEXTFIELDS });
+								}}
 								checked={type === 1}
 								type="radio"
 								name={'notifyType'}
@@ -303,6 +320,9 @@ const AdminPage = () => {
 										toggleIndicator3();
 										setType(2);
 									}
+								}}
+								onClick={() => {
+									setActiveTextFields({ ...ACTIVETEXTFIELDS });
 								}}
 								checked={type === 2}
 								type="radio"
