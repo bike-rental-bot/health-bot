@@ -9,12 +9,8 @@ const TEXT =
 const copyText = (text) => {
 	navigator.clipboard
 		.writeText(text)
-		.then(() => {
-			console.log('Текст скопирован успешно:', text);
-		})
-		.catch((error) => {
-			console.error('Ошибка при копировании текста:', error);
-		});
+		.then(() => {})
+		.catch((error) => {});
 };
 const AdminEventItem = ({
 	type = 'food',

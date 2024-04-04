@@ -31,7 +31,7 @@ const Select = ({ variants, onChange, children }) => {
 	const handleSelect = (e) => {
 		e.stopPropagation();
 		setActiveDropDown(!activeDropDown);
-		const selectHeight = selectRef.current.getBoundingClientRect().height;
+		const selectHeight = selectRef.current?.getBoundingClientRect()?.height;
 		dropDownRef.current.style.overflow = 'hidden';
 		dropDownRef.current.style.top = `${selectHeight + 4}px`;
 	};

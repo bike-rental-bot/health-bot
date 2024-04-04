@@ -8,7 +8,7 @@ import TextField from '../UI/TextField';
 import DeleteButton from '../UI/DeleteButton';
 import ImageLoadPreview from '../ImageLoadPreview';
 import { useDispatch } from 'react-redux';
-import { setFieldsState } from '../../redux/adminSlice.js';
+import { setFocusTextField } from '../../redux/adminSlice.js';
 
 const regexLink = new RegExp(
 	'^(https?:\\/\\/)?' + // validate protocol
@@ -20,13 +20,16 @@ const regexLink = new RegExp(
 	'i',
 );
 
-const AdminTextEditor = () => {
+const FocusTextField = {
+	text: false,
+	header: false,
+};
+
+const AdminTextEditor = ({ textForm, setTextForm }) => {
 	const [activeAttachment, setActiveAttachment] = useState(false);
 	const [activeHeader, setActiveHeader] = useState(false);
 	const [activeText, setActiveText] = useState(false);
-	const [textHeader, setTextHeader] = useState('');
-	const [textValue, setTextValue] = useState('');
-	const [textLink, setTextLink] = useState('');
+	const [focusTextFields, setFocusTextFields] = useState(FocusTextField);
 	const [previewImages, setPreviewImages] = useState([]);
 	const textareaRef = useRef(null);
 	const [metaData, setMetaData] = useState(null);
@@ -41,11 +44,9 @@ const AdminTextEditor = () => {
 	}
 
 	const handleInputLink = (e) => {
-		setTextLink(e.target.value);
+		setTextForm({ ...textForm, link: e.target.value });
 
 		if (regexLink.test(e.target.value)) {
-			console.log('true');
-
 			fetch(`https://impulsrent.ru:8203/api/notify/getTelegraphData?url=${e.target.value}`)
 				.then((res) => res.json())
 				.then((res) => console.log(res));
@@ -101,23 +102,45 @@ const AdminTextEditor = () => {
 		getMetaDataPage();
 	}, []);
 
+	useEffect(() => {
+		dispatch(setFocusTextField(focusTextFields.header || focusTextFields.text));
+	}, [focusTextFields]);
+
 	return (
 		<>
 			<div className={`${styles.container}`}>
 				<TextField
-					onChange={(value) => setTextHeader(value)}
+					onChange={(value) => {
+						setTextForm({ ...textForm, title: value });
+					}}
 					name={'Заголовок'}
 					placeholder={'Введите заголовок'}
 					isOpen={activeHeader}
 					onChangeFull={(value) => setActiveHeader(value)}
+					onFocus={() => {
+						setFocusTextFields({ ...focusTextFields, header: true });
+					}}
+					onBlur={() => {
+						setFocusTextFields({ ...focusTextFields, header: false });
+					}}
+					value={textForm.title}
 				/>
 
 				<TextField
-					onChange={(value) => setTextValue(value)}
+					onChange={(value) => {
+						setTextForm({ ...textForm, description: value });
+					}}
 					onChangeFull={(value) => setActiveText(value)}
 					name={'Текст'}
 					isOpen={activeText}
 					placeholder={'Введите текст'}
+					onFocus={() => {
+						setFocusTextFields({ ...focusTextFields, text: true });
+					}}
+					onBlur={() => {
+						setFocusTextFields({ ...focusTextFields, text: false });
+					}}
+					value={textForm.description}
 				/>
 			</div>
 			<div className={`${styles.textField} ${styles.attachment}`}>
@@ -148,7 +171,7 @@ const AdminTextEditor = () => {
 
 						<label className={styles.inputText}>
 							<input
-								value={textLink}
+								value={textForm.link}
 								onChange={handleInputLink}
 								placeholder="Вставьте ссылку или вложение"
 								type="text"

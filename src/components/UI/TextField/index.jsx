@@ -55,6 +55,7 @@ const TextField = ({
 			{active && (
 				<label>
 					<textarea
+					    style={{maxHeight: 100}}
 						value={text}
 						ref={textareaRef}
 						onFocus={() => {
@@ -64,6 +65,8 @@ const TextField = ({
 							if (typeof onFocus === 'function') onBlur();
 						}}
 						onChange={(e) => {
+							e.preventDefault();
+							// window.scrollTo(0, window.innerHeight);
 							setText(e.target.value);
 
 							if (textareaRef.current) {

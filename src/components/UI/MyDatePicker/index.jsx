@@ -283,7 +283,7 @@ const selectMonthDays = (year, month, currentDateValue, weekNumber) => {
 	return [];
 };
 
-const MyDatePicker = ({ value, onChange, calendarRef, full, setFull }) => {
+const MyDatePicker = ({ value, onChange, calendarRef, full, setFull, min }) => {
 	const [dateValue, setDateValue] = useState(value);
 	const [slide, setSlide] = useState(null);
 	const [slideCal, setSlideCal] = useState(null);
@@ -307,45 +307,51 @@ const MyDatePicker = ({ value, onChange, calendarRef, full, setFull }) => {
 	);
 
 	const handlePrevMonth = () => {
-		const prevMonth = { ...currentMonth };
+		if (
+			!min ||
+			new Date(min.getFullYear(), min.getMonth(), 1).getTime() <
+				new Date(currentMonth.year, currentMonth.month, 1).getTime()
+		) {
+			const prevMonth = { ...currentMonth };
 
-		const addMonth = {
-			month: prevMonth.month === 0 ? 11 : prevMonth.month - 1,
-			year: prevMonth.month === 0 ? prevMonth.year - 1 : prevMonth.year,
-		};
+			const addMonth = {
+				month: prevMonth.month === 0 ? 11 : prevMonth.month - 1,
+				year: prevMonth.month === 0 ? prevMonth.year - 1 : prevMonth.year,
+			};
 
-		setSlide('prev');
+			setSlide('prev');
 
-		requestAnimationFrame(() => {
-			setCurrentMonth(addMonth);
-		});
+			requestAnimationFrame(() => {
+				setCurrentMonth(addMonth);
+			});
 
-		const monthsDaysPrev = [...monthDays];
+			const monthsDaysPrev = [...monthDays];
 
-		if (!dateValue) {
-			currentWeek.current = getWeekNumber(
-				addMonth.year,
-				addMonth.month,
-				dateValue ? dateValue : new Date(),
-			);
-		} else {
-			if (dateValue.getFullYear() === addMonth.year && dateValue.getMonth() === addMonth.month) {
+			if (!dateValue) {
 				currentWeek.current = getWeekNumber(
 					addMonth.year,
 					addMonth.month,
 					dateValue ? dateValue : new Date(),
 				);
+			} else {
+				if (dateValue.getFullYear() === addMonth.year && dateValue.getMonth() === addMonth.month) {
+					currentWeek.current = getWeekNumber(
+						addMonth.year,
+						addMonth.month,
+						dateValue ? dateValue : new Date(),
+					);
+				}
 			}
-		}
 
-		setMonthDays((prev) =>
-			selectMonthDays(
-				addMonth.year,
-				addMonth.month,
-				dateValue ? dateValue : new Date(),
-				currentWeek.current,
-			),
-		);
+			setMonthDays((prev) =>
+				selectMonthDays(
+					addMonth.year,
+					addMonth.month,
+					dateValue ? dateValue : new Date(),
+					currentWeek.current,
+				),
+			);
+		}
 	};
 
 	const handleNextMonth = () => {
@@ -427,10 +433,25 @@ const MyDatePicker = ({ value, onChange, calendarRef, full, setFull }) => {
 		}
 	}, [dateValue]);
 
+	useEffect(() => {
+		setDateValue(value);
+	}, [value]);
+
 	return (
 		<div ref={calendarRef} className={styles.container}>
 			<div className={styles.panelMonth}>
-				<button key={'btnPrev'} onClick={handlePrevMonth}>
+				<button
+					style={
+						min &&
+						new Date(min.getFullYear(), min.getMonth(), 1).getTime() ===
+							new Date(currentMonth.year, currentMonth.month, 1).getTime()
+							? {
+									visibility: 'hidden',
+							  }
+							: undefined
+					}
+					key={'btnPrev'}
+					onClick={handlePrevMonth}>
 					<ArrowSVG style={{ transform: 'rotate(90deg)' }} />
 				</button>
 				<div>
@@ -475,6 +496,7 @@ const MyDatePicker = ({ value, onChange, calendarRef, full, setFull }) => {
 								dateValue={dateValue}
 								setDateValue={setDateValue}
 								full={full}
+								min={min}
 							/>
 						</CSSTransition>
 					</TransitionGroup>

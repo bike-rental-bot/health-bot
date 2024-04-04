@@ -1,7 +1,7 @@
 import SearchSVG from '../Icons/Search';
 import styles from './styles.module.scss';
 
-const HeaderAdmin = ({onClickSearch}) => {
+const HeaderAdmin = ({ onClickSearch, onClickCreateEvent }) => {
 	return (
 		<div className={`${styles.container} container`}>
 			<button
@@ -13,7 +13,14 @@ const HeaderAdmin = ({onClickSearch}) => {
 
 			<h2>Новое событие</h2>
 
-			<button>Создать</button>
+			<button
+				onClick={() => {
+					if (typeof onClickCreateEvent === 'function') {
+						onClickCreateEvent();
+					}
+				}}>
+				Создать
+			</button>
 		</div>
 	);
 };

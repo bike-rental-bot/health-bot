@@ -10,14 +10,27 @@ import ArrowLeft from '../../components/Icons/ArrowLeft';
 import SearchSVG from '../../components/Icons/Search';
 import Archieve from '../../components/Archieve';
 import { useSelector } from 'react-redux';
+import { EVENTTYPES } from '../../config';
+import moment from 'moment';
+import { post } from '../../lib/api.js';
 
-const tg = window.Telegram.WebApp;
+const tg = window?.Telegram?.WebApp;
 
 const getPosition = (parentRef, childRef) => {
-	const parentRect = parentRef.current.getBoundingClientRect();
-	const childRect = childRef.current.getBoundingClientRect();
+	const parentRect = parentRef?.current.getBoundingClientRect();
+	const childRect = childRef?.current.getBoundingClientRect();
 
 	return childRect.left - parentRect.left;
+};
+
+const FORMSTATE = {
+	token: null,
+	type: 'nutrition',
+	title: '',
+	description: '',
+	attachment_url: '',
+	time: null,
+	end_date: null,
 };
 
 const AdminPage = () => {
@@ -38,6 +51,18 @@ const AdminPage = () => {
 	const footerRef = useRef();
 	const headerRef = useRef();
 	const resizeObserverTimeout = useRef();
+
+	const token = useSelector((state) => state.user.token);
+
+	const [formState, setFormState] = useState({
+		...FORMSTATE,
+		token: token,
+		time: date.toISOString().substring(0, 10),
+	});
+
+	console.log('form', formState);
+
+	const focusTextarea = useSelector((state) => state.admin.focusTextField);
 
 	const clickSearch = () => {
 		setSearch(!search);
@@ -109,13 +134,11 @@ const AdminPage = () => {
 	useEffect(() => {
 		const func = () => {
 			if (footerRef.current && headerRef.current && mainRef.current) {
-				const block1Bottom = headerRef.current.getBoundingClientRect().bottom;
-				const block2Top = footerRef.current.getBoundingClientRect().top;
+				const block1Bottom = headerRef?.current.getBoundingClientRect().bottom;
+				const block2Top = footerRef?.current.getBoundingClientRect().top;
 				const distance = block2Top - block1Bottom;
 
 				mainRef.current.style.height = `${distance}px`;
-
-				console.log('Distance between blocks:', distance);
 			}
 		};
 
@@ -149,17 +172,13 @@ const AdminPage = () => {
 							topPosition = searchElement?.getBoundingClientRect()?.top;
 						}
 
-						console.log(
-							'bottom',
-							firstElement?.getBoundingClientRect().bottom,
-							searchElement?.getBoundingClientRect(),
-						);
-
 						const distance = topPosition - bottom;
 						const pageHeight = document.documentElement.scrollHeight;
-						const bottomCoordinate = pageHeight - mainRef.current.getBoundingClientRect().bottom;
+						const bottomCoordinate = pageHeight - mainRef?.current?.getBoundingClientRect().bottom;
 
-						mainRef.current.style.height = `${distance > 50 ? distance : 2}px`;
+						if (mainRef.current) {
+							mainRef.current.style.height = `${distance > 50 ? distance : 2}px`;
+						}
 
 						if (distance <= 50) {
 							root.style.paddingBottom = !search ? '80px' : '72px';
@@ -214,13 +233,28 @@ const AdminPage = () => {
 		return () => window.removeEventListener('backbutton', onBackKeyDown, false);
 	}, []);
 
+	useEffect(() => {
+		setFormState({ ...formState, token: token });
+	}, [token]);
+
+	const onClickCreateEvent = () => {
+		post('/notify/addNotify', {}, formState)
+			.then((res) => {
+				console.log(res);
+			})
+			.catch((err) => console.error(err));
+	};
+
 	return (
 		<>
 			<div ref={headerRef} className={styles.header}>
-				<HeaderAdmin onClickSearch={clickSearch} />
+				<HeaderAdmin onClickCreateEvent={onClickCreateEvent} onClickSearch={clickSearch} />
 
 				<div className="container">
-					<AdminTextEditor />
+					<AdminTextEditor
+						textForm={formState}
+						setTextForm={setFormState}
+					/>
 				</div>
 
 				<div className={`${styles.type}`}>
@@ -299,14 +333,42 @@ const AdminPage = () => {
 								full={calendarFull}
 								setFull={setCalendarFull}
 								value={date}
-								onChange={() => setDate(date)}
+								onChange={(value) => {
+									let momentDate = moment.utc([
+										value.getFullYear(),
+										value.getMonth(),
+										value.getDate(),
+										value.getHours(),
+										value.getMinutes(),
+									]);
+
+									setDate(value);
+									setFormState({ ...formState, time: value.toISOString().slice(0, -5) });
+								}}
+								// min={new Date()}
 							/>
 						</div>
 					</SwiperSlide>
 
 					<SwiperSlide>
 						<div style={{ padding: '40px 0', height: '100%' }}>
-							<TimePicker />
+							<TimePicker
+								onChange={(value) => {
+									let momentDate = moment.utc([
+										date.getFullYear(),
+										date.getMonth(),
+										date.getDate(),
+										value.hours,
+										value.minutes,
+									]);
+
+									let isoStringWithoutTimeZone = momentDate.toISOString().slice(0, -5);
+
+									setDate(momentDate.toDate());
+
+									setFormState({ ...formState, time: isoStringWithoutTimeZone });
+								}}
+							/>
 						</div>
 					</SwiperSlide>
 
@@ -326,10 +388,12 @@ const AdminPage = () => {
 										indicatorTextareaRef.current.style.left = '0px';
 										indicatorTextareaRef.current.style.right = '0px';
 										indicatorTextareaRef.current.style.transform = 'translateX(2px)';
+
+										setFormState({ ...formState, type: EVENTTYPES[0] });
 									}}
 									type={'radio'}
 									defaultChecked
-									value={'food'}
+									value={0}
 									name={'adminTypeEvent'}
 								/>
 								<span>Питание</span>
@@ -341,9 +405,11 @@ const AdminPage = () => {
 										indicatorTextareaRef.current.style.left = '0px';
 										indicatorTextareaRef.current.style.right = '0px';
 										indicatorTextareaRef.current.style.transform = 'translateX(100%)';
+
+										setFormState({ ...formState, type: EVENTTYPES[1] });
 									}}
 									type={'radio'}
-									value={'drugs'}
+									value={1}
 									name={'adminTypeEvent'}
 								/>
 								<span>Витамины</span>
@@ -351,13 +417,15 @@ const AdminPage = () => {
 
 							<label>
 								<input
-									onChange={() => {
+									onChange={(value) => {
 										indicatorTextareaRef.current.style.transform = 'translateX(200%)';
 										indicatorTextareaRef.current.style.left = '-2px';
 										indicatorTextareaRef.current.style.right = '0px';
+
+										setFormState({ ...formState, type: EVENTTYPES[2] });
 									}}
 									type={'radio'}
-									value={'activity'}
+									value={2}
 									name={'adminTypeEvent'}
 								/>
 								<span>Активность</span>

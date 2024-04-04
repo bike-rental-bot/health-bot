@@ -18,14 +18,45 @@ const dateConfig = {
 	},
 };
 
-const curDate = new Date();
-let dateWithTime = new Date(curDate.getFullYear(), curDate.getMonth(), curDate.getDate(), 12, 0, 0);
-const TimePick = () => {
-	
+let DateWithTime;
+
+const currentDate = new Date();
+const currentMinutes = currentDate.getMinutes();
+
+if (currentMinutes % 5 !== 0) {
+	const diff = 5 - (currentMinutes % 5);
+	const newDate = new Date(currentDate.getTime() + diff * 60000); // Добавляем минуты для деления на 5
+
+	DateWithTime = newDate;
+}
+
+const TimePick = ({ onChange }) => {
+	const [dateWithTime, setDateWithTime] = useState(DateWithTime);
+
+	useEffect(() => {
+		if (typeof onChange === 'function' && DateWithTime) {
+			const obj = {
+				hours: DateWithTime?.getHours(),
+				minutes: DateWithTime?.getMinutes(),
+			};
+
+			onChange(obj);
+		}
+	}, []);
+
 	return (
 		<>
 			<DatePicker
-				onChange={(e) => console.log(e)}
+				onChange={(e) => {
+					const obj = {
+						hours: e.getHours(),
+						minutes: e.getMinutes(),
+					};
+
+					if (typeof onChange === 'function') onChange(obj);
+
+					setDateWithTime(e);
+				}}
 				theme={'ios'}
 				value={dateWithTime}
 				showCaption={false}

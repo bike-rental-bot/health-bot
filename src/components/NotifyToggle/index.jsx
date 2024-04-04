@@ -12,8 +12,8 @@ import NotifyDescription from '../NotifyDescription';
 import 'swiper/css';
 
 const getPosition = (parentRef, childRef) => {
-	const parentRect = parentRef.current.getBoundingClientRect();
-	const childRect = childRef.current.getBoundingClientRect();
+	const parentRect = parentRef?.current?.getBoundingClientRect();
+	const childRect = childRef?.current?.getBoundingClientRect();
 
 	return childRect.left - parentRect.left;
 };
