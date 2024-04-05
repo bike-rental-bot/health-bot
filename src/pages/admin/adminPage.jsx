@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux';
 import { EVENTTYPES } from '../../config';
 import moment from 'moment';
 import { post } from '../../lib/api.js';
+import Toasify from '../../components/UI/Toasify/index.jsx';
 
 const tg = window?.Telegram?.WebApp;
 
@@ -45,6 +46,11 @@ const AdminPage = () => {
 	const [type, setType] = useState(0);
 	const [search, setSearch] = useState(false);
 	const [activeTextFields, setActiveTextFields] = useState(ACTIVETEXTFIELDS);
+	const [stateToasify, setStateToasify] = useState({
+		status: 'positive',
+		text: '',
+		isActive: false,
+	});
 	const indicatorTextareaRef = useRef(null);
 	const swiperRef = useRef();
 	const typeSwiperContRef = useRef();
@@ -58,6 +64,7 @@ const AdminPage = () => {
 	const footerRef = useRef();
 	const headerRef = useRef();
 	const resizeObserverTimeout = useRef();
+	const isTimeChanged = useRef(false);
 
 	const token = useSelector((state) => state.user.token);
 
@@ -242,17 +249,50 @@ const AdminPage = () => {
 		setFormState({ ...formState, token: token });
 	}, [token]);
 
-	const onClickCreateEvent = () => {
-		post('/notify/addNotify', {}, formState)
-			.then((res) => {
-				console.log(res);
-				setFormState({ ...formState, title: '', link: '', description: '' });
-				setActiveTextFields({ ...ACTIVETEXTFIELDS });
-			})
-			.catch((err) => console.error(err));
-	};
+	useEffect(() => {
+		if (type === 1) {
+			isTimeChanged.current = true;
+		}
+	}, [type]);
 
-	console.log('form', formState);
+	const onClickCreateEvent = () => {
+		if (isTimeChanged.current) {
+			post('/notify/addNotify', {}, formState)
+				.then((res) => {
+					console.log(res);
+					setFormState({ ...formState, title: '', link: '', description: '' });
+					setActiveTextFields({ ...ACTIVETEXTFIELDS });
+					setStateToasify({
+						...stateToasify,
+						active: true,
+						text: 'Событие создано',
+						status: 'positive',
+					});
+
+					if (type !== 1) {
+						isTimeChanged.current = false;
+					}
+				})
+				.catch((err) => {
+					setStateToasify({
+						...stateToasify,
+						active: true,
+						text: 'Ошибка сервера',
+						status: 'negative',
+					});
+				});
+		} else {
+			swiperRef.current.swiper.slideTo(1);
+			setType(1);
+
+			setStateToasify({
+				...stateToasify,
+				active: true,
+				text: 'Выберите время',
+				status: 'negative',
+			});
+		}
+	};
 
 	return (
 		<>
@@ -480,6 +520,10 @@ const AdminPage = () => {
 					</div>
 				</form>
 			)}
+
+			<Toasify state={stateToasify} status={stateToasify.status} setState={setStateToasify}>
+				<span className={styles.toasify}>{stateToasify.text}</span>
+			</Toasify>
 		</>
 	);
 };

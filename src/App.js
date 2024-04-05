@@ -35,14 +35,14 @@ function App() {
 					dispatch(setUserInfo(data));
 
 					if (data.user.role === 'user') {
-						navigate('/client');
+						navigate('/admin');
 					}
 				})
 				.catch(() => {
 					navigate('/block');
 				});
 		} else {
-			navigate('/client');
+			navigate('/admin');
 		}
 	}, [WebApp.initData]);
 
