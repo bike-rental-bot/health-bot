@@ -1,25 +1,23 @@
-import { useState, useRef, useEffect } from 'react';
-import ArrowSVG from '../Icons/Arrow';
-import styles from './styles.module.scss';
-import ClipSVG from '../Icons/Clip';
-import LinkPreview from './../UI/LinkPreview/index';
-import { act } from 'react-dom/test-utils';
-import TextField from '../UI/TextField';
-import DeleteButton from '../UI/DeleteButton';
-import ImageLoadPreview from '../ImageLoadPreview';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import useDebounce from '../../hooks/useDebounce.js';
 import { setFocusTextField } from '../../redux/adminSlice.js';
+import ArrowSVG from '../Icons/Arrow';
+import ClipSVG from '../Icons/Clip';
+import ImageLoadPreview from '../ImageLoadPreview';
+import DeleteButton from '../UI/DeleteButton';
+import TextField from '../UI/TextField';
+import LinkPreview from './../UI/LinkPreview/index';
+import styles from './styles.module.scss';
 
 const regexLink = new RegExp(
-	'^(https?:\\/\\/)?' + // validate protocol
-		'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // validate domain name
-		'((\\d{1,3}\\.){3}\\d{1,3}))' + // validate OR ip (v4) address
-		'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // validate port and path
-		'(\\?[;&a-z\\d%_.~+=-]*)?' + // validate query string
-		'(\\#[-a-z\\d_]*)?$',
+	'^(https?:\\/\\/)?' + // Протокол (http:// или https://)
+		'(?:www\\.)?telegra\\.ph' + // Доменное имя telegra.ph
+		'(\\/[\\w\\d-._~%]*)*' + // Путь
+		'(\\?[;&=a-z\\d%_.~+-]*)?' + // Query string
+		'(#[a-z\\d-._~]*)?$', // Anchor ссылка
 	'i',
 );
-
 const FocusTextField = {
 	text: false,
 	header: false,
@@ -28,27 +26,44 @@ const FocusTextField = {
 const AdminTextEditor = ({ textForm, setTextForm, activeTextFields, setActiveTextFields }) => {
 	const [focusTextFields, setFocusTextFields] = useState(FocusTextField);
 	const [previewImages, setPreviewImages] = useState([]);
+	const debounceTextLink = useDebounce(textForm.link, 500);
 	const textareaRef = useRef(null);
 	const [metaData, setMetaData] = useState(null);
 	const dispatch = useDispatch();
-	async function getMetaDataPage() {
-		const url = 'https://www.youtube.com/watch?v=MzO-0IYkZMU';
-		const data = await fetch(
-			`https://api.linkpreview.net/?key=f1afcecf935f21a315617f1fe537a642&q=${url}`,
-		);
-		const res = await data.json();
-		setMetaData(res);
-	}
+	// async function getMetaDataPage() {
+	// 	const url = 'https://www.youtube.com/watch?v=MzO-0IYkZMU';
+	// 	const data = await fetch(
+	// 		`https://api.linkpreview.net/?key=f1afcecf935f21a315617f1fe537a642&q=${url}`,
+	// 	);
+	// 	const res = await data.json();
+	// 	setMetaData(res);
+	// }
 
 	const handleInputLink = (e) => {
 		setTextForm({ ...textForm, link: e.target.value });
 
-		if (regexLink.test(e.target.value)) {
-			fetch(`https://impulsrent.ru:8203/api/notify/getTelegraphData?url=${e.target.value}`)
-				.then((res) => res.json())
-				.then((res) => console.log(res));
-		}
+		// if (regexLink.test(e.target.value)) {
+		// 	fetch(`https://impulsrent.ru:8203/api/notify/getTelegraphData?url=${e.target.value}`)
+		// 		.then((res) => res.json())
+		// 		.then((res) => console.log(res));
+		// }
 	};
+
+	useEffect(() => {
+		console.log('text', debounceTextLink, regexLink.test(debounceTextLink));
+		if (debounceTextLink && regexLink.test(debounceTextLink)) {
+			fetch(`https://impulsrent.ru:8203/api/notify/getTelegraphData?url=${debounceTextLink}`)
+				.then((res) => res.json())
+				.then((res) => {
+					setMetaData(res);
+				})
+				.catch((err) => {
+					setMetaData(null);
+				});
+		} else {
+			setMetaData(null);
+		}
+	}, [debounceTextLink]);
 
 	const promFunc = (file) => {
 		const newPreviewImages = [...previewImages];
@@ -96,14 +111,8 @@ const AdminTextEditor = ({ textForm, setTextForm, activeTextFields, setActiveTex
 	};
 
 	useEffect(() => {
-		getMetaDataPage();
-	}, []);
-
-	useEffect(() => {
 		dispatch(setFocusTextField(focusTextFields.header || focusTextFields.text));
 	}, [focusTextFields]);
-
-	console.log('activeText', activeTextFields);
 
 	return (
 		<>
@@ -179,16 +188,21 @@ const AdminTextEditor = ({ textForm, setTextForm, activeTextFields, setActiveTex
 					</div>
 				)}
 
-				{activeTextFields.link && (
+				{metaData && (
 					<div className={styles.containerPreview}>
-						<DeleteButton />
+						<DeleteButton
+							onClick={() => {
+								setMetaData(null);
+								setTextForm({ ...textForm, link: '' });
+							}}
+						/>
 
 						<LinkPreview
 							titleClassName={styles.linkPreviewTitle}
 							title={metaData?.title}
 							image={metaData?.image}
 							style={{ marginTop: 10 }}
-							href={'https://www.youtube.com/watch?v=MzO-0IYkZMU'}
+							href={debounceTextLink}
 						/>
 					</div>
 				)}
