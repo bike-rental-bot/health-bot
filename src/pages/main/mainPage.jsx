@@ -17,7 +17,7 @@ const MainPage = () => {
 
 	const events = useSelector((state) => state.client);
 
-	console.log('events', events);
+	console.log('events', token);
 
 	useEffect(() => {
 		if (!events[calendarDate.toISOString().slice(0, 10)] && token) {

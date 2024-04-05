@@ -29,12 +29,14 @@ const TimeTable = ({ curDate, setCurDate, timetableRef, full, setFull, resizeFun
 	const fullBtnClick = () => {
 		setFull(!full);
 
-		if (!full) {
-			contRef.current.style.transition = `0.5s`;
-			contRef.current.style.height = `${contRef.current.scrollHeight}px`;
-		} else {
-			contRef.current.style.height = `209px`;
-			contRef.current.style.transition = `0.5s`;
+		if (contRef && contRef.current) {
+			if (!full) {
+				contRef.current.style.transition = `0.5s`;
+				contRef.current.style.height = `${contRef.current.scrollHeight}px`;
+			} else {
+				contRef.current.style.height = `209px`;
+				contRef.current.style.transition = `0.5s`;
+			}
 		}
 	};
 
@@ -90,8 +92,6 @@ const TimeTable = ({ curDate, setCurDate, timetableRef, full, setFull, resizeFun
 		});
 	};
 
-	console.log('timetable', data);
-
 	return (
 		<>
 			<div ref={timetableRef}>
@@ -116,34 +116,36 @@ const TimeTable = ({ curDate, setCurDate, timetableRef, full, setFull, resizeFun
 					</button>
 				</div>
 
-				<div className={'container'}>
-					<div ref={contRef} className={styles.container}>
-						{data &&
-							Object.keys(data).map((el) => {
-								return (
-									<div key={el} className={styles.time}>
-										<span>{addLeadingZero(el)}:00</span>
+				{data && Object.keys(data).length > 0 && (
+					<div className={'container'}>
+						<div ref={contRef} className={styles.container}>
+							{data &&
+								Object.keys(data).map((el) => {
+									return (
+										<div key={el} className={styles.time}>
+											<span>{addLeadingZero(el)}:00</span>
 
-										<div className={styles.activitiesList}>
-											{data[el].map((el1) => {
-												return (
-													<div
-														key={el1}
-														className={`${styles.activity} ${
-															el1.type === 'nutrition' && styles.food
-														} ${el1.type === 'preparations' && styles.drugs} ${
-															el1.type === 'day_regime' && styles.act
-														}`}>
-														{el1.title}
-													</div>
-												);
-											})}
+											<div className={styles.activitiesList}>
+												{data[el].map((el1) => {
+													return (
+														<div
+															key={el1}
+															className={`${styles.activity} ${
+																el1.type === 'nutrition' && styles.food
+															} ${el1.type === 'preparations' && styles.drugs} ${
+																el1.type === 'day_regime' && styles.act
+															}`}>
+															{el1.title}
+														</div>
+													);
+												})}
+											</div>
 										</div>
-									</div>
-								);
-							})}
+									);
+								})}
+						</div>
 					</div>
-				</div>
+				)}
 
 				<button className={styles.fullBtn} onClick={fullBtnClick}>
 					<ArrowSVG active={full} />
