@@ -3,6 +3,8 @@ import linkIMG from '../../../assets/images/tgImg.png';
 import BoltSVG from '../../Icons/Bolt';
 import { useEffect, useState } from 'react';
 
+const webApp = window?.Telegram?.WebApp;
+
 const LinkPreview = ({
 	type = 'food',
 	href,
@@ -15,8 +17,10 @@ const LinkPreview = ({
 }) => {
 	return (
 		<>
-			<a
-				href={href}
+			<div
+				onClick={() => {
+					webApp.openLink(href);
+				}}
 				style={style}
 				className={`${styles.container} ${styles.block} ${styles[type]} ${className}`}>
 				<div className={`${styles[type]} ${styles.siteName}`}>Telegraph</div>
@@ -30,7 +34,7 @@ const LinkPreview = ({
 				<div className={`${styles.watch} ${styles[type]} `}>
 					<BoltSVG /> ПОСМОТРЕТЬ
 				</div>
-			</a>
+			</div>
 		</>
 	);
 };
