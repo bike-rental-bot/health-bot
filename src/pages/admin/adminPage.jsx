@@ -294,6 +294,8 @@ const AdminPage = () => {
 		}
 	};
 
+	console.log('form', formState)
+
 	return (
 		<>
 			<div ref={headerRef} className={styles.header}>

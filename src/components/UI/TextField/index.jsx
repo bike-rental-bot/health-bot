@@ -5,7 +5,7 @@ const TextField = ({
 	name,
 	placeholder,
 	onChange,
-	value = '',
+	value,
 	onBlur,
 	onFocus,
 	onChangeFull,
@@ -13,18 +13,7 @@ const TextField = ({
 }) => {
 	const [active, setActive] = useState(isOpen);
 	const textareaRef = useRef(null);
-	const [text, setText] = useState(value);
 	const [focus, setFocus] = useState(false);
-
-	useEffect(() => {
-		if (typeof onChange === 'function') {
-			onChange(text);
-		}
-	}, [text]);
-
-	useEffect(() => {
-		setText(value);
-	}, [value]);
 
 	useEffect(() => {
 		setActive(isOpen);
@@ -64,7 +53,7 @@ const TextField = ({
 				<label>
 					<textarea
 						style={{ maxHeight: 100 }}
-						value={text}
+						value={value}
 						ref={textareaRef}
 						onFocus={() => {
 							if (typeof onFocus === 'function') onFocus();
@@ -74,8 +63,10 @@ const TextField = ({
 						}}
 						onChange={(e) => {
 							e.preventDefault();
-							// window.scrollTo(0, window.innerHeight);
-							setText(e.target.value);
+
+							if (typeof onChange === 'function') {
+								onChange(e.target.value);
+							}
 
 							if (textareaRef.current) {
 								textareaRef.current.style.height = `0px`;
