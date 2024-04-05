@@ -31,6 +31,7 @@
 
     .time {
         display: flex;
+        width: 100%;
         gap: 12px;
 
         span {
@@ -46,7 +47,7 @@
         .activitiesList {
             min-height: 32px;
             position: relative;
-            flex: 1 0 auto;
+            width: 100%;
 
             &::before {
                 content: "";

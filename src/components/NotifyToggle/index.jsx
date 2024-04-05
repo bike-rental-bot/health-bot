@@ -40,7 +40,11 @@ const NotifyToggle = ({ calendarDate }) => {
 	const activityRef = useRef();
 	const actContRef = useRef();
 	const swiperRef = useRef();
+
 	const firstRender = useRef(false);
+	const slide1Ref = useRef(null);
+	const slide2Ref = useRef(null);
+	const slide3Ref = useRef(null);
 
 	const [type, setType] = useState(0);
 
@@ -80,6 +84,20 @@ const NotifyToggle = ({ calendarDate }) => {
 
 		return () => window.removeEventListener('resize', resizeWin);
 	}, []);
+
+	useEffect(() => {
+		if (type === 0) {
+			swiperRef.current.style.height = `${slide1Ref?.current?.offsetHeight}px`;
+		}
+
+		if (type === 1) {
+			swiperRef.current.style.height = `${slide2Ref?.current?.offsetHeight}px`;
+		}
+
+		if (type === 2) {
+			swiperRef.current.style.height = `${slide3Ref?.current?.offsetHeight}px`;
+		}
+	}, [type, calendarDate, events]);
 
 	return (
 		<>
@@ -181,46 +199,52 @@ const NotifyToggle = ({ calendarDate }) => {
 					spaceBetween={50}
 					slidesPerView={1}
 					style={{ flexDirection: 'row' }}>
-					<SwiperSlide className={`container ${styles.notifyList}`}>
-						{Array.isArray(events[calendarDate.toISOString().slice(0, 10)]?.nutrition) &&
-							events[calendarDate.toISOString().slice(0, 10)]?.nutrition.map((el) => {
-								return (
-									<Notify
-										title={el.title}
-										time={formatTime(new Date(el.time))}
-										description={el.description}
-										type={'food'}
-									/>
-								);
-							})}
+					<SwiperSlide>
+						<div ref={slide1Ref} className={`container ${styles.notifyList}`}>
+							{Array.isArray(events[calendarDate.toISOString().slice(0, 10)]?.nutrition) &&
+								events[calendarDate.toISOString().slice(0, 10)]?.nutrition.map((el) => {
+									return (
+										<Notify
+											title={el.title}
+											time={formatTime(new Date(el.time))}
+											description={el.description}
+											type={'food'}
+										/>
+									);
+								})}
+						</div>
 					</SwiperSlide>
 
-					<SwiperSlide className={`container ${styles.notifyList}`}>
-						{Array.isArray(events[calendarDate.toISOString().slice(0, 10)]?.preparations) &&
-							events[calendarDate.toISOString().slice(0, 10)]?.preparations.map((el) => {
-								return (
-									<Notify
-										time={formatTime(new Date(el.time))}
-										title={el.title}
-										description={el.description}
-										type={'drugs'}
-									/>
-								);
-							})}
+					<SwiperSlide>
+						<div ref={slide2Ref} className={`container ${styles.notifyList}`}>
+							{Array.isArray(events[calendarDate.toISOString().slice(0, 10)]?.preparations) &&
+								events[calendarDate.toISOString().slice(0, 10)]?.preparations.map((el) => {
+									return (
+										<Notify
+											time={formatTime(new Date(el.time))}
+											title={el.title}
+											description={el.description}
+											type={'drugs'}
+										/>
+									);
+								})}
+						</div>
 					</SwiperSlide>
 
-					<SwiperSlide className={`container ${styles.notifyList}`}>
-						{Array.isArray(events[calendarDate.toISOString().slice(0, 10)]?.day_regime) &&
-							events[calendarDate.toISOString().slice(0, 10)]?.day_regime.map((el) => {
-								return (
-									<Notify
-										time={formatTime(new Date(el.time))}
-										title={el.title}
-										description={el.description}
-										type={'activity'}
-									/>
-								);
-							})}
+					<SwiperSlide>
+						<div ref={slide3Ref} className={`container ${styles.notifyList}`}>
+							{Array.isArray(events[calendarDate.toISOString().slice(0, 10)]?.day_regime) &&
+								events[calendarDate.toISOString().slice(0, 10)]?.day_regime.map((el) => {
+									return (
+										<Notify
+											time={formatTime(new Date(el.time))}
+											title={el.title}
+											description={el.description}
+											type={'activity'}
+										/>
+									);
+								})}
+						</div>
 					</SwiperSlide>
 				</Swiper>
 			</div>

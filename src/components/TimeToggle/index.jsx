@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import MyDatePicker from '../../components/UI/MyDatePicker';
+import { useSelector } from 'react-redux';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -16,6 +17,8 @@ const TimeToggle = ({ calendarDate, setCalendarDate }) => {
 	const swiperRef = useRef();
 	const calendarRef = useRef();
 	const timetableRef = useRef();
+
+	const events = useSelector((state) => state.client);
 
 	const resizeFunction = useCallback(
 		(height) => {
@@ -115,6 +118,9 @@ const TimeToggle = ({ calendarDate, setCalendarDate }) => {
 				</SwiperSlide>
 				<SwiperSlide>
 					<TimeTable
+					    curDate={calendarDate}
+						setCurDate={setCalendarDate}
+						data={events[calendarDate.toISOString().slice(0, 10)]?.hours}
 						resizeFunction={resizeFunction}
 						full={timetableFull}
 						setFull={setTimeTableFull}

@@ -20,10 +20,11 @@ const MONTHS = [
 
 const DAYS = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
 
-const TimeTable = ({ date, timetableRef, full, setFull, resizeFunction }) => {
-	const [curDate, setCurDate] = useState(
-		date ? date : new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()),
-	);
+function addLeadingZero(num) {
+	return num < 10 ? '0' + num : num;
+}
+
+const TimeTable = ({ curDate, setCurDate, timetableRef, full, setFull, resizeFunction, data }) => {
 	const [slide, setSlide] = useState(null);
 	const fullBtnClick = () => {
 		setFull(!full);
@@ -65,12 +66,6 @@ const TimeTable = ({ date, timetableRef, full, setFull, resizeFunction }) => {
 		};
 	}, [resizeFunction]);
 
-	useEffect(() => {
-		setCurDate(
-			date ? date : new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()),
-		);
-	}, [date]);
-
 	const handlePrevMonth = () => {
 		setSlide('prev');
 
@@ -94,6 +89,8 @@ const TimeTable = ({ date, timetableRef, full, setFull, resizeFunction }) => {
 			setCurDate(cD);
 		});
 	};
+
+	console.log('timetable', data);
 
 	return (
 		<>
@@ -121,55 +118,30 @@ const TimeTable = ({ date, timetableRef, full, setFull, resizeFunction }) => {
 
 				<div className={'container'}>
 					<div ref={contRef} className={styles.container}>
-						<div className={styles.time}>
-							<span>8:00</span>
+						{data &&
+							Object.keys(data).map((el) => {
+								return (
+									<div key={el} className={styles.time}>
+										<span>{addLeadingZero(el)}:00</span>
 
-							<div className={styles.activitiesList}></div>
-						</div>
-
-						<div className={styles.time}>
-							<span>9:00</span>
-
-							<div className={styles.activitiesList}>
-								<div className={`${styles.activity} ${styles.food}`}>Завтрак</div>
-								<div className={`${styles.activity} ${styles.drugs}`}>Витамины</div>
-								<div className={`${styles.activity} ${styles.act}`}>Прогулка</div>
-							</div>
-						</div>
-
-						<div className={styles.time}>
-							<span>10:00</span>
-
-							<div className={styles.activitiesList}>
-								<div className={`${styles.activity} ${styles.act}`}>Прогулка</div>
-							</div>
-						</div>
-
-						<div className={styles.time}>
-							<span>10:00</span>
-
-							<div className={styles.activitiesList}></div>
-						</div>
-
-						<div className={styles.time}>
-							<span>10:00</span>
-
-							<div className={styles.activitiesList}>
-								<div className={`${styles.activity} ${styles.act}`}>Прогулка</div>
-							</div>
-						</div>
-
-						<div className={styles.time}>
-							<span>10:00</span>
-
-							<div className={styles.activitiesList}></div>
-						</div>
-
-						<div className={styles.time}>
-							<span>10:00</span>
-
-							<div className={styles.activitiesList}></div>
-						</div>
+										<div className={styles.activitiesList}>
+											{data[el].map((el1) => {
+												return (
+													<div
+														key={el1}
+														className={`${styles.activity} ${
+															el1.type === 'nutrition' && styles.food
+														} ${el1.type === 'preparations' && styles.drugs} ${
+															el1.type === 'day_regime' && styles.act
+														}`}>
+														{el1.title}
+													</div>
+												);
+											})}
+										</div>
+									</div>
+								);
+							})}
 					</div>
 				</div>
 
