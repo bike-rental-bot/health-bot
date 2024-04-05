@@ -8,10 +8,7 @@ import 'swiper/css';
 import TimeTable from '../../components/UI/TimeTable';
 import styles from './styles.module.scss';
 
-const TimeToggle = () => {
-	const [calendarDate, setCalendarDate] = useState(
-		new Date(),
-	);
+const TimeToggle = ({ calendarDate, setCalendarDate }) => {
 	const [type, setType] = useState(0);
 	const [calendarFull, setCalendarIsFull] = useState(false);
 	const [timetableFull, setTimeTableFull] = useState(false);

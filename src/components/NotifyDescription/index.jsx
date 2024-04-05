@@ -3,7 +3,7 @@ import linkIMG from '../../assets/images/tgImg.png';
 import BoltSVG from '../Icons/Bolt';
 import LinkPreview from '../UI/LinkPreview';
 const NotifyDescription = ({
-	header,
+	title,
 	time,
 	tgLinkHeader,
 	img,
@@ -16,8 +16,8 @@ const NotifyDescription = ({
 		<div className={styles.superContainer}>
 			<div className={styles.container}>
 				<div className={`${styles.header} ${styles.block} ${styles[type]}`}>
-					<p>Завтрак</p>
-					<p>09:00</p>
+					<p>{title}</p>
+					<p>{time}</p>
 				</div>
 
 				{/* <a

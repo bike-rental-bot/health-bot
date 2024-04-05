@@ -3,6 +3,7 @@ import styles from './style.module.scss';
 import { useRef, useEffect, useState } from 'react';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { useSelector } from 'react-redux';
 
 import Modal from '../UI/Modal';
 
@@ -18,8 +19,20 @@ const getPosition = (parentRef, childRef) => {
 	return childRect.left - parentRect.left;
 };
 
+const formatTime = (currentDate) => {
+	let hours = currentDate.getHours();
+	let minutes = currentDate.getMinutes();
 
-const NotifyToggle = () => {
+	hours = hours < 10 ? '0' + hours : hours;
+	minutes = minutes < 10 ? '0' + minutes : minutes;
+
+	// Создаем строку в формате "ЧЧ:ММ"
+	let formattedTime = hours + ':' + minutes;
+
+	return formattedTime;
+};
+
+const NotifyToggle = ({ calendarDate }) => {
 	const activityIndicatorRef = useRef();
 
 	const foodRef = useRef();
@@ -31,6 +44,7 @@ const NotifyToggle = () => {
 
 	const [type, setType] = useState(0);
 
+	const events = useSelector((state) => state.client);
 
 	useEffect(() => {
 		function resizeWin() {
@@ -122,7 +136,7 @@ const NotifyToggle = () => {
 						setType(swiper.activeIndex);
 					}}
 					onProgress={(swiper) => {
-						firstRender.current = true
+						firstRender.current = true;
 						if (firstRender.current) {
 							if (swiper.progress === 0) {
 								activityIndicatorRef.current.style.transition = '0.25s';
@@ -168,24 +182,45 @@ const NotifyToggle = () => {
 					slidesPerView={1}
 					style={{ flexDirection: 'row' }}>
 					<SwiperSlide className={`container ${styles.notifyList}`}>
-						<Notify type={'food'} />
-						<Notify type={'food'} />
-						<Notify type={'food'} />
-						<Notify type={'food'} />
+						{Array.isArray(events[calendarDate.toISOString().slice(0, 10)]?.nutrition) &&
+							events[calendarDate.toISOString().slice(0, 10)]?.nutrition.map((el) => {
+								return (
+									<Notify
+										title={el.title}
+										time={formatTime(new Date(el.time))}
+										description={el.description}
+										type={'food'}
+									/>
+								);
+							})}
 					</SwiperSlide>
 
 					<SwiperSlide className={`container ${styles.notifyList}`}>
-						<Notify type={'drugs'} />
-						<Notify type={'drugs'} />
-						<Notify type={'drugs'} />
-						<Notify type={'drugs'} />
+						{Array.isArray(events[calendarDate.toISOString().slice(0, 10)]?.preparations) &&
+							events[calendarDate.toISOString().slice(0, 10)]?.preparations.map((el) => {
+								return (
+									<Notify
+										time={formatTime(new Date(el.time))}
+										title={el.title}
+										description={el.description}
+										type={'drugs'}
+									/>
+								);
+							})}
 					</SwiperSlide>
 
 					<SwiperSlide className={`container ${styles.notifyList}`}>
-						<Notify type={'activity'} />
-						<Notify type={'activity'} />
-						<Notify type={'activity'} />
-						<Notify type={'activity'} />
+						{Array.isArray(events[calendarDate.toISOString().slice(0, 10)]?.day_regime) &&
+							events[calendarDate.toISOString().slice(0, 10)]?.day_regime.map((el) => {
+								return (
+									<Notify
+										time={formatTime(new Date(el.time))}
+										title={el.title}
+										description={el.description}
+										type={'activity'}
+									/>
+								);
+							})}
 					</SwiperSlide>
 				</Swiper>
 			</div>
