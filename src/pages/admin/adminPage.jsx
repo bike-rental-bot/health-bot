@@ -95,7 +95,6 @@ const AdminPage = () => {
 	const clickSearch = () => {
 		setSearch(!search);
 		swiperRef?.current.swiper.slideTo(2);
-		searchInputRef?.current.focus();
 	};
 
 	const progressSwiper = (swiper) => {
@@ -235,6 +234,12 @@ const AdminPage = () => {
 		return () => {
 			resizeObserver.disconnect();
 		};
+	}, [search]);
+
+	useEffect(() => {
+		if (search && searchInputRef?.current) {
+			searchInputRef?.current.focus();
+		}
 	}, [search]);
 
 	useEffect(() => {
