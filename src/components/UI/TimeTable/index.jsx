@@ -2,7 +2,10 @@ import styles from './style.module.scss';
 import ArrowSVG from '../../Icons/Arrow';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { useState, useRef, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import './slideDay.scss';
+import Table from './table';
+
 const MONTHS = [
 	'января',
 	'февраля',
@@ -26,18 +29,10 @@ function addLeadingZero(num) {
 
 const TimeTable = ({ curDate, setCurDate, timetableRef, full, setFull, resizeFunction, data }) => {
 	const [slide, setSlide] = useState(null);
+	const [overFlow, setOverFlow] = useState(false);
+
 	const fullBtnClick = () => {
 		setFull(!full);
-
-		if (contRef && contRef.current) {
-			if (!full) {
-				contRef.current.style.transition = `0.5s`;
-				contRef.current.style.height = `${contRef.current.scrollHeight}px`;
-			} else {
-				contRef.current.style.height = `209px`;
-				contRef.current.style.transition = `0.5s`;
-			}
-		}
 	};
 
 	const contRef = useRef();
@@ -92,6 +87,20 @@ const TimeTable = ({ curDate, setCurDate, timetableRef, full, setFull, resizeFun
 		});
 	};
 
+	useEffect(() => {
+		console.log(contRef.current.scrollHeight, contRef.current);
+
+		setOverFlow(contRef.current.scrollHeight + 7 > 209);
+	}, [data]);
+
+	useEffect(() => {
+		if (full) {
+			contRef.current.style.maxHeight = `${contRef.current.scrollHeight}px`;
+		} else {
+			contRef.current.style.maxHeight = `209px`;
+		}
+	}, [full]);
+
 	return (
 		<>
 			<div ref={timetableRef}>
@@ -116,40 +125,13 @@ const TimeTable = ({ curDate, setCurDate, timetableRef, full, setFull, resizeFun
 					</button>
 				</div>
 
-				{data && Object.keys(data).length > 0 && (
-					<div className={'container'}>
-						<div ref={contRef} className={styles.container}>
-							{data &&
-								Object.keys(data).map((el) => {
-									return (
-										<div key={el} className={styles.time}>
-											<span>{addLeadingZero(el)}:00</span>
+				<Table data={data} containerRef={contRef} />
 
-											<div className={styles.activitiesList}>
-												{data[el].map((el1) => {
-													return (
-														<div
-															key={el1}
-															className={`${styles.activity} ${
-																el1.type === 'nutrition' && styles.food
-															} ${el1.type === 'preparations' && styles.drugs} ${
-																el1.type === 'day_regime' && styles.act
-															}`}>
-															{el1.title}
-														</div>
-													);
-												})}
-											</div>
-										</div>
-									);
-								})}
-						</div>
-					</div>
+				{overFlow && (
+					<button className={styles.fullBtn} onClick={fullBtnClick}>
+						<ArrowSVG active={full} />
+					</button>
 				)}
-
-				<button className={styles.fullBtn} onClick={fullBtnClick}>
-					<ArrowSVG active={full} />
-				</button>
 			</div>
 		</>
 	);

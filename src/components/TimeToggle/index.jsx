@@ -42,6 +42,7 @@ const TimeToggle = ({ calendarDate, setCalendarDate }) => {
 		}
 	}, [calendarFull]);
 
+
 	return (
 		<div className={`container ${styles.container}`}>
 			<div className="container">

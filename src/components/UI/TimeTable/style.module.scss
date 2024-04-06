@@ -24,10 +24,11 @@
     display: flex;
     flex-direction: column;
 
-    height: 209px;
+    max-height: 209px;
     overflow: auto;
-    margin: 48px 0 0 0;
+    margin: 20px 0 0 0;
     padding: 8px 0 0 0;
+    transition: 0.25s linear;
 
     .time {
         display: flex;
@@ -42,6 +43,20 @@
             letter-spacing: -0.03em;
             text-align: right;
             margin-top: -8px;
+        }
+
+        &:last-of-type {
+            .activitiesList {
+                &::after {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    height: 1px;
+                    background: #dddddd;
+                    bottom: 0px;
+                }
+            }
         }
 
         .activitiesList {
@@ -135,5 +150,5 @@
 .fullBtn {
     margin-top: 16px;
     margin: 0 auto;
-    padding: 16px 48px 32px 48px;
+    padding: 16px 48px 0 48px;
 }

@@ -7,36 +7,85 @@ import Modal from '../../components/UI/Modal';
 import NotifyDescription from '../../components/NotifyDescription';
 import { get } from '../../lib/api';
 import { useDispatch, useSelector } from 'react-redux';
-import { setListEvent } from '../../redux/clientSlice';
+import { setEventsLoading, setListEvent } from '../../redux/clientSlice';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const MainPage = () => {
+	const WebApp = window.Telegram.WebApp;
+	const navigate = useNavigate();
 	const [calendarDate, setCalendarDate] = useState(new Date());
 	const token = useSelector((state) => state.user.token);
 	const dispatch = useDispatch();
 
 	const events = useSelector((state) => state.client);
 
-	console.log('events', token);
+	const { loading } = useSelector((state) => state.client);
+
+	useEffect(() => {
+		WebApp.MainButton.setText('Вернуться в админ-панель').show();
+		function clickCloseBtn() {
+			const tagName = document.activeElement.tagName.toLowerCase();
+
+			if (tagName === 'textarea' || tagName === 'input') {
+				document.activeElement.blur();
+			}
+
+			requestAnimationFrame(() => {
+				WebApp.showPopup(
+					{
+						title: 'health_bot',
+						message: 'Внесенные изменения могут быть потеряны',
+						buttons: [
+							{ id: 'close', type: 'destructive', text: 'Закрыть' },
+							{ id: 'cancel', type: 'cancel', text: 'Отмена' },
+						],
+					},
+					(id) => {
+						if (id === 'close') {
+							WebApp.close();
+						}
+					},
+				);
+			});
+		}
+
+		function clickMainBtn() {
+			navigate('/admin');
+		}
+		WebApp.onEvent('backButtonClicked', clickCloseBtn);
+		WebApp.onEvent('mainButtonClicked', clickMainBtn);
+
+		return () => {
+			WebApp.offEvent('backButtonClicked', clickCloseBtn);
+			WebApp.offEvent('mainButtonClicked', clickMainBtn);
+		};
+	}, []);
 
 	useEffect(() => {
 		if (!events[calendarDate.toISOString().slice(0, 10)] && token) {
+			dispatch(setEventsLoading(true));
+
 			get('/notify/getByDate', {
 				token: token,
 				date: calendarDate.toISOString().slice(0, 10),
-			}).then((res) => {
-				const obj = { date: calendarDate.toISOString().slice(0, 10), info: res.result };
-
-				dispatch(setListEvent(obj));
-			});
+			})
+				.then((res) => {
+					const obj = { date: calendarDate.toISOString().slice(0, 10), info: res.result };
+					dispatch(setListEvent(obj));
+				})
+				.catch(() => {
+					dispatch(setListEvent());
+				});
 		}
 	}, [calendarDate, token]);
 	return (
 		<>
 			<div className={styles.containerHeader}>
 				<TimeToggle calendarDate={calendarDate} setCalendarDate={setCalendarDate} />
+				<NotifyToggle calendarDate={calendarDate} />
 			</div>
-			<NotifyToggle calendarDate={calendarDate}/>
+
 			<BottomButton />
 		</>
 	);

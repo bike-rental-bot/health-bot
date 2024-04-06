@@ -1,17 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const clientState = {
-	// '4.4.2024': {
-	// 	listEvent: {
-	// 		nutrition: [],
-	// 		preparations: [],
-	// 		day_regime: [],
-	// 	},
-	// 	hourListEvent: {
-	// 		6: [],
-	// 		12: [],
-	// 	},
-	// },
+	loading: false,
+	error: false,
 };
 
 export const clientSlice = createSlice({
@@ -20,6 +11,7 @@ export const clientSlice = createSlice({
 	reducers: {
 		setListEvent: (state, action) => {
 			let info = action.payload.info;
+			state.loading = false;
 			if (action.payload.date && info) {
 				let dateInfo = {
 					hours: {},
@@ -49,10 +41,19 @@ export const clientSlice = createSlice({
 
 				state[action.payload.date] = dateInfo;
 			}
+
+			return state;
+		},
+		setEventsLoading: (state, action) => {
+			let value = { ...state, loading: action.payload };
+
+			state = value;
+
+			return state
 		},
 	},
 });
 
-export const { setListEvent } = clientSlice.actions;
+export const { setListEvent, setEventsLoading } = clientSlice.actions;
 
 export default clientSlice.reducer;

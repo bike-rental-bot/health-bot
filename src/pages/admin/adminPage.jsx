@@ -18,6 +18,7 @@ import Select from '../../components/UI/Select';
 import img1 from '../../assets/images/tgUser1.png';
 import img2 from '../../assets/images/tgUser2.png';
 import img3 from '../../assets/images/tgUser3.png';
+import { useNavigate } from 'react-router-dom';
 
 const tg = window?.Telegram?.WebApp;
 
@@ -55,6 +56,7 @@ const variants = [
 
 const AdminPage = () => {
 	const WebApp = window.Telegram.WebApp;
+	const navigate = useNavigate();
 	const [date, setDate] = useState(new Date());
 	const [calendarFull, setCalendarFull] = useState(false);
 	const [type, setType] = useState(0);
@@ -237,11 +239,9 @@ const AdminPage = () => {
 	}, [search]);
 
 	useEffect(() => {
-		requestAnimationFrame(() => {
-			if (search && searchInputRef?.current) {
-				searchInputRef?.current.focus();
-			}
-		});
+		if (search && searchInputRef?.current) {
+			searchInputRef?.current.focus();
+		}
 	}, [search]);
 
 	useEffect(() => {
@@ -306,9 +306,17 @@ const AdminPage = () => {
 				);
 			});
 		}
-		WebApp.onEvent('backButtonClicked', clickCloseBtn);
 
-		return () => WebApp.offEvent('backButtonClicked', clickCloseBtn);
+		function clickMainBtn() {
+			navigate('/client');
+		}
+		WebApp.onEvent('backButtonClicked', clickCloseBtn);
+		WebApp.onEvent('mainButtonClicked', clickMainBtn);
+
+		return () => {
+			WebApp.offEvent('backButtonClicked', clickCloseBtn);
+			WebApp.offEvent('mainButtonClicked', clickMainBtn);
+		};
 	}, []);
 
 	const onClickCreateEvent = () => {
