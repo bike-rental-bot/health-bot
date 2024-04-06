@@ -237,9 +237,11 @@ const AdminPage = () => {
 	}, [search]);
 
 	useEffect(() => {
-		if (search && searchInputRef?.current) {
-			searchInputRef?.current.focus();
-		}
+		requestAnimationFrame(() => {
+			if (search && searchInputRef?.current) {
+				searchInputRef?.current.focus();
+			}
+		});
 	}, [search]);
 
 	useEffect(() => {
