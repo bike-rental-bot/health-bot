@@ -24,33 +24,17 @@ const FocusTextField = {
 };
 
 const AdminTextEditor = ({ textForm, setTextForm, activeTextFields, setActiveTextFields }) => {
+	const WebApp = window.Telegram.WebApp;
 	const [focusTextFields, setFocusTextFields] = useState(FocusTextField);
 	const [previewImages, setPreviewImages] = useState([]);
 	const debounceTextLink = useDebounce(textForm.link, 500);
-	const textareaRef = useRef(null);
 	const [metaData, setMetaData] = useState(null);
 	const dispatch = useDispatch();
-	// async function getMetaDataPage() {
-	// 	const url = 'https://www.youtube.com/watch?v=MzO-0IYkZMU';
-	// 	const data = await fetch(
-	// 		`https://api.linkpreview.net/?key=f1afcecf935f21a315617f1fe537a642&q=${url}`,
-	// 	);
-	// 	const res = await data.json();
-	// 	setMetaData(res);
-	// }
-
 	const handleInputLink = (e) => {
 		setTextForm({ ...textForm, link: e.target.value });
-
-		// if (regexLink.test(e.target.value)) {
-		// 	fetch(`https://impulsrent.ru:8203/api/notify/getTelegraphData?url=${e.target.value}`)
-		// 		.then((res) => res.json())
-		// 		.then((res) => console.log(res));
-		// }
 	};
 
 	useEffect(() => {
-		console.log('text', debounceTextLink, regexLink.test(debounceTextLink));
 		if (debounceTextLink && regexLink.test(debounceTextLink)) {
 			fetch(`https://impulsrent.ru:8203/api/notify/getTelegraphData?url=${debounceTextLink}`)
 				.then((res) => res.json())
@@ -113,6 +97,32 @@ const AdminTextEditor = ({ textForm, setTextForm, activeTextFields, setActiveTex
 	useEffect(() => {
 		dispatch(setFocusTextField(focusTextFields.header || focusTextFields.text));
 	}, [focusTextFields]);
+	// 	function clickCloseBtn() {
+	// 		textareaRef1?.current?.blur();
+	// 		textareaRef2.current.blur();
+	// 		inputLinkRef.current.blur();
+	// 		requestAnimationFrame(() => {
+	// 			WebApp.showPopup(
+	// 				{
+	// 					title: 'health_bot',
+	// 					message: 'Внесенные изменения могут быть потеряны',
+	// 					buttons: [
+	// 						{ id: 'close', type: 'destructive', text: 'Закрыть' },
+	// 						{ id: 'cancel', type: 'cancel', text: 'Отмена' },
+	// 					],
+	// 				},
+	// 				(id) => {
+	// 					if (id === 'close') {
+	// 						WebApp.close();
+	// 					}
+	// 				},
+	// 			);
+	// 		});
+	// 	}
+	// 	WebApp.onEvent('backButtonClicked', clickCloseBtn);
+
+	// 	return () => WebApp.offEvent('backButtonClicked', clickCloseBtn);
+	// }, []);
 
 	return (
 		<>
@@ -132,6 +142,7 @@ const AdminTextEditor = ({ textForm, setTextForm, activeTextFields, setActiveTex
 						setFocusTextFields({ ...focusTextFields, header: false });
 					}}
 					value={textForm.title}
+				
 				/>
 
 				<TextField
@@ -149,6 +160,7 @@ const AdminTextEditor = ({ textForm, setTextForm, activeTextFields, setActiveTex
 						setFocusTextFields({ ...focusTextFields, text: false });
 					}}
 					value={textForm.description}
+				
 				/>
 			</div>
 			<div className={`${styles.textField} ${styles.attachment}`}>

@@ -7,8 +7,6 @@
     background: white;
 }
 
-
-
 .footer {
     background: #f3f3f3;
     z-index: 100;
@@ -19,16 +17,24 @@
     bottom: 0;
     left: 0;
     right: 0;
+    display: flex;
+    padding-left: 16px;
 
     .container {
-        padding: 0 16px;
+        
+        width: 100%;
+    }
+
+    .searchBtn {
+        padding-right: 16px;
+        padding-left: 16px;
     }
 }
 
 .toggler {
     width: 100%;
     background: #7676801f;
-    height: 47px;
+    height: 40px;
     border-radius: 20px;
     display: flex;
     position: relative;

@@ -9,16 +9,17 @@ import svg from './assets/images/loader.svg';
 import { useNavigate } from 'react-router-dom';
 import { setUserInfo } from './redux/userSlice';
 
+const WebApp = window.Telegram.WebApp;
+
 function App() {
 	const navigate = useNavigate();
-	const WebApp = window.Telegram.WebApp;
 	const dispatch = useDispatch();
 	const user = useSelector((state) => state.user);
 	const params = new URLSearchParams(window.location.search);
 	const token = params.get('token');
 	const chatId = window?.Telegram?.WebApp?.initDataUnsafe?.query_id;
 
-	console.log(window.Telegram)
+	console.log(window.Telegram);
 
 	if (token && window.localStorage) {
 		window.localStorage.setItem('auth_token', token);
@@ -27,6 +28,7 @@ function App() {
 	if (WebApp) {
 		WebApp.expand();
 		WebApp.enableClosingConfirmation();
+		WebApp?.BackButton?.show();
 	}
 
 	useEffect(() => {
@@ -40,8 +42,6 @@ function App() {
 					if (data.user.role === 'user') {
 						navigate('/admin');
 					}
-
-					
 				})
 				.catch(() => {
 					navigate('/block');
@@ -55,7 +55,6 @@ function App() {
 		WebApp.expand();
 		WebApp.enableClosingConfirmation();
 	}
-
 
 	return (
 		<>

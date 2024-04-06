@@ -1,26 +1,30 @@
 import SearchSVG from '../Icons/Search';
 import styles from './styles.module.scss';
 
-const HeaderAdmin = ({ onClickSearch, onClickCreateEvent }) => {
+const HeaderAdmin = ({ onClickCreateEvent, onClickPreview }) => {
 	return (
 		<div className={`${styles.container} container`}>
-			<button
-				onClick={() => {
-					if (typeof onClickSearch === 'function') onClickSearch();
-				}}>
-				<SearchSVG />
-			</button>
+			<div>
+				<button
+					onClick={() => {
+						if (typeof onClickSearch === 'function') onClickPreview();
+					}}>
+					Предварительный просмотр
+				</button>
+			</div>
 
 			<h2>Новое событие</h2>
 
-			<button
-				onClick={() => {
-					if (typeof onClickCreateEvent === 'function') {
-						onClickCreateEvent();
-					}
-				}}>
-				Создать
-			</button>
+			<div>
+				<button
+					onClick={() => {
+						if (typeof onClickCreateEvent === 'function') {
+							onClickCreateEvent();
+						}
+					}}>
+					Создать
+				</button>
+			</div>
 		</div>
 	);
 };

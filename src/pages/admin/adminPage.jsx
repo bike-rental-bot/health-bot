@@ -14,6 +14,10 @@ import { EVENTTYPES } from '../../config';
 import moment from 'moment';
 import { post } from '../../lib/api.js';
 import Toasify from '../../components/UI/Toasify/index.jsx';
+import Select from '../../components/UI/Select';
+import img1 from '../../assets/images/tgUser1.png';
+import img2 from '../../assets/images/tgUser2.png';
+import img3 from '../../assets/images/tgUser3.png';
 
 const tg = window?.Telegram?.WebApp;
 
@@ -40,7 +44,17 @@ const ACTIVETEXTFIELDS = {
 	link: false,
 };
 
+const variants = [
+	{ id: 1, img: img1, name: 'Анастасия', nickname: '@nasty' },
+	{ id: 2, img: img2, name: 'Леонид', nickname: '@lenya' },
+	{ id: 3, img: img3, name: 'Александр', nickname: '@alex' },
+	{ id: 1, img: img1, name: 'Анастасия', nickname: '@nasty' },
+	{ id: 2, img: img2, name: 'Леонид', nickname: '@lenya' },
+	{ id: 3, img: img3, name: 'Александр', nickname: '@alex' },
+];
+
 const AdminPage = () => {
+	const WebApp = window.Telegram.WebApp;
 	const [date, setDate] = useState(new Date());
 	const [calendarFull, setCalendarFull] = useState(false);
 	const [type, setType] = useState(0);
@@ -51,6 +65,7 @@ const AdminPage = () => {
 		text: '',
 		isActive: false,
 	});
+	const [user, setUser] = useState(null);
 	const indicatorTextareaRef = useRef(null);
 	const swiperRef = useRef();
 	const typeSwiperContRef = useRef();
@@ -60,6 +75,7 @@ const AdminPage = () => {
 	const activityIndicatorRef = useRef();
 	const firstRender = useRef(false);
 	const mainRef = useRef(null);
+	const searchInputContRef = useRef();
 	const searchInputRef = useRef();
 	const footerRef = useRef();
 	const headerRef = useRef();
@@ -79,6 +95,7 @@ const AdminPage = () => {
 	const clickSearch = () => {
 		setSearch(!search);
 		swiperRef?.current.swiper.slideTo(2);
+		searchInputRef?.current.focus();
 	};
 
 	const progressSwiper = (swiper) => {
@@ -166,7 +183,7 @@ const AdminPage = () => {
 	useEffect(() => {
 		const firstElement = headerRef?.current;
 		const secondElement = footerRef?.current;
-		const searchElement = searchInputRef?.current;
+		const searchElement = searchInputContRef?.current;
 		const root = document.getElementById('root');
 
 		const resizeObserver = new ResizeObserver((entries) => {
@@ -255,6 +272,37 @@ const AdminPage = () => {
 		}
 	}, [type]);
 
+	useEffect(() => {
+		function clickCloseBtn() {
+			const tagName = document.activeElement.tagName.toLowerCase();
+
+			if (tagName === 'textarea' || tagName === 'input') {
+				document.activeElement.blur();
+			}
+
+			requestAnimationFrame(() => {
+				WebApp.showPopup(
+					{
+						title: 'health_bot',
+						message: 'Внесенные изменения могут быть потеряны',
+						buttons: [
+							{ id: 'close', type: 'destructive', text: 'Закрыть' },
+							{ id: 'cancel', type: 'cancel', text: 'Отмена' },
+						],
+					},
+					(id) => {
+						if (id === 'close') {
+							WebApp.close();
+						}
+					},
+				);
+			});
+		}
+		WebApp.onEvent('backButtonClicked', clickCloseBtn);
+
+		return () => WebApp.offEvent('backButtonClicked', clickCloseBtn);
+	}, []);
+
 	const onClickCreateEvent = () => {
 		if (isTimeChanged.current) {
 			post('/notify/addNotify', {}, formState)
@@ -294,14 +342,13 @@ const AdminPage = () => {
 		}
 	};
 
-	console.log('form', formState)
-
 	return (
 		<>
 			<div ref={headerRef} className={styles.header}>
-				<HeaderAdmin onClickCreateEvent={onClickCreateEvent} onClickSearch={clickSearch} />
+				<HeaderAdmin onClickCreateEvent={onClickCreateEvent} />
 
 				<div className="container">
+					<Select onChange={(value) => setUser(value)} variants={variants} />
 					<AdminTextEditor
 						activeTextFields={activeTextFields}
 						setActiveTextFields={setActiveTextFields}
@@ -496,13 +543,17 @@ const AdminPage = () => {
 							<span ref={indicatorTextareaRef} className={styles.indicator}></span>
 						</div>
 					</div>
+
+					<button onClick={clickSearch} className={styles.searchBtn}>
+						<SearchSVG />
+					</button>
 				</footer>
 			)}
 
 			{search && (
 				<form
 					onSubmit={(e) => e.preventDefault()}
-					ref={searchInputRef}
+					ref={searchInputContRef}
 					className={styles.searchInput}>
 					<div className={`container  ${styles.container}`}>
 						<button
@@ -514,7 +565,7 @@ const AdminPage = () => {
 						</button>
 
 						<label>
-							<input />
+							<input ref={searchInputRef} />
 							<button type="submit">
 								<SearchSVG stroke="#7F7F84" width={16} height={16} />
 							</button>
