@@ -1,12 +1,11 @@
 @import "../../index.scss";
 .container {
-    display: grid;
-    padding: 0;
-    // justify-content: space-between;
-    // flex-direction: row;
+    display: flex;
+    padding-left: 16px;
+    padding-right: 0;
+    justify-content: space-between;
+    flex-direction: row;
     align-items: center;
-
-    grid-template-columns: 1fr 1fr 1fr;
 
     h2 {
         font-size: 16px;
@@ -15,7 +14,7 @@
         letter-spacing: -0.02em;
         text-align: center;
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
         margin-right: 10px;
     }
 
@@ -31,26 +30,26 @@
         text-align: left;
     }
 
-    div {
-        &:first-of-type {
-            display: flex;
-            justify-content: flex-start;
-            margin-right: 10px;
+    // div {
+    //     &:first-of-type {
+    //         display: flex;
+    //         justify-content: flex-start;
+    //         margin-right: 10px;
 
-            button {
-                font-size: 12px;
-                line-height: 12px;
-                @media (max-width: 425px) {
-                    font-size: 10px;
+    //         button {
+    //             font-size: 12px;
+    //             line-height: 12px;
+    //             @media (max-width: 425px) {
+    //                 font-size: 10px;
 
-                    font-weight: 600;
-                }
-            }
-        }
+    //                 font-weight: 600;
+    //             }
+    //         }
+    //     }
 
-        &:last-of-type {
-            display: flex;
-            justify-content: flex-end;
-        }
-    }
+    //     &:last-of-type {
+    //         display: flex;
+    //         justify-content: flex-end;
+    //     }
+    // }
 }
