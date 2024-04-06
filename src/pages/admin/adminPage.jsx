@@ -278,6 +278,7 @@ const AdminPage = () => {
 	}, [type]);
 
 	useEffect(() => {
+		WebApp.MainButton.setText('Предпросмотр').show();
 		function clickCloseBtn() {
 			const tagName = document.activeElement.tagName.toLowerCase();
 
