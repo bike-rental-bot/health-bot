@@ -496,6 +496,10 @@ const AdminPage = () => {
 				<Swiper
 					onSlideChangeTransitionStart={(swiper) => {
 						setType(swiper.activeIndex);
+
+						if (swiper.activeIndex === 2) {
+							mainRef.current.style.maxHeight = `${window.innerHeight}px`; 
+						}
 					}}
 					initialSlide={type}
 					style={{ height: '100%' }}
@@ -520,7 +524,9 @@ const AdminPage = () => {
 									]);
 
 									setDate(value);
-									dispatch(setFormState({ ...formState, time: momentDate.toISOString().slice(0, -5) }));
+									dispatch(
+										setFormState({ ...formState, time: momentDate.toISOString().slice(0, -5) }),
+									);
 								}}
 							/>
 						</div>
