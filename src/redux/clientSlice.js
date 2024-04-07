@@ -26,7 +26,7 @@ export const clientSlice = createSlice({
 						description: arrEl.notify.description,
 						title: arrEl.notify.description,
 						type: arrEl.notify.type,
-						attachment_url: arrEl.notify.type,
+						attachment_url: arrEl.notify.attachment_url,
 						is_completed: arrEl.is_completed,
 						time: arrEl.time,
 					};

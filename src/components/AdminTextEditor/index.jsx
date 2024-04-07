@@ -200,7 +200,7 @@ const AdminTextEditor = ({ activeTextFields, setActiveTextFields }) => {
 					</div>
 				)}
 
-				{metaData && (
+				{metaData && activeTextFields.link && (
 					<div className={styles.containerPreview}>
 						<DeleteButton
 							onClick={() => {

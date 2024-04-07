@@ -99,6 +99,7 @@ const NotifyToggle = ({ calendarDate }) => {
 		}
 	}, [type, calendarDate, events]);
 
+
 	return (
 		<>
 			<div className={`${styles.activityType} ${styles.sticky}`}>
@@ -203,8 +204,10 @@ const NotifyToggle = ({ calendarDate }) => {
 						<div ref={slide1Ref} className={`container ${styles.notifyList}`}>
 							{Array.isArray(events[calendarDate.toISOString().slice(0, 10)]?.nutrition) &&
 								events[calendarDate.toISOString().slice(0, 10)]?.nutrition.map((el) => {
+								
 									return (
 										<Notify
+											attachment_url={el.attachment_url}
 											title={el.title}
 											time={formatTime(new Date(el.time))}
 											description={el.description}
@@ -219,8 +222,10 @@ const NotifyToggle = ({ calendarDate }) => {
 						<div ref={slide2Ref} className={`container ${styles.notifyList}`}>
 							{Array.isArray(events[calendarDate.toISOString().slice(0, 10)]?.preparations) &&
 								events[calendarDate.toISOString().slice(0, 10)]?.preparations.map((el) => {
+									
 									return (
 										<Notify
+											attachment_url={el.attachment_url}
 											time={formatTime(new Date(el.time))}
 											title={el.title}
 											description={el.description}
@@ -235,8 +240,10 @@ const NotifyToggle = ({ calendarDate }) => {
 						<div ref={slide3Ref} className={`container ${styles.notifyList}`}>
 							{Array.isArray(events[calendarDate.toISOString().slice(0, 10)]?.day_regime) &&
 								events[calendarDate.toISOString().slice(0, 10)]?.day_regime.map((el) => {
+	
 									return (
 										<Notify
+											attachment_url={el.attachment_url}
 											time={formatTime(new Date(el.time))}
 											title={el.title}
 											description={el.description}

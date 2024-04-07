@@ -2,16 +2,43 @@ import styles from './style.module.scss';
 import linkIMG from '../../assets/images/tgImg.png';
 import BoltSVG from '../Icons/Bolt';
 import LinkPreview from '../UI/LinkPreview';
+import { useEffect, useState } from 'react';
+
+const regexLink = new RegExp(
+	'^(https?:\\/\\/)?' + // Протокол (http:// или https://)
+		'(?:www\\.)?telegra\\.ph' + // Доменное имя telegra.ph
+		'(\\/[\\w\\d-._~%]*)*' + // Путь
+		'(\\?[;&=a-z\\d%_.~+-]*)?' + // Query string
+		'(#[a-z\\d-._~]*)?$', // Anchor ссылка
+	'i',
+);
+
 const NotifyDescription = ({
 	title,
 	time,
 	tgLinkHeader,
-	img,
-	tgLink,
+	attachment_url,
 	type = 'food',
 	fullFillClick,
 	closeClick,
 }) => {
+	const [metaData, setMetaData] = useState(null);
+
+	useEffect(() => {
+		if (regexLink.test(attachment_url)) {
+			fetch(`https://impulsrent.ru:8203/api/notify/getTelegraphData?url=${attachment_url}`)
+				.then((res) => res.json())
+				.then((res) => {
+					setMetaData(res);
+				})
+				.catch((err) => {
+					setMetaData(null);
+				});
+		}
+	}, []);
+
+	console.log('meta', metaData)
+
 	return (
 		<div className={styles.superContainer}>
 			<div className={styles.container}>
@@ -20,21 +47,7 @@ const NotifyDescription = ({
 					<p>{time}</p>
 				</div>
 
-				{/* <a
-					href={'https://telegra.ph/fbdvscfas-03-15'}
-					className={`${styles.block} ${styles.tgLink} ${styles[type]}`}>
-					<div className={`${styles[type]} ${styles.siteName}`}>Telegraph</div>
-					<p>Омлет с луком, морковью и цветной капустой </p>
-					<div className={styles.img}>
-						<img src={linkIMG} alt={'tgImg'} />
-					</div>
-
-					<div className={`${styles.watch} ${styles[type]} `}>
-						<BoltSVG /> ПОСМОТРЕТЬ
-					</div>
-				</a> */}
-
-				<LinkPreview type={type} href={'https://telegra.ph/fbdvscfas-03-15'} />
+				{metaData && <LinkPreview image={metaData?.image} title={metaData?.title} type={type} href={attachment_url} siteName={'Telegraph'} />}
 
 				<button
 					onClick={() => {

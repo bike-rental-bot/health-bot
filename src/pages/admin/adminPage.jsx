@@ -404,8 +404,6 @@ const AdminPage = () => {
 		}
 	};
 
-	console.log('datew', date);
-
 	console.log('formState', formState);
 
 	return (
@@ -498,7 +496,7 @@ const AdminPage = () => {
 						setType(swiper.activeIndex);
 
 						if (swiper.activeIndex === 2) {
-							mainRef.current.style.maxHeight = `${window.innerHeight}px`; 
+							mainRef.current.style.maxHeight = `${window.innerHeight}px`;
 						}
 					}}
 					initialSlide={type}
