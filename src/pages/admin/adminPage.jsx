@@ -197,14 +197,23 @@ const AdminPage = () => {
 							topPosition = searchElement?.getBoundingClientRect()?.top;
 						}
 
-						console.log(bottom, searchElement);
-
 						const distance = topPosition - bottom;
 						const pageHeight = document.documentElement.scrollHeight;
 						const bottomCoordinate = pageHeight - mainRef?.current?.getBoundingClientRect().bottom;
 
 						if (mainRef.current) {
 							mainRef.current.style.height = `${distance > 50 ? distance : 2}px`;
+						}
+
+						if (distance <= 50) {
+							root.style.paddingBottom = !search ? '72px' : '72px';
+							requestAnimationFrame(() => {
+								window.scrollTo({
+									top: document.body.scrollHeight,
+								});
+							});
+						} else {
+							root.style.paddingBottom = '';
 						}
 					}
 				}
@@ -290,14 +299,16 @@ const AdminPage = () => {
 	// скрытие/открытие кнопки предпросмотра
 	useEffect(() => {
 		function viewportChanged(e) {
-			if (e.isStateStable) {
-				if (window.innerHeight > WebApp.viewportHeight) {
-					WebApp.MainButton.hide();
+			if ((WebApp.WebView.initParams.tgWebAppPlatform = 'android')) {
+				if (e.isStateStable) {
+					if (window.innerHeight > WebApp.viewportHeight) {
+						WebApp.MainButton.hide();
+					} else {
+						WebApp.MainButton.show();
+					}
 				} else {
 					WebApp.MainButton.show();
 				}
-			} else {
-				WebApp.MainButton.show();
 			}
 		}
 		WebApp.onEvent('viewportChanged', viewportChanged);
@@ -308,7 +319,6 @@ const AdminPage = () => {
 	}, []);
 
 	useEffect(() => {
-		const root = document.getElementById('root');
 		function scroll() {
 			if (footerRef.current) {
 				if (
@@ -346,12 +356,12 @@ const AdminPage = () => {
 				}
 			}
 		}
-		root.addEventListener('scroll', scroll);
+		window.addEventListener('scroll', scroll);
 
 		WebApp.onEvent('viewportChanged', viewportChanged);
 
 		return () => {
-			root.removeEventListener('scroll', scroll);
+			window.removeEventListener('scroll', scroll);
 			WebApp.offEvent('viewportChanged', viewportChanged);
 		};
 	}, []);
@@ -393,6 +403,10 @@ const AdminPage = () => {
 			});
 		}
 	};
+
+	console.log('datew', date);
+
+	console.log('formState', formState);
 
 	return (
 		<>
@@ -501,12 +515,12 @@ const AdminPage = () => {
 										value.getFullYear(),
 										value.getMonth(),
 										value.getDate(),
-										value.getHours(),
-										value.getMinutes(),
+										date.getHours(),
+										date.getMinutes(),
 									]);
 
 									setDate(value);
-									setFormState({ ...formState, time: value.toISOString().slice(0, -5) });
+									dispatch(setFormState({ ...formState, time: momentDate.toISOString().slice(0, -5) }));
 								}}
 							/>
 						</div>
@@ -524,11 +538,21 @@ const AdminPage = () => {
 										value.minutes,
 									]);
 
+									let curDate = new Date(
+										date.getFullYear(),
+										date.getMonth(),
+										date.getDate(),
+										value.hours,
+										value.minutes,
+									);
+
 									let isoStringWithoutTimeZone = momentDate.toISOString().slice(0, -5);
 
-									setDate(momentDate.toDate());
+									console.log('fsvda', isoStringWithoutTimeZone);
 
-									setFormState({ ...formState, time: isoStringWithoutTimeZone });
+									setDate(curDate);
+
+									dispatch(setFormState({ ...formState, time: isoStringWithoutTimeZone }));
 								}}
 							/>
 						</div>
