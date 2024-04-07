@@ -26,6 +26,7 @@ const Select = ({ variants, onChange, children }) => {
 	const dropDownRef = useRef(null);
 	const handleVariant = (index) => {
 		setValue(index);
+		setActiveDropDown(!activeDropDown);
 	};
 	const selectRef = useRef();
 	const handleSelect = (e) => {

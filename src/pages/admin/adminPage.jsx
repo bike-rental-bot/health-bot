@@ -9,8 +9,7 @@ import useDebounce from '../../hooks/useDebounce';
 import ArrowLeft from '../../components/Icons/ArrowLeft';
 import SearchSVG from '../../components/Icons/Search';
 import Archieve from '../../components/Archieve';
-import { useSelector } from 'react-redux';
-import { EVENTTYPES } from '../../config';
+import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
 import { post } from '../../lib/api.js';
 import Toasify from '../../components/UI/Toasify/index.jsx';
@@ -19,24 +18,16 @@ import img1 from '../../assets/images/tgUser1.png';
 import img2 from '../../assets/images/tgUser2.png';
 import img3 from '../../assets/images/tgUser3.png';
 import { useNavigate } from 'react-router-dom';
+import { setFormState } from '../../redux/adminSlice.js';
+import AdminTogglerNotify from './../../components/AdminTogglerNotify/index';
+import AdminSearchForm from '../../components/AdminSearchForm/index';
 
 const tg = window?.Telegram?.WebApp;
 
 const getPosition = (parentRef, childRef) => {
 	const parentRect = parentRef?.current.getBoundingClientRect();
 	const childRect = childRef?.current.getBoundingClientRect();
-
 	return childRect.left - parentRect.left;
-};
-
-const FORMSTATE = {
-	token: null,
-	type: 'nutrition',
-	title: '',
-	description: '',
-	attachment_url: '',
-	time: null,
-	end_date: null,
 };
 
 const ACTIVETEXTFIELDS = {
@@ -56,7 +47,10 @@ const variants = [
 
 const AdminPage = () => {
 	const WebApp = window.Telegram.WebApp;
+
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
+
 	const [date, setDate] = useState(new Date());
 	const [calendarFull, setCalendarFull] = useState(false);
 	const [type, setType] = useState(0);
@@ -68,7 +62,7 @@ const AdminPage = () => {
 		isActive: false,
 	});
 	const [user, setUser] = useState(null);
-	const indicatorTextareaRef = useRef(null);
+
 	const swiperRef = useRef();
 	const typeSwiperContRef = useRef();
 	const dateRef = useRef();
@@ -78,7 +72,6 @@ const AdminPage = () => {
 	const firstRender = useRef(false);
 	const mainRef = useRef(null);
 	const searchInputContRef = useRef();
-	const searchInputRef = useRef();
 	const footerRef = useRef();
 	const headerRef = useRef();
 	const resizeObserverTimeout = useRef();
@@ -86,11 +79,11 @@ const AdminPage = () => {
 
 	const token = useSelector((state) => state.user.token);
 
-	const [formState, setFormState] = useState({
-		...FORMSTATE,
-		token: token,
-		time: date.toISOString().substring(0, 10),
-	});
+	const formState = useSelector((state) => state.admin.formState);
+
+	useEffect(() => {
+		dispatch(setFormState({ ...formState, time: date.toISOString().substring(0, 10) }));
+	}, []);
 
 	const focusTextarea = useSelector((state) => state.admin.focusTextField);
 
@@ -161,6 +154,7 @@ const AdminPage = () => {
 		activityIndicatorRef.current.style.transform = `translate(${left}px)`;
 	};
 
+	//измерение размеров блока main при изменении размеров окна
 	useEffect(() => {
 		const func = () => {
 			if (footerRef.current && headerRef.current && mainRef.current) {
@@ -181,6 +175,7 @@ const AdminPage = () => {
 		};
 	}, []);
 
+	// изменение размеров блока
 	useEffect(() => {
 		const firstElement = headerRef?.current;
 		const secondElement = footerRef?.current;
@@ -202,23 +197,14 @@ const AdminPage = () => {
 							topPosition = searchElement?.getBoundingClientRect()?.top;
 						}
 
+						console.log(bottom, searchElement);
+
 						const distance = topPosition - bottom;
 						const pageHeight = document.documentElement.scrollHeight;
 						const bottomCoordinate = pageHeight - mainRef?.current?.getBoundingClientRect().bottom;
 
 						if (mainRef.current) {
 							mainRef.current.style.height = `${distance > 50 ? distance : 2}px`;
-						}
-
-						if (distance <= 50) {
-							root.style.paddingBottom = !search ? '80px' : '72px';
-							requestAnimationFrame(() => {
-								window.scrollTo({
-									top: document.body.scrollHeight,
-								});
-							});
-						} else {
-							root.style.paddingBottom = '';
 						}
 					}
 				}
@@ -238,12 +224,7 @@ const AdminPage = () => {
 		};
 	}, [search]);
 
-	useEffect(() => {
-		if (search && searchInputRef?.current) {
-			searchInputRef?.current.focus();
-		}
-	}, [search]);
-
+	//положение индикатора вкладок при изменении размеров окна
 	useEffect(() => {
 		function resizeWin() {
 			if (type === 0) {
@@ -258,27 +239,14 @@ const AdminPage = () => {
 		}
 	}, []);
 
-	useEffect(() => {
-		function onBackKeyDown() {
-			if (search) {
-				setSearch(false);
-			}
-		}
-		window.addEventListener('backbutton', onBackKeyDown, false);
-
-		return () => window.removeEventListener('backbutton', onBackKeyDown, false);
-	}, []);
-
-	useEffect(() => {
-		setFormState({ ...formState, token: token });
-	}, [token]);
-
+	// проверка выбора времени
 	useEffect(() => {
 		if (type === 1) {
 			isTimeChanged.current = true;
 		}
 	}, [type]);
 
+	// клик mainButton
 	useEffect(() => {
 		WebApp.MainButton.setText('Предпросмотр').show();
 		function clickCloseBtn() {
@@ -319,12 +287,80 @@ const AdminPage = () => {
 		};
 	}, []);
 
+	// скрытие/открытие кнопки предпросмотра
+	useEffect(() => {
+		function viewportChanged(e) {
+			if (e.isStateStable) {
+				if (window.innerHeight > WebApp.viewportHeight) {
+					WebApp.MainButton.hide();
+				} else {
+					WebApp.MainButton.show();
+				}
+			} else {
+				WebApp.MainButton.show();
+			}
+		}
+		WebApp.onEvent('viewportChanged', viewportChanged);
+
+		return () => {
+			WebApp.offEvent('viewportChanged', viewportChanged);
+		};
+	}, []);
+
+	useEffect(() => {
+		const root = document.getElementById('root');
+		function scroll() {
+			if (footerRef.current) {
+				if (
+					document?.activeElement?.getBoundingClientRect().bottom >
+						footerRef.current?.getBoundingClientRect().top &&
+					(document?.activeElement?.tagName.toLowerCase() === 'textarea' ||
+						document?.activeElement?.tagName.toLowerCase() === 'input')
+				) {
+					footerRef.current.style.visibility = 'hidden';
+					footerRef.current.style.opacity = '0';
+				} else {
+					footerRef.current.style.visibility = '';
+					footerRef.current.style.opacity = '';
+				}
+			}
+		}
+		function viewportChanged() {
+			if (footerRef?.current) {
+				if (window.innerHeight > WebApp.viewportHeight) {
+					if (
+						document?.activeElement?.getBoundingClientRect()?.bottom >
+							footerRef?.current?.getBoundingClientRect()?.top &&
+						(document?.activeElement?.tagName.toLowerCase() === 'textarea' ||
+							document?.activeElement?.tagName.toLowerCase() === 'input')
+					) {
+						footerRef.current.style.visibility = 'hidden';
+						footerRef.current.style.opacity = '0';
+					} else {
+						footerRef.current.style.visibility = '';
+						footerRef.current.style.opacity = '';
+					}
+				} else {
+					footerRef.current.style.visibility = '';
+					footerRef.current.style.opacity = '';
+				}
+			}
+		}
+		root.addEventListener('scroll', scroll);
+
+		WebApp.onEvent('viewportChanged', viewportChanged);
+
+		return () => {
+			root.removeEventListener('scroll', scroll);
+			WebApp.offEvent('viewportChanged', viewportChanged);
+		};
+	}, []);
+
 	const onClickCreateEvent = () => {
 		if (isTimeChanged.current) {
-			post('/notify/addNotify', {}, formState)
+			post('/notify/addNotify', {}, { ...formState, token })
 				.then((res) => {
-					console.log(res);
-					setFormState({ ...formState, title: '', link: '', description: '' });
+					dispatch(setFormState({ ...formState, title: '', attachment_url: '', description: '' }));
 					setActiveTextFields({ ...ACTIVETEXTFIELDS });
 					setStateToasify({
 						...stateToasify,
@@ -458,6 +494,8 @@ const AdminPage = () => {
 								full={calendarFull}
 								setFull={setCalendarFull}
 								value={date}
+								weekDaysContainerClassName={styles.weekDays}
+								fullBtnClassName={styles.fullBtnDatePicker}
 								onChange={(value) => {
 									let momentDate = moment.utc([
 										value.getFullYear(),
@@ -470,7 +508,6 @@ const AdminPage = () => {
 									setDate(value);
 									setFormState({ ...formState, time: value.toISOString().slice(0, -5) });
 								}}
-								// min={new Date()}
 							/>
 						</div>
 					</SwiperSlide>
@@ -503,91 +540,10 @@ const AdminPage = () => {
 				</Swiper>
 			</main>
 
-			{!search && (
-				<footer ref={footerRef} className={styles.footer}>
-					<div className={styles.container}>
-						<div className={styles.toggler}>
-							<label>
-								<input
-									onChange={() => {
-										indicatorTextareaRef.current.style.left = '0px';
-										indicatorTextareaRef.current.style.right = '0px';
-										indicatorTextareaRef.current.style.transform = 'translateX(2px)';
-
-										setFormState({ ...formState, type: EVENTTYPES[0] });
-									}}
-									type={'radio'}
-									defaultChecked
-									value={0}
-									name={'adminTypeEvent'}
-								/>
-								<span>Питание</span>
-							</label>
-
-							<label>
-								<input
-									onChange={() => {
-										indicatorTextareaRef.current.style.left = '0px';
-										indicatorTextareaRef.current.style.right = '0px';
-										indicatorTextareaRef.current.style.transform = 'translateX(100%)';
-
-										setFormState({ ...formState, type: EVENTTYPES[1] });
-									}}
-									type={'radio'}
-									value={1}
-									name={'adminTypeEvent'}
-								/>
-								<span>Витамины</span>
-							</label>
-
-							<label>
-								<input
-									onChange={(value) => {
-										indicatorTextareaRef.current.style.transform = 'translateX(200%)';
-										indicatorTextareaRef.current.style.left = '-2px';
-										indicatorTextareaRef.current.style.right = '0px';
-
-										setFormState({ ...formState, type: EVENTTYPES[2] });
-									}}
-									type={'radio'}
-									value={2}
-									name={'adminTypeEvent'}
-								/>
-								<span>Активность</span>
-							</label>
-
-							<span ref={indicatorTextareaRef} className={styles.indicator}></span>
-						</div>
-					</div>
-
-					<button onClick={clickSearch} className={styles.searchBtn}>
-						<SearchSVG />
-					</button>
-				</footer>
-			)}
+			{!search && <AdminTogglerNotify clickSearch={clickSearch} footerRef={footerRef} />}
 
 			{search && (
-				<form
-					onSubmit={(e) => e.preventDefault()}
-					ref={searchInputContRef}
-					className={styles.searchInput}>
-					<div className={`container  ${styles.container}`}>
-						<button
-							type="button"
-							onClick={() => {
-								setSearch(false);
-							}}>
-							<ArrowLeft />
-						</button>
-
-						<label>
-							<input ref={searchInputRef} />
-							<button type="submit">
-								<SearchSVG stroke="#7F7F84" width={16} height={16} />
-							</button>
-						</label>
-					</div>
-				</form>
+				<AdminSearchForm clickBackBtn={() => setSearch(false)} containerRef={searchInputContRef} />
 			)}
 
 			<Toasify state={stateToasify} status={stateToasify.status} setState={setStateToasify}>

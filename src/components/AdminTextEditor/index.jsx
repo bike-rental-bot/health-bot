@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useDebounce from '../../hooks/useDebounce.js';
-import { setFocusTextField } from '../../redux/adminSlice.js';
+import { setFocusTextField, setFormState } from '../../redux/adminSlice.js';
 import ArrowSVG from '../Icons/Arrow';
 import ClipSVG from '../Icons/Clip';
 import ImageLoadPreview from '../ImageLoadPreview';
@@ -23,15 +23,17 @@ const FocusTextField = {
 	header: false,
 };
 
-const AdminTextEditor = ({ textForm, setTextForm, activeTextFields, setActiveTextFields }) => {
+const AdminTextEditor = ({ activeTextFields, setActiveTextFields }) => {
+	const formState = useSelector((state) => state.admin.formState);
 	const WebApp = window.Telegram.WebApp;
 	const [focusTextFields, setFocusTextFields] = useState(FocusTextField);
 	const [previewImages, setPreviewImages] = useState([]);
-	const debounceTextLink = useDebounce(textForm.link, 500);
+	const debounceTextLink = useDebounce(formState.attachment_url, 500);
 	const [metaData, setMetaData] = useState(null);
 	const dispatch = useDispatch();
+
 	const handleInputLink = (e) => {
-		setTextForm({ ...textForm, link: e.target.value });
+		dispatch(setFormState({ ...formState, attachment_url: e.target.value }));
 	};
 
 	useEffect(() => {
@@ -129,7 +131,7 @@ const AdminTextEditor = ({ textForm, setTextForm, activeTextFields, setActiveTex
 			<div className={`${styles.container}`}>
 				<TextField
 					onChange={(value) => {
-						setTextForm({ ...textForm, title: value });
+						dispatch(setFormState({ ...formState, title: value }));
 					}}
 					name={'Заголовок'}
 					placeholder={'Введите заголовок'}
@@ -141,13 +143,12 @@ const AdminTextEditor = ({ textForm, setTextForm, activeTextFields, setActiveTex
 					onBlur={() => {
 						setFocusTextFields({ ...focusTextFields, header: false });
 					}}
-					value={textForm.title}
-				
+					value={formState.title}
 				/>
 
 				<TextField
 					onChange={(value) => {
-						setTextForm({ ...textForm, description: value });
+						dispatch(setFormState({ ...formState, description: value }));
 					}}
 					name={'Текст'}
 					isOpen={activeTextFields.description}
@@ -159,8 +160,7 @@ const AdminTextEditor = ({ textForm, setTextForm, activeTextFields, setActiveTex
 					onBlur={() => {
 						setFocusTextFields({ ...focusTextFields, text: false });
 					}}
-					value={textForm.description}
-				
+					value={formState.description}
 				/>
 			</div>
 			<div className={`${styles.textField} ${styles.attachment}`}>
@@ -191,7 +191,7 @@ const AdminTextEditor = ({ textForm, setTextForm, activeTextFields, setActiveTex
 
 						<label className={styles.inputText}>
 							<input
-								value={textForm.link}
+								value={formState.attachment_url}
 								onChange={handleInputLink}
 								placeholder="Вставьте ссылку или вложение"
 								type="text"
@@ -205,7 +205,7 @@ const AdminTextEditor = ({ textForm, setTextForm, activeTextFields, setActiveTex
 						<DeleteButton
 							onClick={() => {
 								setMetaData(null);
-								setTextForm({ ...textForm, link: '' });
+								dispatch(setFormState({ ...formState, attachment_url: '' }));
 							}}
 						/>
 

@@ -283,7 +283,16 @@ const selectMonthDays = (year, month, currentDateValue, weekNumber) => {
 	return [];
 };
 
-const MyDatePicker = ({ value, onChange, calendarRef, full, setFull, min }) => {
+const MyDatePicker = ({
+	value,
+	onChange,
+	calendarRef,
+	full,
+	setFull,
+	min,
+	weekDaysContainerClassName,
+	fullBtnClassName,
+}) => {
 	const [dateValue, setDateValue] = useState(value);
 	const [slide, setSlide] = useState(null);
 	const [slideCal, setSlideCal] = useState(null);
@@ -472,7 +481,7 @@ const MyDatePicker = ({ value, onChange, calendarRef, full, setFull, min }) => {
 			</div>
 
 			<div className="container">
-				<div className={styles.weekDays}>
+				<div className={`${styles.weekDays} ${weekDaysContainerClassName}`}>
 					{DAYS.map((el, i) => (
 						<span key={i}>{el}</span>
 					))}
@@ -503,7 +512,7 @@ const MyDatePicker = ({ value, onChange, calendarRef, full, setFull, min }) => {
 				</div>
 			</div>
 
-			<button className={styles.fullBtn} onClick={fullBtnClick}>
+			<button className={`${styles.fullBtn} ${fullBtnClassName}`} onClick={fullBtnClick}>
 				<ArrowSVG active={full} />
 			</button>
 		</div>
