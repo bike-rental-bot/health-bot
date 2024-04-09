@@ -4,13 +4,27 @@ import SearchSVG from '../Icons/Search';
 import styles from './style.module.scss';
 import { createPortal } from 'react-dom';
 
-const AdminSearchForm = ({ containerRef, clickBackBtn, sendSearch }) => {
+const WebApp = window.Telegram.WebApp;
+
+const AdminSearchForm = ({ containerRef, clickBackBtn, sendSearch, onFocus }) => {
 	const searchInputRef = useRef(null);
 
 	useEffect(() => {
 		if (searchInputRef?.current) {
 			searchInputRef.current.focus();
 		}
+	}, []);
+
+	useEffect(() => {
+		WebApp.onEvent('viewportChanged', (e) => {
+			if (searchInputRef?.current && e.isStateStable) {
+				const root = document.getElementById('root');
+
+				requestAnimationFrame(() => {
+					root.scrollTo({ top: root.scrollHeight });
+				});
+			}
+		});
 	}, []);
 	return (
 		<>
@@ -44,7 +58,17 @@ const AdminSearchForm = ({ containerRef, clickBackBtn, sendSearch }) => {
 						</button>
 
 						<label>
-							<input type={'search'} ref={searchInputRef} />
+							<input
+								type={'search'}
+								onFocus={(e) => {
+									e.preventDefault();
+
+									if (onFocus === 'function') {
+										onFocus();
+									}
+								}}
+								ref={searchInputRef}
+							/>
 							<button type="submit">
 								<SearchSVG stroke="#7F7F84" width={16} height={16} />
 							</button>

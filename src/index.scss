@@ -46,17 +46,19 @@ $activity-color: #9747ff;
 $tg-color: #3192fd;
 $admin-text-color: #1f1e1e;
 
-::-webkit-scrollbar {
-  width: 5px; // Width of the scrollbar
-}
+main {
+  ::-webkit-scrollbar {
+    width: 5px; // Width of the scrollbar
+  }
 
-::-webkit-scrollbar-thumb {
-  background-color: #888; // Color of the scrollbar thumb
-  border-radius: 6px;
-}
+  ::-webkit-scrollbar-thumb {
+    background-color: #888; // Color of the scrollbar thumb
+    border-radius: 6px;
+  }
 
-::-webkit-scrollbar-track {
-  background: #f3f3f3; // Color of the scrollbar track
+  ::-webkit-scrollbar-track {
+    background: #f3f3f3; // Color of the scrollbar track
+  }
 }
 
 input[type="search"]::-webkit-search-decoration,
@@ -65,7 +67,3 @@ input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration {
   -webkit-appearance: none;
 }
-
-
-
-

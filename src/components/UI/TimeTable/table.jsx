@@ -8,7 +8,7 @@ function addLeadingZero(num) {
 const Table = ({ data, containerRef }) => {
 	const { loading } = useSelector((state) => state.client);
 
-	console.log('table', loading)
+
 
 	return (
 		<div className={'container'}>

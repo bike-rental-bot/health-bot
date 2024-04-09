@@ -14,7 +14,7 @@ const Notify = ({ type = 'food', onClick, title, time, description, attachment_u
 		setModalActive(false);
 	};
 
-	console.log('time', time)
+
 
 	return (
 		<>

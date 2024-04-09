@@ -23,7 +23,6 @@ const WeekDays = ({ el, dateValue, setDateValue, show, min }) => {
 								dateValue.getMinutes(),
 							);
 
-							console.log('dateValue', dateValue);
 
 							if (!min) {
 								setDateValue(date);

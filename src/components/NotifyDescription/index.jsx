@@ -37,7 +37,7 @@ const NotifyDescription = ({
 		}
 	}, []);
 
-	console.log('meta', metaData)
+
 
 	return (
 		<div className={styles.superContainer}>

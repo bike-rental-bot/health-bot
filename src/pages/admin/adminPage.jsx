@@ -55,6 +55,7 @@ const AdminPage = () => {
 	const [calendarFull, setCalendarFull] = useState(false);
 	const [type, setType] = useState(0);
 	const [search, setSearch] = useState(false);
+	const [searchFocus, setSearchFocus] = useState(false);
 	const [activeTextFields, setActiveTextFields] = useState(ACTIVETEXTFIELDS);
 	const [stateToasify, setStateToasify] = useState({
 		status: 'positive',
@@ -62,6 +63,7 @@ const AdminPage = () => {
 		isActive: false,
 	});
 	const [user, setUser] = useState(null);
+	const { viewPort, isOpenKeyboard } = useSelector((state) => state.app);
 
 	const swiperRef = useRef();
 	const typeSwiperContRef = useRef();
@@ -159,7 +161,17 @@ const AdminPage = () => {
 		const func = () => {
 			if (footerRef.current && headerRef.current && mainRef.current) {
 				const block1Bottom = headerRef?.current.getBoundingClientRect().bottom;
-				const block2Top = footerRef?.current.getBoundingClientRect().top;
+				const block2Top = WebApp.viewportHeight - 72;
+				const distance = block2Top - block1Bottom;
+
+				mainRef.current.style.height = `${distance}px`;
+			}
+		};
+
+		const funcV = () => {
+			if (footerRef.current && headerRef.current && mainRef.current) {
+				const block1Bottom = headerRef?.current.getBoundingClientRect().bottom;
+				const block2Top = WebApp.viewportHeight - 72;
 				const distance = block2Top - block1Bottom;
 
 				mainRef.current.style.height = `${distance}px`;
@@ -169,15 +181,17 @@ const AdminPage = () => {
 		func();
 
 		window.addEventListener('resize', func);
+		WebApp.onEvent('viewportChanged', funcV);
 
 		return () => {
 			window.removeEventListener('resize', func);
+			WebApp.offEvent('viewportChanged', funcV);
 		};
 	}, []);
 
 	// изменение размеров блока
 	useEffect(() => {
-		const firstElement = headerRef?.current;
+		const headerEl = headerRef?.current;
 		const secondElement = footerRef?.current;
 		const searchElement = searchInputContRef?.current;
 		const root = document.getElementById('root');
@@ -187,41 +201,38 @@ const AdminPage = () => {
 
 			resizeObserverTimeout.current = setTimeout(() => {
 				for (let entry of entries) {
-					if (entry.target === firstElement) {
-						const { bottom } = entry.contentRect;
-						let topPosition = 0;
-						if (secondElement?.getBoundingClientRect()?.top) {
-							topPosition = secondElement?.getBoundingClientRect()?.top;
-						}
-						if (searchElement?.getBoundingClientRect().top) {
-							topPosition = searchElement?.getBoundingClientRect()?.top;
-						}
-
-						const distance = topPosition - bottom;
-						const pageHeight = document.documentElement.scrollHeight;
-						const bottomCoordinate = pageHeight - mainRef?.current?.getBoundingClientRect().bottom;
-
-						if (mainRef.current) {
-							mainRef.current.style.height = `${distance > 50 ? distance : 2}px`;
-						}
-
-						if (distance <= 50) {
-							root.style.paddingBottom = !search ? '72px' : '72px';
-							requestAnimationFrame(() => {
-								window.scrollTo({
-									top: document.body.scrollHeight,
-								});
-							});
+					if (entry.target === headerEl) {
+						if (
+							document?.activeElement?.getBoundingClientRect().bottom >
+								footerRef.current?.getBoundingClientRect().top &&
+							window.innerHeight > WebApp.viewportHeight
+						) {
+							if (footerRef && footerRef.current) {
+								footerRef.current.style.visibility = 'hidden';
+								footerRef.current.style.opacity = '0';
+							}
 						} else {
-							root.style.paddingBottom = '';
+							if (footerRef && footerRef.current) {
+								footerRef.current.style.visibility = '';
+								footerRef.current.style.opacity = '';
+							}
 						}
+					}
+
+					const distance =
+						WebApp.viewportHeight - headerEl.getBoundingClientRect().bottom - 72 - root.scrollTop;
+
+					if (distance > 50) {
+						mainRef.current.style.height = `${distance}px`;
+					} else {
+						mainRef.current.style.height = `${0}px`;
 					}
 				}
 			}, 0);
 		});
 
-		if (firstElement) {
-			resizeObserver.observe(firstElement);
+		if (headerEl) {
+			resizeObserver.observe(headerEl);
 		}
 
 		if (secondElement) {
@@ -231,7 +242,7 @@ const AdminPage = () => {
 		return () => {
 			resizeObserver.disconnect();
 		};
-	}, [search]);
+	}, [search, isOpenKeyboard]);
 
 	//положение индикатора вкладок при изменении размеров окна
 	useEffect(() => {
@@ -253,72 +264,13 @@ const AdminPage = () => {
 		if (type === 1) {
 			isTimeChanged.current = true;
 		}
+		if (type !== 2) {
+			setSearch(false);
+		}
 	}, [type]);
 
-	// клик mainButton
 	useEffect(() => {
-		WebApp.MainButton.setText('Предпросмотр').show();
-		function clickCloseBtn() {
-			const tagName = document.activeElement.tagName.toLowerCase();
-
-			if (tagName === 'textarea' || tagName === 'input') {
-				document.activeElement.blur();
-			}
-
-			requestAnimationFrame(() => {
-				WebApp.showPopup(
-					{
-						title: 'health_bot',
-						message: 'Внесенные изменения могут быть потеряны',
-						buttons: [
-							{ id: 'close', type: 'destructive', text: 'Закрыть' },
-							{ id: 'cancel', type: 'cancel', text: 'Отмена' },
-						],
-					},
-					(id) => {
-						if (id === 'close') {
-							WebApp.close();
-						}
-					},
-				);
-			});
-		}
-
-		function clickMainBtn() {
-			navigate('/client');
-		}
-		WebApp.onEvent('backButtonClicked', clickCloseBtn);
-		WebApp.onEvent('mainButtonClicked', clickMainBtn);
-
-		return () => {
-			WebApp.offEvent('backButtonClicked', clickCloseBtn);
-			WebApp.offEvent('mainButtonClicked', clickMainBtn);
-		};
-	}, []);
-
-	// скрытие/открытие кнопки предпросмотра
-	useEffect(() => {
-		function viewportChanged(e) {
-			if ((WebApp.WebView.initParams.tgWebAppPlatform = 'android')) {
-				if (e.isStateStable) {
-					if (window.innerHeight > WebApp.viewportHeight) {
-						WebApp.MainButton.hide();
-					} else {
-						WebApp.MainButton.show();
-					}
-				} else {
-					WebApp.MainButton.show();
-				}
-			}
-		}
-		WebApp.onEvent('viewportChanged', viewportChanged);
-
-		return () => {
-			WebApp.offEvent('viewportChanged', viewportChanged);
-		};
-	}, []);
-
-	useEffect(() => {
+		const root = document.getElementById('root');
 		function scroll() {
 			if (footerRef.current) {
 				if (
@@ -356,12 +308,12 @@ const AdminPage = () => {
 				}
 			}
 		}
-		window.addEventListener('scroll', scroll);
+		root.addEventListener('scroll', scroll);
 
 		WebApp.onEvent('viewportChanged', viewportChanged);
 
 		return () => {
-			window.removeEventListener('scroll', scroll);
+			root.removeEventListener('scroll', scroll);
 			WebApp.offEvent('viewportChanged', viewportChanged);
 		};
 	}, []);
@@ -404,24 +356,56 @@ const AdminPage = () => {
 		}
 	};
 
-	console.log('formState', formState);
+	useEffect(() => {
+		const root = document.getElementById('root');
+		window.addEventListener('orientationchange', () => {
+			root.scrollTo({ top: 0 });
+		});
+	}, []);
+
+	useEffect(() => {
+		if (WebApp.platform === 'android') {
+			const overflow = 1;
+			document.body.style.marginTop = `${overflow}px`;
+			document.body.style.paddingBottom = `${overflow}px`;
+			window.scrollTo(0, overflow);
+			const root = document.getElementById('root');
+			root.style.paddingBottom = '72px';
+		}
+	}, []);
+
+	useEffect(() => {
+		WebApp.MainButton.hide();
+	}, []);
 
 	return (
 		<>
 			<div ref={headerRef} className={styles.header}>
-				<HeaderAdmin onClickCreateEvent={onClickCreateEvent} />
+				{
+					<div style={{ overflow: 'hidden', height: !isOpenKeyboard || !search ? 'auto' : 0 }}>
+						<HeaderAdmin onClickCreateEvent={onClickCreateEvent} />
 
-				<div className="container">
-					<Select onChange={(value) => setUser(value)} variants={variants} />
-					<AdminTextEditor
-						activeTextFields={activeTextFields}
-						setActiveTextFields={setActiveTextFields}
-						textForm={formState}
-						setTextForm={setFormState}
-					/>
-				</div>
+						<div className="container">
+							<Select onChange={(value) => setUser(value)} variants={variants} />
+							<AdminTextEditor
+								activeTextFields={activeTextFields}
+								setActiveTextFields={setActiveTextFields}
+								textForm={formState}
+								setTextForm={setFormState}
+							/>
+						</div>
+					</div>
+				}
 
-				<div className={`${styles.type}`}>
+				<div
+					style={{
+						marginTop:
+							!search ||
+							(!isOpenKeyboard && document.activeElement.dataset.name !== 'input-create-event')
+								? undefined
+								: 0,
+					}}
+					className={`${styles.type}`}>
 					<div ref={typeSwiperContRef} className={`container ${styles.container}`}>
 						<label ref={dateRef}>
 							<input
@@ -490,7 +474,12 @@ const AdminPage = () => {
 				</div>
 			</div>
 
-			<main ref={mainRef} className={styles.main}>
+			<main
+				onScroll={() => {
+					mainRef.current.blur();
+				}}
+				ref={mainRef}
+				className={styles.main}>
 				<Swiper
 					onSlideChangeTransitionStart={(swiper) => {
 						setType(swiper.activeIndex);
@@ -551,8 +540,6 @@ const AdminPage = () => {
 									);
 
 									let isoStringWithoutTimeZone = momentDate.toISOString().slice(0, -5);
-
-									console.log('fsvda', isoStringWithoutTimeZone);
 
 									setDate(curDate);
 

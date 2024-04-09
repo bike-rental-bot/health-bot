@@ -8,6 +8,7 @@ import { post } from './lib/api';
 import svg from './assets/images/loader.svg';
 import { useNavigate } from 'react-router-dom';
 import { setUserInfo } from './redux/userSlice';
+import { setAppState } from './redux/appSlice';
 
 const WebApp = window.Telegram.WebApp;
 
@@ -19,8 +20,6 @@ function App() {
 	const token = params.get('token');
 	const chatId = window?.Telegram?.WebApp?.initDataUnsafe?.query_id;
 
-	console.log(window.Telegram);
-
 	if (token && window.localStorage) {
 		window.localStorage.setItem('auth_token', token);
 	}
@@ -31,12 +30,12 @@ function App() {
 		WebApp?.BackButton?.show();
 	}
 
+	console.log(WebApp);
+
 	useEffect(() => {
 		if (WebApp.initData) {
 			post('/users/loginByInitData', {}, decodeURIComponent(WebApp.initData))
 				.then((data) => {
-					console.log('data', data);
-
 					dispatch(setUserInfo(data));
 
 					if (data.user.role === 'user') {
@@ -56,13 +55,34 @@ function App() {
 		WebApp.enableClosingConfirmation();
 	}
 
+	useEffect(() => {
+		const viewportChanged = (e) => {
+			if (e.isStateStable) {
+				requestAnimationFrame(() => {
+					let obj = {
+						isOpenKeyboard: window.innerHeight > WebApp.viewportHeight ? true : false,
+						viewPort: WebApp.viewportHeight,
+					};
+
+					dispatch(setAppState(obj));
+				});
+			} else {
+				let obj = {
+					viewPort: WebApp.viewportHeight,
+				};
+				dispatch(setAppState(obj));
+			}
+		};
+		WebApp.onEvent('viewportChanged', viewportChanged);
+
+		return () => WebApp.offEvent('viewportChanged', viewportChanged);
+	}, []);
+
 	return (
 		<>
 			<AppRoutes />
 		</>
 	);
 }
-
-
 
 export default App;

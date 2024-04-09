@@ -88,7 +88,6 @@ const TimeTable = ({ curDate, setCurDate, timetableRef, full, setFull, resizeFun
 	};
 
 	useEffect(() => {
-		console.log(contRef.current.scrollHeight, contRef.current);
 
 		setOverFlow(contRef.current.scrollHeight + 7 > 209);
 	}, [data]);

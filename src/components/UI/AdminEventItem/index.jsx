@@ -21,6 +21,7 @@ const AdminEventItem = ({
 }) => {
 	const [isHidden, setIsHidden] = useState(true);
 	const infoRef = useRef();
+	const contRef = useRef();
 
 	useEffect(() => {
 		infoRef.current.style.transition = 'height 0.25s ease-in-out, opacity 0.25s linear, padding 0s';
@@ -33,8 +34,10 @@ const AdminEventItem = ({
 
 	return (
 		<div
+			ref={contRef}
 			onClick={() => {
 				setIsHidden(!isHidden);
+				contRef.current.blur();
 			}}
 			className={`${styles.container} ${styles[type]}`}>
 			<div className={`${styles.header} ${styles[type]} ${!isHidden && styles.open}`}>

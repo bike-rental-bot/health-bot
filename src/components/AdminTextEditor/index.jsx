@@ -58,7 +58,6 @@ const AdminTextEditor = ({ activeTextFields, setActiveTextFields }) => {
 				const reader = new FileReader();
 				reader.readAsDataURL(file);
 				reader.onload = () => {
-					// newPreviewImages.push(reader.result);
 					resolve(reader.result);
 				};
 			} else {
@@ -96,35 +95,51 @@ const AdminTextEditor = ({ activeTextFields, setActiveTextFields }) => {
 		});
 	};
 
+	const inputAttachmentRef = useRef();
+
 	useEffect(() => {
 		dispatch(setFocusTextField(focusTextFields.header || focusTextFields.text));
 	}, [focusTextFields]);
-	// 	function clickCloseBtn() {
-	// 		textareaRef1?.current?.blur();
-	// 		textareaRef2.current.blur();
-	// 		inputLinkRef.current.blur();
-	// 		requestAnimationFrame(() => {
-	// 			WebApp.showPopup(
-	// 				{
-	// 					title: 'health_bot',
-	// 					message: 'Внесенные изменения могут быть потеряны',
-	// 					buttons: [
-	// 						{ id: 'close', type: 'destructive', text: 'Закрыть' },
-	// 						{ id: 'cancel', type: 'cancel', text: 'Отмена' },
-	// 					],
-	// 				},
-	// 				(id) => {
-	// 					if (id === 'close') {
-	// 						WebApp.close();
-	// 					}
-	// 				},
-	// 			);
-	// 		});
-	// 	}
-	// 	WebApp.onEvent('backButtonClicked', clickCloseBtn);
 
-	// 	return () => WebApp.offEvent('backButtonClicked', clickCloseBtn);
-	// }, []);
+	useEffect(() => {
+		function clickCloseBtn() {
+			const tagName = document.activeElement.tagName.toLowerCase();
+
+			if (tagName === 'textarea' || tagName === 'input') {
+				document.activeElement.blur();
+			}
+
+			requestAnimationFrame(() => {
+				WebApp.showPopup(
+					{
+						title: 'health_bot',
+						message: 'Внесенные изменения могут быть потеряны',
+						buttons: [
+							{ id: 'close', type: 'destructive', text: 'Закрыть' },
+							{ id: 'cancel', type: 'cancel', text: 'Отмена' },
+						],
+					},
+					(id) => {
+						if (id === 'close') {
+							WebApp.close();
+						}
+					},
+				);
+			});
+		}
+
+		WebApp.onEvent('backButtonClicked', clickCloseBtn);
+
+		return () => {
+			WebApp.offEvent('backButtonClicked', clickCloseBtn);
+		};
+	}, []);
+
+	useEffect(() => {
+		if (activeTextFields.link) {
+			if (inputAttachmentRef && inputAttachmentRef.current) inputAttachmentRef.current.focus();
+		}
+	}, [activeTextFields]);
 
 	return (
 		<>
@@ -139,6 +154,7 @@ const AdminTextEditor = ({ activeTextFields, setActiveTextFields }) => {
 					onChangeFull={(value) => setActiveTextFields({ ...activeTextFields, title: value })}
 					onFocus={() => {
 						setFocusTextFields({ ...focusTextFields, header: true });
+						setActiveTextFields({ ...activeTextFields, description: false, link: false });
 					}}
 					onBlur={() => {
 						setFocusTextFields({ ...focusTextFields, header: false });
@@ -156,6 +172,7 @@ const AdminTextEditor = ({ activeTextFields, setActiveTextFields }) => {
 					placeholder={'Введите текст'}
 					onFocus={() => {
 						setFocusTextFields({ ...focusTextFields, text: true });
+						setActiveTextFields({ ...activeTextFields, title: false, link: false });
 					}}
 					onBlur={() => {
 						setFocusTextFields({ ...focusTextFields, text: false });
@@ -167,7 +184,12 @@ const AdminTextEditor = ({ activeTextFields, setActiveTextFields }) => {
 				<button
 					className={styles.attachmentBtn}
 					onClick={() => {
-						setActiveTextFields({ ...activeTextFields, link: !activeTextFields.link });
+						setActiveTextFields({
+							...activeTextFields,
+							link: !activeTextFields.link,
+							title: false,
+							description: false,
+						});
 					}}>
 					Вложение{' '}
 					<ArrowSVG
@@ -181,6 +203,7 @@ const AdminTextEditor = ({ activeTextFields, setActiveTextFields }) => {
 					<div className={styles.inputAttachment}>
 						<label className={styles.inputFile}>
 							<input
+								data-name="input-create-event"
 								onChange={handleFileChange}
 								multiple={true}
 								accept=".jpg, .jpeg, .png"
@@ -192,6 +215,7 @@ const AdminTextEditor = ({ activeTextFields, setActiveTextFields }) => {
 						<label className={styles.inputText}>
 							<input
 								value={formState.attachment_url}
+								ref={inputAttachmentRef}
 								onChange={handleInputLink}
 								placeholder="Вставьте ссылку или вложение"
 								type="text"
