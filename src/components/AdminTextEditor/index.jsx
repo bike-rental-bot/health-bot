@@ -23,10 +23,15 @@ const FocusTextField = {
 	header: false,
 };
 
-const AdminTextEditor = ({ activeTextFields, setActiveTextFields }) => {
+const AdminTextEditor = ({
+	activeTextFields,
+	setActiveTextFields,
+	focusTextFields,
+	setFocusTextFields,
+}) => {
 	const formState = useSelector((state) => state.admin.formState);
 	const WebApp = window.Telegram.WebApp;
-	const [focusTextFields, setFocusTextFields] = useState(FocusTextField);
+
 	const [previewImages, setPreviewImages] = useState([]);
 	const debounceTextLink = useDebounce(formState.attachment_url, 500);
 	const [metaData, setMetaData] = useState(null);
@@ -98,10 +103,6 @@ const AdminTextEditor = ({ activeTextFields, setActiveTextFields }) => {
 	const inputAttachmentRef = useRef();
 
 	useEffect(() => {
-		dispatch(setFocusTextField(focusTextFields.header || focusTextFields.text));
-	}, [focusTextFields]);
-
-	useEffect(() => {
 		function clickCloseBtn() {
 			const tagName = document.activeElement.tagName.toLowerCase();
 
@@ -135,11 +136,11 @@ const AdminTextEditor = ({ activeTextFields, setActiveTextFields }) => {
 		};
 	}, []);
 
-	useEffect(() => {
-		if (activeTextFields.link) {
-			if (inputAttachmentRef && inputAttachmentRef.current) inputAttachmentRef.current.focus();
-		}
-	}, [activeTextFields]);
+	// useEffect(() => {
+	// 	if (activeTextFields.link) {
+	// 		if (inputAttachmentRef && inputAttachmentRef.current) inputAttachmentRef.current.focus();
+	// 	}
+	// }, [activeTextFields]);
 
 	return (
 		<>
@@ -151,13 +152,20 @@ const AdminTextEditor = ({ activeTextFields, setActiveTextFields }) => {
 					name={'Заголовок'}
 					placeholder={'Введите заголовок'}
 					isOpen={activeTextFields.title}
-					onChangeFull={(value) => setActiveTextFields({ ...activeTextFields, title: value })}
+					onChangeFull={(value) =>
+						setActiveTextFields({
+							...activeTextFields,
+							title: value,
+							description: false,
+							link: false,
+						})
+					}
 					onFocus={() => {
-						setFocusTextFields({ ...focusTextFields, header: true });
+						setFocusTextFields({ ...focusTextFields, title: true });
 						setActiveTextFields({ ...activeTextFields, description: false, link: false });
 					}}
 					onBlur={() => {
-						setFocusTextFields({ ...focusTextFields, header: false });
+						setFocusTextFields({ ...focusTextFields, title: false });
 					}}
 					value={formState.title}
 				/>
@@ -168,14 +176,21 @@ const AdminTextEditor = ({ activeTextFields, setActiveTextFields }) => {
 					}}
 					name={'Текст'}
 					isOpen={activeTextFields.description}
-					onChangeFull={(value) => setActiveTextFields({ ...activeTextFields, description: value })}
+					onChangeFull={(value) =>
+						setActiveTextFields({
+							...activeTextFields,
+							title: false,
+							description: value,
+							link: false,
+						})
+					}
 					placeholder={'Введите текст'}
 					onFocus={() => {
-						setFocusTextFields({ ...focusTextFields, text: true });
+						setFocusTextFields({ ...focusTextFields, description: true });
 						setActiveTextFields({ ...activeTextFields, title: false, link: false });
 					}}
 					onBlur={() => {
-						setFocusTextFields({ ...focusTextFields, text: false });
+						setFocusTextFields({ ...focusTextFields, description: false });
 					}}
 					value={formState.description}
 				/>

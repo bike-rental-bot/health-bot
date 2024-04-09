@@ -18,19 +18,16 @@ function App() {
 	const user = useSelector((state) => state.user);
 	const params = new URLSearchParams(window.location.search);
 	const token = params.get('token');
-	const chatId = window?.Telegram?.WebApp?.initDataUnsafe?.query_id;
 
-	if (token && window.localStorage) {
-		window.localStorage.setItem('auth_token', token);
-	}
+	// if (token && window.localStorage) {
+	// 	window.localStorage.setItem('auth_token', token);
+	// }
 
 	if (WebApp) {
 		WebApp.expand();
 		WebApp.enableClosingConfirmation();
 		WebApp?.BackButton?.show();
 	}
-
-	console.log(WebApp);
 
 	useEffect(() => {
 		if (WebApp.initData) {
@@ -50,10 +47,6 @@ function App() {
 		}
 	}, [WebApp.initData]);
 
-	if (WebApp) {
-		WebApp.expand();
-		WebApp.enableClosingConfirmation();
-	}
 
 	useEffect(() => {
 		const viewportChanged = (e) => {

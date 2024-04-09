@@ -56,6 +56,7 @@ const AdminPage = () => {
 	const [type, setType] = useState(0);
 	const [search, setSearch] = useState(false);
 	const [searchFocus, setSearchFocus] = useState(false);
+	const [focusTextFields, setFocusTextFields] = useState(ACTIVETEXTFIELDS);
 	const [activeTextFields, setActiveTextFields] = useState(ACTIVETEXTFIELDS);
 	const [stateToasify, setStateToasify] = useState({
 		status: 'positive',
@@ -74,6 +75,7 @@ const AdminPage = () => {
 	const firstRender = useRef(false);
 	const mainRef = useRef(null);
 	const searchInputContRef = useRef();
+	const searchInputRef = useRef();
 	const footerRef = useRef();
 	const headerRef = useRef();
 	const resizeObserverTimeout = useRef();
@@ -159,28 +161,34 @@ const AdminPage = () => {
 	//измерение размеров блока main при изменении размеров окна
 	useEffect(() => {
 		const func = () => {
-			if (footerRef.current && headerRef.current && mainRef.current) {
-				const block1Bottom = headerRef?.current.getBoundingClientRect().bottom;
+			if (headerRef.current && mainRef.current) {
+				const block1Bottom = headerRef?.current.getBoundingClientRect().height;
 				const block2Top = WebApp.viewportHeight - 72;
 				const distance = block2Top - block1Bottom;
+
+				console.log(distance);
 
 				mainRef.current.style.height = `${distance}px`;
 			}
 		};
 
-		const funcV = () => {
-			if (footerRef.current && headerRef.current && mainRef.current) {
-				const block1Bottom = headerRef?.current.getBoundingClientRect().bottom;
+		const funcV = (e) => {
+			if (headerRef.current && mainRef.current) {
+				const block1Bottom = headerRef?.current.getBoundingClientRect().height;
 				const block2Top = WebApp.viewportHeight - 72;
 				const distance = block2Top - block1Bottom;
 
-				mainRef.current.style.height = `${distance}px`;
+				console.log('dist', distance, mainRef.current.offsetHeight);
+
+				mainRef.current.style.height = `${
+					distance < 0 ? mainRef.current.offsetHeight : distance
+				}px`;
 			}
 		};
 
 		func();
 
-		window.addEventListener('resize', func);
+		window.addEventListener('orientationchange', func);
 		WebApp.onEvent('viewportChanged', funcV);
 
 		return () => {
@@ -221,6 +229,8 @@ const AdminPage = () => {
 
 					const distance =
 						WebApp.viewportHeight - headerEl.getBoundingClientRect().bottom - 72 - root.scrollTop;
+
+					console.log('dist', distance);
 
 					if (distance > 50) {
 						mainRef.current.style.height = `${distance}px`;
@@ -364,14 +374,12 @@ const AdminPage = () => {
 	}, []);
 
 	useEffect(() => {
-		if (WebApp.platform === 'android') {
-			const overflow = 1;
-			document.body.style.marginTop = `${overflow}px`;
-			document.body.style.paddingBottom = `${overflow}px`;
-			window.scrollTo(0, overflow);
-			const root = document.getElementById('root');
-			root.style.paddingBottom = '72px';
-		}
+		const overflow = 1;
+		document.body.style.marginTop = `${overflow}px`;
+		document.body.style.paddingBottom = `${overflow}px`;
+		window.scrollTo(0, overflow);
+		const root = document.getElementById('root');
+		root.style.paddingBottom = '72px';
 	}, []);
 
 	useEffect(() => {
@@ -382,7 +390,18 @@ const AdminPage = () => {
 		<>
 			<div ref={headerRef} className={styles.header}>
 				{
-					<div style={{ overflow: 'hidden', height: !isOpenKeyboard || !search ? 'auto' : 0 }}>
+					<div
+						style={{
+							overflow: 'hidden',
+							height:
+								!isOpenKeyboard ||
+								!search ||
+								focusTextFields.description ||
+								focusTextFields.link ||
+								focusTextFields.title
+									? 'auto'
+									: 0,
+						}}>
 						<HeaderAdmin onClickCreateEvent={onClickCreateEvent} />
 
 						<div className="container">
@@ -390,6 +409,8 @@ const AdminPage = () => {
 							<AdminTextEditor
 								activeTextFields={activeTextFields}
 								setActiveTextFields={setActiveTextFields}
+								focusTextFields={focusTextFields}
+								setFocusTextFields={setFocusTextFields}
 								textForm={formState}
 								setTextForm={setFormState}
 							/>
@@ -400,8 +421,11 @@ const AdminPage = () => {
 				<div
 					style={{
 						marginTop:
+							!isOpenKeyboard ||
 							!search ||
-							(!isOpenKeyboard && document.activeElement.dataset.name !== 'input-create-event')
+							focusTextFields.description ||
+							focusTextFields.link ||
+							focusTextFields.title
 								? undefined
 								: 0,
 					}}
@@ -474,12 +498,7 @@ const AdminPage = () => {
 				</div>
 			</div>
 
-			<main
-				onScroll={() => {
-					mainRef.current.blur();
-				}}
-				ref={mainRef}
-				className={styles.main}>
+			<main ref={mainRef} className={styles.main}>
 				<Swiper
 					onSlideChangeTransitionStart={(swiper) => {
 						setType(swiper.activeIndex);
@@ -558,7 +577,15 @@ const AdminPage = () => {
 			{!search && <AdminTogglerNotify clickSearch={clickSearch} footerRef={footerRef} />}
 
 			{search && (
-				<AdminSearchForm clickBackBtn={() => setSearch(false)} containerRef={searchInputContRef} />
+				<AdminSearchForm
+					searchInputRef={searchInputRef}
+					clickBackBtn={() => setSearch(false)}
+					containerRef={searchInputContRef}
+					sendSearch={() => {}}
+					onFocus={() => setSearchFocus(true)}
+					onBlur={() => setSearchFocus(false)}
+					togglerRef={typeSwiperContRef}
+				/>
 			)}
 
 			<Toasify state={stateToasify} status={stateToasify.status} setState={setStateToasify}>

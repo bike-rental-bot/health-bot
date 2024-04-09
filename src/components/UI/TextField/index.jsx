@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import styles from './styles.module.scss';
 import ArrowSVG from '../../Icons/Arrow';
 import { useSelector } from 'react-redux';
+import useDebounce from '../../../hooks/useDebounce';
 
 const WebApp = window.Telegram.WebApp;
 const TextField = ({
@@ -21,6 +22,7 @@ const TextField = ({
 	const firstFocus = useRef(false);
 	const buttonRef = useRef(false);
 	const { viewPort, isOpenKeyboard } = useSelector((state) => state.app);
+	const debounceActive = useDebounce(active, 100);
 
 	const app = useSelector((state) => state.app);
 
@@ -42,32 +44,31 @@ const TextField = ({
 
 	useEffect(() => {
 		if (active && textareaRef.current) {
-			textareaRef.current.style.height = `0px`;
 			textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-			textareaRef.current.focus();
+			// textareaRef.current.focus();
 		}
 		if (!active) {
 			firstFocus.current = false;
 		}
 	}, [active]);
 
-	useEffect(() => {
-		const root = document.getElementById('root');
-		function viewportChanged() {
-			if (focus) {
-				setTimeout(() => {
-					if (root && labelRef.current) {
-						root.scrollTo({
-							top: labelRef.current.offsetTop - root.offsetTop,
-							behavior: 'smooth',
-						});
-					}
-				}, 500);
-			}
-		}
+	// useEffect(() => {
+	// 	const root = document.getElementById('root');
+	// 	function viewportChanged() {
+	// 		if (focus) {
+	// 			setTimeout(() => {
+	// 				if (root && labelRef.current) {
+	// 					root.scrollTo({
+	// 						top: labelRef.current.offsetTop - root.offsetTop,
+	// 						behavior: 'smooth',
+	// 					});
+	// 				}
+	// 			}, 300);
+	// 		}
+	// 	}
 
-		viewportChanged();
-	}, [isOpenKeyboard, viewPort, focus]);
+	// 	viewportChanged();
+	// }, [isOpenKeyboard, viewPort, focus]);
 
 	return (
 		<div ref={labelRef} className={styles.textField}>

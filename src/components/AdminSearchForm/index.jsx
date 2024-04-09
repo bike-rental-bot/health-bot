@@ -6,9 +6,15 @@ import { createPortal } from 'react-dom';
 
 const WebApp = window.Telegram.WebApp;
 
-const AdminSearchForm = ({ containerRef, clickBackBtn, sendSearch, onFocus }) => {
-	const searchInputRef = useRef(null);
-
+const AdminSearchForm = ({
+	containerRef,
+	clickBackBtn,
+	sendSearch,
+	onFocus,
+	onBlur,
+	searchInputRef,
+	togglerRef,
+}) => {
 	useEffect(() => {
 		if (searchInputRef?.current) {
 			searchInputRef.current.focus();
@@ -20,9 +26,11 @@ const AdminSearchForm = ({ containerRef, clickBackBtn, sendSearch, onFocus }) =>
 			if (searchInputRef?.current && e.isStateStable) {
 				const root = document.getElementById('root');
 
-				requestAnimationFrame(() => {
-					root.scrollTo({ top: root.scrollHeight });
-				});
+				if (togglerRef) {
+					requestAnimationFrame(() => {
+						root.scrollTo({ top: togglerRef.offsetTop - root.offsetTop });
+					});
+				}
 			}
 		});
 	}, []);
@@ -66,10 +74,16 @@ const AdminSearchForm = ({ containerRef, clickBackBtn, sendSearch, onFocus }) =>
 									if (onFocus === 'function') {
 										onFocus();
 									}
+
+									if (typeof onBlur === 'function') onBlur();
 								}}
 								ref={searchInputRef}
 							/>
-							<button type="submit">
+							<button
+								onClick={(e) => {
+									e.preventDefault();
+								}}
+								type="submit">
 								<SearchSVG stroke="#7F7F84" width={16} height={16} />
 							</button>
 						</label>

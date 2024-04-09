@@ -67,7 +67,25 @@ const AdminEventItem = ({
 				)}
 			</div>
 
-			<div ref={infoRef} className={`${styles.info} ${styles[type]} ${!isHidden && styles.open}`}>
+			<div
+				onTouchMove={(e) => {
+					e.preventDefault();
+					infoRef.current.blur();
+				}}
+				onTouchStart={(e) => {
+					e.preventDefault();
+					infoRef.current.blur();
+				}}
+				onTouchEnd={(e) => {
+					e.preventDefault();
+					infoRef.current.blur();
+				}}
+				onClick={(e) => {
+					e.preventDefault();
+					infoRef.current.blur();
+				}}
+				ref={infoRef}
+				className={`${styles.info} ${styles[type]} ${!isHidden && styles.open}`}>
 				<div className={styles.text}>
 					<p>{text}</p>
 				</div>
