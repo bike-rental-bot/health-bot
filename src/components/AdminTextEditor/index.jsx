@@ -28,17 +28,18 @@ const AdminTextEditor = ({
 	setActiveTextFields,
 	focusTextFields,
 	setFocusTextFields,
+	formFiles,
+	setFormFiles,
 }) => {
 	const formState = useSelector((state) => state.admin.formState);
 	const WebApp = window.Telegram.WebApp;
 
-	const [previewImages, setPreviewImages] = useState([]);
 	const debounceTextLink = useDebounce(formState.attachment_url, 500);
 	const [metaData, setMetaData] = useState(null);
 	const dispatch = useDispatch();
 
 	const handleInputLink = (e) => {
-		dispatch(setFormState({ ...formState, attachment_url: e.target.value }));
+		dispatch(setFormState({ ...formState, preview_url: e.target.value }));
 	};
 
 	useEffect(() => {
@@ -57,7 +58,6 @@ const AdminTextEditor = ({
 	}, [debounceTextLink]);
 
 	const promFunc = (file) => {
-		const newPreviewImages = [...previewImages];
 		const promise = new Promise((resolve, reject) => {
 			if (file.type.startsWith('image/') || file.type === 'image/gif') {
 				const reader = new FileReader();
@@ -77,15 +77,13 @@ const AdminTextEditor = ({
 	const handleFileChange = (event) => {
 		const files = event.target.files;
 
-		const newPreviewImages = [...previewImages];
-
 		const promises = [];
 
-		for (let i = 0; i < 3 - newPreviewImages.length && i < files.length; i++) {
+		for (let i = 0; i < 3 - formFiles.length && i < files.length; i++) {
 			promises.push(promFunc(files[i]));
 		}
 
-		const arr = [...previewImages];
+		const funcFiles = formFiles;
 
 		Promise.all(promises).then((results) => {
 			results.forEach((result, index) => {
@@ -93,9 +91,9 @@ const AdminTextEditor = ({
 					src: result,
 					key: `${result} ${new Date().getTime()}`,
 				};
-				arr.push(el);
 
-				setPreviewImages(arr);
+				funcFiles.push({ file: files[index], preview: el });
+				setFormFiles([...funcFiles]);
 			});
 		});
 	};
@@ -197,6 +195,7 @@ const AdminTextEditor = ({
 			</div>
 			<div className={`${styles.textField} ${styles.attachment}`}>
 				<button
+					type="button"
 					className={styles.attachmentBtn}
 					onClick={() => {
 						setActiveTextFields({
@@ -229,7 +228,7 @@ const AdminTextEditor = ({
 
 						<label className={styles.inputText}>
 							<input
-								value={formState.attachment_url}
+								value={formState.preview_url}
 								ref={inputAttachmentRef}
 								onChange={handleInputLink}
 								placeholder="Вставьте ссылку или вложение"
@@ -258,18 +257,18 @@ const AdminTextEditor = ({
 					</div>
 				)}
 
-				{activeTextFields.link && previewImages.length > 0 && (
+				{activeTextFields.link && formFiles.length > 0 && (
 					<div className={styles.imageList}>
-						{previewImages.map((el, index) => {
+						{formFiles.map((el, index) => {
 							return (
 								<ImageLoadPreview
 									clickDelete={(el) => {
-										const arr = [...previewImages];
-										arr.splice(index, 1);
-										setPreviewImages(arr);
+										let fileList = [...formFiles];
+										fileList.splice(index, 1);
+										setFormFiles(fileList);
 									}}
-									key={el.key}
-									src={el.src}
+									key={el.preview.key}
+									src={el.preview.src}
 								/>
 							);
 						})}

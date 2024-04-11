@@ -1,6 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import WeekDays from './weekDays';
-const MonthDays = ({ monthDays, dateValue, setDateValue, full, min }) => {
+const MonthDays = ({
+	monthDays,
+	dateValue,
+	setDateValue,
+	dateValueMultiple,
+	setDateValueMultiple,
+	full,
+	min,
+	multiple = false,
+}) => {
 	const weekDaysRef = useRef(null);
 	return (
 		<div ref={weekDaysRef} className={`date-picker__week-days`}>
@@ -13,7 +22,10 @@ const MonthDays = ({ monthDays, dateValue, setDateValue, full, min }) => {
 							show={full || el.select}
 							dateValue={dateValue}
 							setDateValue={setDateValue}
+							dateValueMultiple={dateValueMultiple}
+							setDateValueMultiple={setDateValueMultiple}
 							min={min}
+							multiple={multiple}
 						/>
 					);
 				})}

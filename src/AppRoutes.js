@@ -3,6 +3,7 @@ import AdminPage from './pages/admin/adminPage';
 import { Routes } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 import loaderSvg from './assets/images/loader.svg';
+import NotifyPage from './pages/notifyPage/notifyPage';
 const AppRoutes = () => {
 	return (
 		<Routes>
@@ -41,6 +42,7 @@ const AppRoutes = () => {
 			/>
 			<Route path={'/client'} element={<MainPage />} />
 			<Route path={'/admin'} element={<AdminPage />} />
+			<Route path={'/notify'} element={<NotifyPage />} />
 		</Routes>
 	);
 };

@@ -4,11 +4,12 @@ import { store } from './redux/store';
 import { useEffect, useState } from 'react';
 // import { useUser } from './hooks/user';
 import AppRoutes from './AppRoutes';
-import { post } from './lib/api';
+import { get, post } from './lib/api';
 import svg from './assets/images/loader.svg';
 import { useNavigate } from 'react-router-dom';
 import { setUserInfo } from './redux/userSlice';
 import { setAppState } from './redux/appSlice';
+import { setPatients } from './redux/adminSlice';
 
 const WebApp = window.Telegram.WebApp;
 
@@ -19,10 +20,6 @@ function App() {
 	const params = new URLSearchParams(window.location.search);
 	const token = params.get('token');
 	const [status, setStatus] = useState('');
-
-	// if (token && window.localStorage) {
-	// 	window.localStorage.setItem('auth_token', token);
-	// }
 
 	if (WebApp) {
 		WebApp.expand();
@@ -43,10 +40,18 @@ function App() {
 					setStatus(`server error ${err}`);
 				});
 		} else {
-			navigate('/admin');
+			navigate('/notify');
 			setStatus(`empty InitData`);
 		}
-	}, [WebApp.initData]);
+	}, []);
+
+	useEffect(() => {
+		if (user?.user?.role === 'admin' && user?.token) {
+			get('/users/getUsers', { token: user.token }).then((data) => {
+				dispatch(setPatients(data.users));
+			});
+		}
+	}, [user]);
 
 	useEffect(() => {
 		const viewportChanged = (e) => {
@@ -73,7 +78,6 @@ function App() {
 
 	return (
 		<>
-			{status}
 			<AppRoutes />
 		</>
 	);

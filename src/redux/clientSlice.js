@@ -10,9 +10,9 @@ export const clientSlice = createSlice({
 	initialState: clientState,
 	reducers: {
 		setListEvent: (state, action) => {
-			let info = action.payload.info;
+			let info = action.payload?.info;
 			state.loading = false;
-			if (action.payload.date && info) {
+			if (action.payload?.date && info) {
 				let dateInfo = {
 					hours: {},
 					nutrition: [],

@@ -21,6 +21,7 @@ import { useNavigate } from 'react-router-dom';
 import { setFormState } from '../../redux/adminSlice.js';
 import AdminTogglerNotify from './../../components/AdminTogglerNotify/index';
 import AdminSearchForm from '../../components/AdminSearchForm/index';
+import config from '../../config.js';
 
 const tg = window?.Telegram?.WebApp;
 
@@ -51,10 +52,13 @@ const AdminPage = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
-	const [date, setDate] = useState(new Date());
+	const userInfo = useSelector((state) => state.user);
+
+	const [date, setDate] = useState([]);
 	const [calendarFull, setCalendarFull] = useState(false);
 	const [type, setType] = useState(0);
 	const [search, setSearch] = useState(false);
+	const [formFiles, setFormFiles] = useState([]);
 	const [searchFocus, setSearchFocus] = useState(false);
 	const [focusTextFields, setFocusTextFields] = useState(ACTIVETEXTFIELDS);
 	const [activeTextFields, setActiveTextFields] = useState(ACTIVETEXTFIELDS);
@@ -80,14 +84,13 @@ const AdminPage = () => {
 	const headerRef = useRef();
 	const resizeObserverTimeout = useRef();
 	const isTimeChanged = useRef(false);
+	const timeParams = useRef({ minute: 0, hour: 0 });
 
 	const token = useSelector((state) => state.user.token);
 
 	const formState = useSelector((state) => state.admin.formState);
 
-	useEffect(() => {
-		dispatch(setFormState({ ...formState, time: date.toISOString().substring(0, 10) }));
-	}, []);
+	const patients = useSelector((state) => state.admin.patients);
 
 	const focusTextarea = useSelector((state) => state.admin.focusTextField);
 
@@ -166,8 +169,6 @@ const AdminPage = () => {
 				const block2Top = WebApp.viewportHeight - 72;
 				const distance = block2Top - block1Bottom;
 
-				console.log(distance);
-
 				mainRef.current.style.height = `${distance}px`;
 			}
 		};
@@ -177,8 +178,6 @@ const AdminPage = () => {
 				const block1Bottom = headerRef?.current.getBoundingClientRect().height;
 				const block2Top = WebApp.viewportHeight - 72;
 				const distance = block2Top - block1Bottom;
-
-				console.log('dist', distance, mainRef.current.offsetHeight);
 
 				mainRef.current.style.height = `${
 					distance < 0 ? mainRef.current.offsetHeight : distance
@@ -227,15 +226,15 @@ const AdminPage = () => {
 						}
 					}
 
-					const distance =
-						WebApp.viewportHeight - headerEl.getBoundingClientRect().bottom - 72 - root.scrollTop;
+					if (mainRef.current) {
+						const distance =
+							WebApp.viewportHeight - headerEl.getBoundingClientRect().bottom - 72 - root.scrollTop;
 
-					console.log('dist', distance);
-
-					if (distance > 50) {
-						mainRef.current.style.height = `${distance}px`;
-					} else {
-						mainRef.current.style.height = `${0}px`;
+						if (distance > 50) {
+							mainRef.current.style.height = `${distance}px`;
+						} else {
+							mainRef.current.style.height = `${0}px`;
+						}
 					}
 				}
 			}, 0);
@@ -328,9 +327,31 @@ const AdminPage = () => {
 		};
 	}, []);
 
-	const onClickCreateEvent = () => {
-		if (isTimeChanged.current) {
-			post('/notify/addNotify', {}, { ...formState, token })
+	const onClickCreateEvent = async () => {
+		const formData = new FormData();
+
+		for (let i = 0; i < formFiles.length; i++) {
+			formData.append('files', formFiles[i]?.file);
+		}
+
+		if (
+			isTimeChanged.current &&
+			date.length !== 0 &&
+			formState.title.trim() !== '' &&
+			formState.description.trim() !== ''
+		) {
+			let attachments = [];
+			if (formFiles.length > 0) {
+				const uploadFiles = await fetch(`${config.API_BASE_URL}/notify/upload?token=${token}`, {
+					method: 'POST',
+					body: formData,
+				})
+					.then((res) => res.json())
+					.then((res) => {
+						attachments = res?.files ? res.files : [];
+					});
+			}
+			post('/notify/addNotify', {}, { ...formState, attachments })
 				.then((res) => {
 					dispatch(setFormState({ ...formState, title: '', attachment_url: '', description: '' }));
 					setActiveTextFields({ ...ACTIVETEXTFIELDS });
@@ -344,6 +365,8 @@ const AdminPage = () => {
 					if (type !== 1) {
 						isTimeChanged.current = false;
 					}
+
+					console.log('add result', res);
 				})
 				.catch((err) => {
 					setStateToasify({
@@ -354,15 +377,62 @@ const AdminPage = () => {
 					});
 				});
 		} else {
-			swiperRef.current.swiper.slideTo(1);
-			setType(1);
+			if (!formState.token) {
+				setStateToasify({
+					...stateToasify,
+					active: true,
+					text: 'Выберите пользователя',
+					status: 'negative',
+				});
+				return;
+			}
 
-			setStateToasify({
-				...stateToasify,
-				active: true,
-				text: 'Выберите время',
-				status: 'negative',
-			});
+			if (formState.title === '') {
+				setStateToasify({
+					...stateToasify,
+					active: true,
+					text: 'Введите заголовок',
+					status: 'negative',
+				});
+				setActiveTextFields({ ...activeTextFields, title: true, description: false, link: false });
+				return;
+			}
+
+			if (formState.description === '') {
+				setStateToasify({
+					...stateToasify,
+					active: true,
+					text: 'Введите текст',
+					status: 'negative',
+				});
+				setActiveTextFields({ ...activeTextFields, description: true, title: false, link: false });
+				return;
+			}
+
+			if (date.length === 0) {
+				swiperRef.current.swiper.slideTo(0);
+				setType(0);
+
+				setStateToasify({
+					...stateToasify,
+					active: true,
+					text: 'Выберите дату',
+					status: 'negative',
+				});
+				return;
+			}
+
+			if (!isTimeChanged.current) {
+				swiperRef.current.swiper.slideTo(1);
+				setType(1);
+
+				setStateToasify({
+					...stateToasify,
+					active: true,
+					text: 'Выберите время',
+					status: 'negative',
+				});
+			}
 		}
 	};
 
@@ -388,7 +458,15 @@ const AdminPage = () => {
 
 	return (
 		<>
-			<div ref={headerRef} className={styles.header}>
+			<form
+				onSubmit={(e) => {
+					e.preventDefault();
+
+					onClickCreateEvent();
+				}}
+				enctype="multipart/form-data"
+				ref={headerRef}
+				className={styles.header}>
 				{
 					<div
 						style={{
@@ -405,7 +483,12 @@ const AdminPage = () => {
 						<HeaderAdmin onClickCreateEvent={onClickCreateEvent} />
 
 						<div className="container">
-							<Select onChange={(value) => setUser(value)} variants={variants} />
+							<Select
+								onChange={(value) => {
+									dispatch(setFormState({ ...formState, token: value?.token }));
+								}}
+								variants={patients}
+							/>
 							<AdminTextEditor
 								activeTextFields={activeTextFields}
 								setActiveTextFields={setActiveTextFields}
@@ -413,6 +496,8 @@ const AdminPage = () => {
 								setFocusTextFields={setFocusTextFields}
 								textForm={formState}
 								setTextForm={setFormState}
+								formFiles={formFiles}
+								setFormFiles={setFormFiles}
 							/>
 						</div>
 					</div>
@@ -496,7 +581,7 @@ const AdminPage = () => {
 						<span ref={activityIndicatorRef} className={styles.activityTypeIndicator}></span>
 					</div>
 				</div>
-			</div>
+			</form>
 
 			<main ref={mainRef} className={styles.main}>
 				<Swiper
@@ -520,19 +605,27 @@ const AdminPage = () => {
 								value={date}
 								weekDaysContainerClassName={styles.weekDays}
 								fullBtnClassName={styles.fullBtnDatePicker}
+								multiple={true}
 								onChange={(value) => {
-									let momentDate = moment.utc([
-										value.getFullYear(),
-										value.getMonth(),
-										value.getDate(),
-										date.getHours(),
-										date.getMinutes(),
-									]);
+									const datesUTC = [];
+
+									for (let i = 0; i < value.length; i++) {
+										let momentDate = moment.utc([
+											value[i].getFullYear(),
+											value[i].getMonth(),
+											value[i].getDate(),
+											timeParams.current.hour,
+											timeParams.current.minute,
+										]);
+
+										momentDate = momentDate.toISOString().slice(0, -5);
+
+										datesUTC.push(momentDate);
+									}
+
+									dispatch(setFormState({ ...formState, time: datesUTC }));
 
 									setDate(value);
-									dispatch(
-										setFormState({ ...formState, time: momentDate.toISOString().slice(0, -5) }),
-									);
 								}}
 							/>
 						</div>
@@ -542,27 +635,26 @@ const AdminPage = () => {
 						<div style={{ padding: '40px 0', height: '100%' }}>
 							<TimePicker
 								onChange={(value) => {
-									let momentDate = moment.utc([
-										date.getFullYear(),
-										date.getMonth(),
-										date.getDate(),
-										value.hours,
-										value.minutes,
-									]);
+									timeParams.current.hour = value.hours;
+									timeParams.current.minute = value.minutes;
 
-									let curDate = new Date(
-										date.getFullYear(),
-										date.getMonth(),
-										date.getDate(),
-										value.hours,
-										value.minutes,
-									);
+									const datesUTC = [];
 
-									let isoStringWithoutTimeZone = momentDate.toISOString().slice(0, -5);
+									for (let i = 0; i < date.length; i++) {
+										let momentDate = moment.utc([
+											date[i].getFullYear(),
+											date[i].getMonth(),
+											date[i].getDate(),
+											timeParams.current.hour,
+											timeParams.current.minute,
+										]);
 
-									setDate(curDate);
+										momentDate = momentDate.toISOString().slice(0, -5);
 
-									dispatch(setFormState({ ...formState, time: isoStringWithoutTimeZone }));
+										datesUTC.push(momentDate);
+									}
+
+									dispatch(setFormState({ ...formState, time: datesUTC }));
 								}}
 							/>
 						</div>

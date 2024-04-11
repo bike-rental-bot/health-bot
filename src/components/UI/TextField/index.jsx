@@ -74,6 +74,7 @@ const TextField = ({
 		<div ref={labelRef} className={styles.textField}>
 			<button
 				ref={buttonRef}
+				type={'button'}
 				onClick={() => {
 					setActive(!active);
 					buttonRef.current.blur();

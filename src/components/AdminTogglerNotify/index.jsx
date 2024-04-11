@@ -66,7 +66,7 @@ const AdminTogglerNotify = ({ footerRef, clickSearch }) => {
 				</div>
 			</div>
 
-			<button onClick={clickSearch} className={styles.searchBtn}>
+			<button type="button" onClick={clickSearch} className={styles.searchBtn}>
 				<SearchSVG />
 			</button>
 		</footer>,

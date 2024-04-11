@@ -20,10 +20,18 @@ const MainPage = () => {
 
 	const events = useSelector((state) => state.client);
 
+	const userInfo = useSelector((state) => state.user);
+
 	const { loading } = useSelector((state) => state.client);
 
 	useEffect(() => {
-		WebApp.MainButton.setText('Вернуться в админ-панель').show();
+		if (userInfo?.user?.role === 'admin') {
+			WebApp.MainButton.setText('Вернуться в админ-панель').show();
+		}
+
+		if (userInfo?.user?.role === 'user') {
+			WebApp.MainButton.setText('Задать вопрос').show();
+		}
 		function clickCloseBtn() {
 			const tagName = document.activeElement.tagName.toLowerCase();
 
@@ -51,7 +59,9 @@ const MainPage = () => {
 		}
 
 		function clickMainBtn() {
-			navigate('/admin');
+			if (userInfo?.user?.role === 'admin') navigate('/admin');
+
+			if (userInfo?.user?.role === 'user') WebApp.openTelegramLink('https://t.me/olegin_m');
 		}
 		WebApp.onEvent('backButtonClicked', clickCloseBtn);
 		WebApp.onEvent('mainButtonClicked', clickMainBtn);
@@ -86,7 +96,7 @@ const MainPage = () => {
 				<NotifyToggle calendarDate={calendarDate} />
 			</div>
 
-			<BottomButton />
+			{/* <BottomButton /> */}
 		</>
 	);
 };

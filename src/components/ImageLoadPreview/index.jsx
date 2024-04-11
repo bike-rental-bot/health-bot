@@ -6,7 +6,7 @@ const ImageLoadPreview = ({ src, clickDelete, alt }) => {
 			<div className={styles.imgContainer}>
 				<img src={src} alt={alt} />
 
-				<DeleteButton onClick={clickDelete} />
+				{clickDelete && <DeleteButton onClick={clickDelete} />}
 			</div>
 		</div>
 	);

@@ -7,10 +7,11 @@ const adminState = {
 		type: 'nutrition',
 		title: '',
 		description: '',
-		attachment_url: '',
+		preview_url: '',
 		time: null,
 		end_date: null,
 	},
+	patients: [],
 };
 
 export const adminSlice = createSlice({
@@ -26,10 +27,13 @@ export const adminSlice = createSlice({
 		setFormState: (state, action) => {
 			state.formState = { ...action.payload };
 		},
+		setPatients: (state, action) => {
+			state.patients = action.payload;
+		},
 	},
 });
 
 // Action creators are generated for each case reducer function
-export const { setFieldsState, setFocusTextField, setFormState } = adminSlice.actions;
+export const { setFieldsState, setFocusTextField, setFormState, setPatients } = adminSlice.actions;
 
 export default adminSlice.reducer;

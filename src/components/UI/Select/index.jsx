@@ -1,16 +1,17 @@
 import { useEffect, useState, useRef } from 'react';
 import ArrowSVG from '../../Icons/Arrow';
 import styles from './styles.module.scss';
+import img1 from '../../../assets/images/tgUser1.png';
 
 const SelectValue = ({ value }) => {
 	return (
 		<>
 			{value ? (
 				<div className={styles.userInfo}>
-					<img width={34} height={34} src={value?.img} alt="tgImg" />
+					<img width={34} height={34} src={img1} alt="tgImg" />
 					<div>
-						<p>{value?.name}</p>
-						<p>{value?.nickname}</p>
+						<p>{value?.full_name.trim()}</p>
+						<p>{value?.mention}</p>
 					</div>
 				</div>
 			) : (
@@ -62,25 +63,27 @@ const Select = ({ variants, onChange, children }) => {
 				onTransitionEnd={() => (dropDownRef.current.style.overflow = 'auto')}
 				ref={dropDownRef}
 				className={`${styles.dropDown} ${activeDropDown && styles.active}`}>
-				{variants.map((el, index) => {
-					return (
-						<div
-							className={`${styles.userInfo} ${index === value && styles.checked} ${
-								styles.dropDownItem
-							}`}
-							onClick={(e) => {
-								e.stopPropagation();
-								handleVariant(index);
-							}}
-							key={index}>
-							<img width={34} height={34} src={el?.img} alt="tgImg" />
-							<div>
-								<p>{el?.name}</p>
-								<p>{el?.nickname}</p>
+				{variants &&
+					Array.isArray(variants) &&
+					variants.map((el, index) => {
+						return (
+							<div
+								className={`${styles.userInfo} ${index === value && styles.checked} ${
+									styles.dropDownItem
+								}`}
+								onClick={(e) => {
+									e.stopPropagation();
+									handleVariant(index);
+								}}
+								key={index}>
+								<img width={34} height={34} src={img1} alt="tgImg" />
+								<div>
+									<p>{el?.full_name.trim()}</p>
+									<p>{el?.mention}</p>
+								</div>
 							</div>
-						</div>
-					);
-				})}
+						);
+					})}
 			</div>
 		</div>
 	);

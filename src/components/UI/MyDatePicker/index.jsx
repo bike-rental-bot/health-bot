@@ -292,27 +292,52 @@ const MyDatePicker = ({
 	min,
 	weekDaysContainerClassName,
 	fullBtnClassName,
+	multiple = false,
 }) => {
 	const [dateValue, setDateValue] = useState(value);
+	const [dateValueMultiple, setDateValueMultiple] = useState(
+		value && Array.isArray(value) ? value : [],
+	);
+
 	const [slide, setSlide] = useState(null);
 	const [slideCal, setSlideCal] = useState(null);
 	const weekDaysRef = useRef(null);
-	const [currentMonth, setCurrentMonth] = useState({
-		month: value ? value.getMonth() : new Date().getMonth(),
-		year: value ? value.getFullYear() : new Date().getFullYear(),
-	});
+	const [currentMonth, setCurrentMonth] = useState(
+		!multiple
+			? {
+					month: value ? value.getMonth() : new Date().getMonth(),
+					year: value ? value.getFullYear() : new Date().getFullYear(),
+			  }
+			: {
+					month: value[0] ? new Date(value[0])?.getMonth() : new Date().getMonth(),
+					year: value[0] ? new Date(value[0])?.getFullYear() : new Date().getFullYear(),
+			  },
+	);
 
 	const currentWeek = useRef(
-		getWeekNumber(currentMonth.year, currentMonth.month, dateValue ? dateValue : new Date()),
+		multiple
+			? getWeekNumber(
+					currentMonth.year,
+					currentMonth.month,
+					value && Array.isArray(value) && value.length > 0 ? value[0] : new Date(),
+			  )
+			: getWeekNumber(currentMonth.year, currentMonth.month, dateValue ? dateValue : new Date()),
 	);
 
 	const [monthDays, setMonthDays] = useState(
-		selectMonthDays(
-			currentMonth.year,
-			currentMonth.month,
-			dateValue ? dateValue : new Date(),
-			currentWeek.current,
-		),
+		multiple
+			? selectMonthDays(
+					currentMonth.year,
+					currentMonth.month,
+					dateValueMultiple[0] ? dateValueMultiple[0] : new Date(),
+					currentWeek.current,
+			  )
+			: selectMonthDays(
+					currentMonth.year,
+					currentMonth.month,
+					dateValue ? dateValue : new Date(),
+					currentWeek.current,
+			  ),
 	);
 
 	const handlePrevMonth = () => {
@@ -336,6 +361,83 @@ const MyDatePicker = ({
 
 			const monthsDaysPrev = [...monthDays];
 
+			if (!multiple) {
+				if (!dateValue) {
+					currentWeek.current = getWeekNumber(
+						addMonth.year,
+						addMonth.month,
+						dateValue ? dateValue : new Date(),
+					);
+				} else {
+					if (
+						dateValue.getFullYear() === addMonth.year &&
+						dateValue.getMonth() === addMonth.month
+					) {
+						currentWeek.current = getWeekNumber(
+							addMonth.year,
+							addMonth.month,
+							dateValue ? dateValue : new Date(),
+						);
+					}
+				}
+
+				setMonthDays((prev) =>
+					selectMonthDays(
+						addMonth.year,
+						addMonth.month,
+						dateValue ? dateValue : new Date(),
+						currentWeek.current,
+					),
+				);
+			} else {
+				if (dateValueMultiple[0]) {
+					currentWeek.current = getWeekNumber(
+						addMonth.year,
+						addMonth.month,
+						dateValueMultiple[0] ? dateValueMultiple[0] : new Date(),
+					);
+				} else {
+					if (
+						dateValueMultiple[0].getFullYear() === addMonth.year &&
+						dateValueMultiple[0].getMonth() === addMonth.month
+					) {
+						currentWeek.current = getWeekNumber(
+							addMonth.year,
+							addMonth.month,
+							dateValueMultiple[0] ? dateValueMultiple[0] : new Date(),
+						);
+					}
+				}
+
+				setMonthDays((prev) =>
+					selectMonthDays(
+						addMonth.year,
+						addMonth.month,
+						dateValueMultiple[0] ? dateValueMultiple[0] : new Date(),
+						currentWeek.current,
+					),
+				);
+			}
+		}
+	};
+
+	const handleNextMonth = () => {
+		const prevMonth = { ...currentMonth };
+
+		const addMonth = {
+			month: prevMonth.month === 11 ? 0 : prevMonth.month + 1,
+			year: prevMonth.month === 11 ? prevMonth.year + 1 : prevMonth.year,
+		};
+
+		setSlide('next');
+
+		requestAnimationFrame(() => {
+			setCurrentMonth(addMonth);
+		});
+
+		const monthsDaysPrev = [...monthDays];
+
+		if (!multiple) {
 			if (!dateValue) {
 				currentWeek.current = getWeekNumber(
 					addMonth.year,
@@ -360,96 +462,117 @@ const MyDatePicker = ({
 					currentWeek.current,
 				),
 			);
-		}
-	};
-
-	const handleNextMonth = () => {
-		const prevMonth = { ...currentMonth };
-
-		const addMonth = {
-			month: prevMonth.month === 11 ? 0 : prevMonth.month + 1,
-			year: prevMonth.month === 11 ? prevMonth.year + 1 : prevMonth.year,
-		};
-
-		setSlide('next');
-
-		requestAnimationFrame(() => {
-			setCurrentMonth(addMonth);
-		});
-
-		const monthsDaysPrev = [...monthDays];
-
-		if (!dateValue) {
-			currentWeek.current = getWeekNumber(
-				addMonth.year,
-				addMonth.month,
-				dateValue ? dateValue : new Date(),
-			);
 		} else {
-			if (dateValue.getFullYear() === addMonth.year && dateValue.getMonth() === addMonth.month) {
+			if (!dateValueMultiple[0]) {
 				currentWeek.current = getWeekNumber(
 					addMonth.year,
 					addMonth.month,
-					dateValue ? dateValue : new Date(),
+					dateValueMultiple[0] ? dateValueMultiple[0] : new Date(),
 				);
+			} else {
+				if (
+					dateValueMultiple[0].getFullYear() === addMonth.year &&
+					dateValueMultiple[0].getMonth() === addMonth.month
+				) {
+					currentWeek.current = getWeekNumber(
+						addMonth.year,
+						addMonth.month,
+						dateValueMultiple[0] ? dateValueMultiple[0] : new Date(),
+					);
+				}
 			}
-		}
 
-		setMonthDays((prev) =>
-			selectMonthDays(
-				addMonth.year,
-				addMonth.month,
-				dateValue ? dateValue : new Date(),
-				currentWeek.current,
-			),
-		);
+			setMonthDays((prev) =>
+				selectMonthDays(
+					addMonth.year,
+					addMonth.month,
+					dateValueMultiple[0] ? dateValueMultiple[0] : new Date(),
+					currentWeek.current,
+				),
+			);
+		}
 	};
 
 	const fullBtnClick = () => {
 		setFull(!full);
-		if (!full) {
-			setMonthDays(
-				selectMonthDays(
-					currentMonth.year,
-					currentMonth.month,
-					dateValue ? dateValue : new Date(),
-					currentWeek.current,
-				),
-			);
+		if (!multiple) {
+			if (!full) {
+				setMonthDays(
+					selectMonthDays(
+						currentMonth.year,
+						currentMonth.month,
+						dateValue ? dateValue : new Date(),
+						currentWeek.current,
+					),
+				);
+			} else {
+				setMonthDays(
+					selectMonthDays(
+						currentMonth.year,
+						currentMonth.month,
+						dateValue ? dateValue : new Date(),
+						currentWeek.current,
+					),
+				);
+			}
 		} else {
-			setMonthDays(
-				selectMonthDays(
-					currentMonth.year,
-					currentMonth.month,
-					dateValue ? dateValue : new Date(),
-					currentWeek.current,
-				),
-			);
+			if (!full) {
+				setMonthDays(
+					selectMonthDays(
+						currentMonth.year,
+						currentMonth.month,
+						dateValueMultiple[0] ? dateValueMultiple[0] : new Date(),
+						currentWeek.current,
+					),
+				);
+			} else {
+				setMonthDays(
+					selectMonthDays(
+						currentMonth.year,
+						currentMonth.month,
+						dateValueMultiple[0] ? dateValueMultiple[0] : new Date(),
+						currentWeek.current,
+					),
+				);
+			}
 		}
 	};
 
 	useEffect(() => {
 		if (typeof onChange === 'function') {
-			onChange(dateValue);
+			if (!multiple) onChange(dateValue);
+			else onChange(dateValueMultiple);
+		}
 
-			if (full) {
+		if (full) {
+			if (!multiple) {
 				currentWeek.current = getWeekNumber(
 					currentMonth.year,
 					currentMonth.month,
 					dateValue ? dateValue : new Date(),
 				);
+			} else {
+				currentWeek.current = getWeekNumber(
+					currentMonth.year,
+					currentMonth.month,
+					dateValueMultiple[0] ? dateValueMultiple[0] : new Date(),
+				);
 			}
 		}
-	}, [dateValue]);
+	}, [dateValue, dateValueMultiple]);
 
 	useEffect(() => {
-		setDateValue(value);
+		if (!multiple) setDateValue(value);
+		else {
+			setDateValueMultiple(value && Array.isArray(value) ? value : []);
+		}
 	}, [value]);
 
 	return (
 		<div ref={calendarRef} className={styles.container}>
 			<div className={styles.panelMonth}>
 				<button
+					type={'button'}
 					style={
 						min &&
 						new Date(min.getFullYear(), min.getMonth(), 1).getTime() ===
@@ -475,7 +598,7 @@ const MyDatePicker = ({
 						</CSSTransition>
 					</TransitionGroup>
 				</div>
-				<button key={'btnNext'} onClick={handleNextMonth}>
+				<button type={'button'} key={'btnNext'} onClick={handleNextMonth}>
 					<ArrowSVG style={{ transform: 'rotate(-90deg)' }} />
 				</button>
 			</div>
@@ -504,15 +627,21 @@ const MyDatePicker = ({
 								monthDays={monthDays}
 								dateValue={dateValue}
 								setDateValue={setDateValue}
+								dateValueMultiple={dateValueMultiple}
+								setDateValueMultiple={setDateValueMultiple}
 								full={full}
 								min={min}
+								multiple={multiple}
 							/>
 						</CSSTransition>
 					</TransitionGroup>
 				</div>
 			</div>
 
-			<button className={`${styles.fullBtn} ${fullBtnClassName}`} onClick={fullBtnClick}>
+			<button
+				type={'button'}
+				className={`${styles.fullBtn} ${fullBtnClassName}`}
+				onClick={fullBtnClick}>
 				<ArrowSVG active={full} />
 			</button>
 		</div>

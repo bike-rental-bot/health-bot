@@ -47,7 +47,8 @@ const AdminEventItem = ({
 					</div>
 				) : (
 					<div className={`${styles.notHidden} ${styles[type]}`}>
-						<button
+						<button 
+						    type={'button'}
 							onClick={(e) => {
 								copyText(text);
 								e.stopPropagation();
