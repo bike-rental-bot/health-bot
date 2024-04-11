@@ -18,6 +18,7 @@ function App() {
 	const user = useSelector((state) => state.user);
 	const params = new URLSearchParams(window.location.search);
 	const token = params.get('token');
+	const [status, setStatus] = useState('');
 
 	// if (token && window.localStorage) {
 	// 	window.localStorage.setItem('auth_token', token);
@@ -35,18 +36,17 @@ function App() {
 				.then((data) => {
 					dispatch(setUserInfo(data));
 
-					if (data.user.role === 'user') {
-						navigate('/admin');
-					}
+					navigate('/admin');
 				})
-				.catch(() => {
+				.catch((err) => {
 					navigate('/block');
+					setStatus(`server error ${err}`);
 				});
 		} else {
 			navigate('/admin');
+			setStatus(`empty InitData`);
 		}
 	}, [WebApp.initData]);
-
 
 	useEffect(() => {
 		const viewportChanged = (e) => {
@@ -73,6 +73,7 @@ function App() {
 
 	return (
 		<>
+			{status}
 			<AppRoutes />
 		</>
 	);

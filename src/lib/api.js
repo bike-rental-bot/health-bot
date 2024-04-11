@@ -18,8 +18,9 @@ export async function post(uri, searchParams, data) {
 
 	if (response.ok) {
 		return await response.json();
+	} else {
+		return Promise.reject(response.status);
 	}
-	throw new Error('Bad response');
 }
 
 export async function get(uri, searchParams = {}, options = {}) {
