@@ -11,6 +11,7 @@ import NotifyDescription from '../NotifyDescription';
 
 // Import Swiper styles
 import 'swiper/css';
+import NotifyList from './notifyList';
 
 const getPosition = (parentRef, childRef) => {
 	const parentRect = parentRef?.current?.getBoundingClientRect();
@@ -49,6 +50,7 @@ const NotifyToggle = ({ calendarDate }) => {
 	const [type, setType] = useState(0);
 
 	const events = useSelector((state) => state.client);
+	const patientsEvents = useSelector((state) => state.admin.patientsEvents);
 
 	useEffect(() => {
 		function resizeWin() {
@@ -97,8 +99,7 @@ const NotifyToggle = ({ calendarDate }) => {
 		if (type === 2) {
 			swiperRef.current.style.height = `${slide3Ref?.current?.offsetHeight}px`;
 		}
-	}, [type, calendarDate, events]);
-
+	}, [type, calendarDate, events, patientsEvents]);
 
 	return (
 		<>
@@ -202,55 +203,19 @@ const NotifyToggle = ({ calendarDate }) => {
 					style={{ flexDirection: 'row' }}>
 					<SwiperSlide>
 						<div ref={slide1Ref} className={`container ${styles.notifyList}`}>
-							{Array.isArray(events[calendarDate.toISOString().slice(0, 10)]?.nutrition) &&
-								events[calendarDate.toISOString().slice(0, 10)]?.nutrition.map((el) => {
-								
-									return (
-										<Notify
-											attachment_url={el.attachment_url}
-											title={el.title}
-											time={formatTime(new Date(el.time))}
-											description={el.description}
-											type={'food'}
-										/>
-									);
-								})}
+							{<NotifyList type={'food'} calendarDate={calendarDate} />}
 						</div>
 					</SwiperSlide>
 
 					<SwiperSlide>
 						<div ref={slide2Ref} className={`container ${styles.notifyList}`}>
-							{Array.isArray(events[calendarDate.toISOString().slice(0, 10)]?.preparations) &&
-								events[calendarDate.toISOString().slice(0, 10)]?.preparations.map((el) => {
-									
-									return (
-										<Notify
-											attachment_url={el.attachment_url}
-											time={formatTime(new Date(el.time))}
-											title={el.title}
-											description={el.description}
-											type={'drugs'}
-										/>
-									);
-								})}
+							{<NotifyList type={'drugs'} calendarDate={calendarDate} />}
 						</div>
 					</SwiperSlide>
 
 					<SwiperSlide>
 						<div ref={slide3Ref} className={`container ${styles.notifyList}`}>
-							{Array.isArray(events[calendarDate.toISOString().slice(0, 10)]?.day_regime) &&
-								events[calendarDate.toISOString().slice(0, 10)]?.day_regime.map((el) => {
-	
-									return (
-										<Notify
-											attachment_url={el.attachment_url}
-											time={formatTime(new Date(el.time))}
-											title={el.title}
-											description={el.description}
-											type={'activity'}
-										/>
-									);
-								})}
+							{<NotifyList type={'activity'} calendarDate={calendarDate} />}
 						</div>
 					</SwiperSlide>
 				</Swiper>

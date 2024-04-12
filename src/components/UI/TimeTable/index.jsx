@@ -35,6 +35,7 @@ const TimeTable = ({ curDate, setCurDate, timetableRef, full, setFull, resizeFun
 		setFull(!full);
 	};
 
+
 	const contRef = useRef();
 
 	useEffect(() => {

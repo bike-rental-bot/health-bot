@@ -6,163 +6,19 @@
     left: 16px;
     bottom: 16px;
     right: 16px;
+    background-color: #f6f6f6;
 }
-.container {
-    position: absolute;
 
-    width: 100%;
+.container {
+    align-items: flex-start;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19.36px;
+    letter-spacing: -0.02em;
+    text-align: left;
     height: 100%;
     max-width: 500px;
-    background-color: white;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    overflow: auto;
-    padding: 30px 16px;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-
-    .block {
-        position: relative;
-        border-radius: 4px;
-        padding-left: 8px;
-        padding-right: 8px;
-
-        &.food {
-            background-color: #fff0ea;
-        }
-
-        &.drugs {
-            background: #e0f8f1;
-        }
-
-        &.activity {
-            background: #f3e9ff;
-        }
-
-        &:before {
-            position: absolute;
-            content: "";
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            border-top-left-radius: 4px;
-            border-bottom-left-radius: 4px;
-        }
-
-        &.food {
-            &:before {
-                background-color: $nutricion-color;
-            }
-        }
-
-        &.drugs {
-            &:before {
-                background: $drugs-color;
-            }
-        }
-
-        &.activity {
-            &:before {
-                background: $activity-color;
-            }
-        }
-    }
-
-    .header {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        min-height: 51px;
-        p {
-            font-weight: 600;
-        }
-    }
-
-    a {
-        color: $nutricion-color;
-        margin: 30px 0 0 0;
-        .siteName {
-            font-size: 12px;
-            font-weight: 600;
-            line-height: 18px;
-
-            &.food {
-                color: $nutricion-color;
-            }
-
-            &.drugs {
-                color: $drugs-color;
-            }
-
-            &.activity {
-                color: $activity-color;
-            }
-        }
-
-        padding-top: 4px;
-
-        p {
-            color: $main-text-color;
-            font-size: 14px;
-            font-weight: 600;
-            line-height: 17px;
-            letter-spacing: 0em;
-            text-align: left;
-        }
-
-        .img {
-            position: relative;
-            border-radius: 4px;
-            height: 0;
-            width: 100%;
-            margin-top: 10px;
-
-            padding-bottom: 53.7%;
-
-            img {
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                border-radius: 4px;
-                width: 100%;
-                height: 100%;
-            }
-        }
-
-        .watch {
-            padding: 16px 0 12px 0;
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            align-items: center;
-            gap: 8px;
-
-            letter-spacing: 0.03em;
-            text-align: left;
-
-            svg,
-            path {
-                color: inherit;
-            }
-
-            &.food {
-                color: $nutricion-color;
-            }
-
-            &.drugs {
-                color: $drugs-color;
-            }
-
-            &.activity {
-                color: $activity-color;
-            }
-        }
-    }
+    overflow: scroll;
 
     button {
         display: flex;
@@ -171,83 +27,436 @@
         border-radius: 6px;
         min-height: 51px;
     }
+}
 
-    .fullFillBtn {
-        width: 100%;
-        margin: 45px 0 0 0;
+// .backBtn {
+//     svg {
+//         margin-right: 5px;
+//     }
+//     margin: 30px 0 0 0;
+//     color: $admin-text-color;
+// }
 
-        position: relative;
-        overflow: hidden;
-        transform: translateZ(0);
+.notify {
+    padding: 0 12px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin: 24px 0 0 0;
 
-        span {
-            z-index: 1;
-            color: white;
-        }
+    div {
+        font-family: Inter;
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 27px;
+        letter-spacing: -0.011em;
+        text-align: left;
+    }
+}
 
-        &:before {
-            content: "";
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            top: 0px;
-            left: 0px;
-            will-change: transform;
-        }
-        &.food {
-            background: $nutricion-color;
+.info {
+    background-color: white;
+    border-radius: 8px;
+    width: 100%;
+    margin-top: 20px;
+    position: relative;
 
-            &::before {
-                background-image: linear-gradient(
-                    270deg,
-                    $nutricion-color 30.44%,
-                    #ff976a 50.52%,
-                    $nutricion-color 100%
-                );
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0px;
+        left: 5px;
+        right: 5px;
+        height: 2px;
+        border-radius: 2px;
+    }
 
-                animation: bgMove 2s linear infinite;
-            }
-        }
-
-        &.drugs {
-            background: $drugs-color;
-
-            &::before {
-                background-image: linear-gradient(270deg, $drugs-color 30.44%, #00d797 50.52%, $drugs-color 100%);
-
-                animation: bgMove 2s linear infinite;
-            }
-        }
-
-        &.activity {
-            background: $activity-color;
-
-            &::before {
-                background-image: linear-gradient(270deg, $activity-color 30.44%, #ae71ff 50.52%, $activity-color 100%);
-
-                animation: bgMove 2s linear infinite;
-            }
+    &.food {
+        &::before {
+            background-color: $nutricion-color;
         }
     }
 
-    .closeBtn {
-        margin: 12px 0 0 0;
-        background-color: transparent;
+    &.activity {
+        &::before {
+            background-color: $activity-color;
+        }
+    }
 
-        &.food {
-            color: $nutricion-color;
-            border: 2px solid $nutricion-color;
+    &.drugs {
+        &::before {
+            background-color: $drugs-color;
+        }
+    }
+    .block {
+        width: 100%;
+        position: relative;
+        button {
+            width: 100%;
+            justify-content: space-between;
+            padding: 0 12px;
+            min-height: 47px;
+            font-weight: 500;
+
+            svg {
+                transform: rotate(270deg);
+                transition: 0.5s;
+
+                path {
+                    stroke: #a0a0a0;
+                    stroke-width: 2px;
+                }
+
+                &.active {
+                    transform: rotate(360deg);
+                }
+            }
         }
 
-        &.drugs {
-            color: $drugs-color;
-            border: 2px solid $drugs-color;
+        .infoBlock {
+            padding: 0 12px;
+            margin-bottom: 15px;
+            overflow: hidden;
+
+            transition: 0.5s height;
+
+            .linkPreview {
+                margin: 0 0 0 0;
+            }
+
+            .imgList {
+                display: flex;
+                margin: 24px 0 0 0;
+
+                div {
+                    margin-right: 12px;
+
+                    &:last-child {
+                        margin: 0;
+                    }
+                }
+            }
         }
 
-        &.activity {
-            color: $activity-color;
-            border: 2px solid $activity-color;
+        &:first-of-type {
+            &::after {
+                content: "";
+                position: absolute;
+                left: 12px;
+                right: 12px;
+                height: 1px;
+                background-color: #0000001a;
+            }
         }
+    }
+}
+// .container {
+//     position: absolute;
+
+//     width: 100%;
+//     height: 100%;
+//     max-width: 500px;
+//     background-color: white;
+//     border-radius: 10px;
+//     display: flex;
+//     flex-direction: column;
+//     overflow: auto;
+//     padding: 30px 16px;
+//     left: 50%;
+//     top: 50%;
+//     transform: translate(-50%, -50%);
+
+//     .block {
+//         position: relative;
+//         border-radius: 4px;
+//         padding-left: 8px;
+//         padding-right: 8px;
+
+//         &.food {
+//             background-color: #fff0ea;
+//         }
+
+//         &.drugs {
+//             background: #e0f8f1;
+//         }
+
+//         &.activity {
+//             background: #f3e9ff;
+//         }
+
+//         &:before {
+//             position: absolute;
+//             content: "";
+//             left: 0;
+//             top: 0;
+//             bottom: 0;
+//             width: 4px;
+//             border-top-left-radius: 4px;
+//             border-bottom-left-radius: 4px;
+//         }
+
+//         &.food {
+//             &:before {
+//                 background-color: $nutricion-color;
+//             }
+//         }
+
+//         &.drugs {
+//             &:before {
+//                 background: $drugs-color;
+//             }
+//         }
+
+//         &.activity {
+//             &:before {
+//                 background: $activity-color;
+//             }
+//         }
+//     }
+
+//     .header {
+//         display: flex;
+//         flex-direction: column;
+//         justify-content: center;
+//         min-height: 51px;
+//         p {
+//             font-weight: 600;
+//         }
+//     }
+
+//     a {
+//         color: $nutricion-color;
+//         margin: 30px 0 0 0;
+//         .siteName {
+//             font-size: 12px;
+//             font-weight: 600;
+//             line-height: 18px;
+
+//             &.food {
+//                 color: $nutricion-color;
+//             }
+
+//             &.drugs {
+//                 color: $drugs-color;
+//             }
+
+//             &.activity {
+//                 color: $activity-color;
+//             }
+//         }
+
+//         padding-top: 4px;
+
+//         p {
+//             color: $main-text-color;
+//             font-size: 14px;
+//             font-weight: 600;
+//             line-height: 17px;
+//             letter-spacing: 0em;
+//             text-align: left;
+//         }
+
+//         .img {
+//             position: relative;
+//             border-radius: 4px;
+//             height: 0;
+//             width: 100%;
+//             margin-top: 10px;
+
+//             padding-bottom: 53.7%;
+
+//             img {
+//                 position: absolute;
+//                 top: 0;
+//                 left: 0;
+//                 right: 0;
+//                 bottom: 0;
+//                 border-radius: 4px;
+//                 width: 100%;
+//                 height: 100%;
+//             }
+//         }
+
+//         .watch {
+//             padding: 16px 0 12px 0;
+//             display: flex;
+//             justify-content: center;
+//             width: 100%;
+//             align-items: center;
+//             gap: 8px;
+
+//             letter-spacing: 0.03em;
+//             text-align: left;
+
+//             svg,
+//             path {
+//                 color: inherit;
+//             }
+
+//             &.food {
+//                 color: $nutricion-color;
+//             }
+
+//             &.drugs {
+//                 color: $drugs-color;
+//             }
+
+//             &.activity {
+//                 color: $activity-color;
+//             }
+//         }
+//     }
+
+//     .fullFillBtn {
+//         width: 100%;
+//         margin: 45px 0 0 0;
+
+//         position: relative;
+//         overflow: hidden;
+//         transform: translateZ(0);
+
+//         span {
+//             z-index: 1;
+//             color: white;
+//         }
+
+//         &:before {
+//             content: "";
+//             position: absolute;
+//             right: 0;
+//             bottom: 0;
+//             top: 0px;
+//             left: 0px;
+//             will-change: transform;
+//         }
+//         &.food {
+//             background: $nutricion-color;
+
+//             &::before {
+//                 background-image: linear-gradient(
+//                     270deg,
+//                     $nutricion-color 30.44%,
+//                     #ff976a 50.52%,
+//                     $nutricion-color 100%
+//                 );
+
+//                 animation: bgMove 2s linear infinite;
+//             }
+//         }
+
+//         &.drugs {
+//             background: $drugs-color;
+
+//             &::before {
+//                 background-image: linear-gradient(270deg, $drugs-color 30.44%, #00d797 50.52%, $drugs-color 100%);
+
+//                 animation: bgMove 2s linear infinite;
+//             }
+//         }
+
+//         &.activity {
+//             background: $activity-color;
+
+//             &::before {
+//                 background-image: linear-gradient(270deg, $activity-color 30.44%, #ae71ff 50.52%, $activity-color 100%);
+
+//                 animation: bgMove 2s linear infinite;
+//             }
+//         }
+//     }
+
+//     .closeBtn {
+//         margin: 12px 0 0 0;
+//         background-color: transparent;
+
+//         &.food {
+//             color: $nutricion-color;
+//             border: 2px solid $nutricion-color;
+//         }
+
+//         &.drugs {
+//             color: $drugs-color;
+//             border: 2px solid $drugs-color;
+//         }
+
+//         &.activity {
+//             color: $activity-color;
+//             border: 2px solid $activity-color;
+//         }
+//     }
+// }
+
+.fullFillBtn {
+    width: 100%;
+    margin: 20px 0 0 0;
+
+    position: relative;
+    overflow: hidden;
+    transform: translateZ(0);
+
+    span {
+        z-index: 1;
+        color: white;
+    }
+
+    &:before {
+        content: "";
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        top: 0px;
+        left: 0px;
+        will-change: transform;
+    }
+    &.food {
+        background: $nutricion-color;
+
+        &::before {
+            background-image: linear-gradient(270deg, $nutricion-color 30.44%, #ff976a 50.52%, $nutricion-color 100%);
+
+            animation: bgMove 2s linear infinite;
+        }
+    }
+
+    &.drugs {
+        background: $drugs-color;
+
+        &::before {
+            background-image: linear-gradient(270deg, $drugs-color 30.44%, #00d797 50.52%, $drugs-color 100%);
+
+            animation: bgMove 2s linear infinite;
+        }
+    }
+
+    &.activity {
+        background: $activity-color;
+
+        &::before {
+            background-image: linear-gradient(270deg, $activity-color 30.44%, #ae71ff 50.52%, $activity-color 100%);
+
+            animation: bgMove 2s linear infinite;
+        }
+    }
+}
+
+.closeBtn {
+    margin: 12px 0 12px 0;
+    background-color: transparent;
+    width: 100%;
+
+    &.food {
+        color: $nutricion-color;
+        border: 2px solid $nutricion-color;
+    }
+
+    &.drugs {
+        color: $drugs-color;
+        border: 2px solid $drugs-color;
+    }
+
+    &.activity {
+        color: $activity-color;
+        border: 2px solid $activity-color;
     }
 }
 
@@ -258,4 +467,9 @@
     100% {
         transform: translate3D(100%, 0, 0);
     }
+}
+
+.link {
+    color: $tg-color;
+    text-decoration: underline;
 }

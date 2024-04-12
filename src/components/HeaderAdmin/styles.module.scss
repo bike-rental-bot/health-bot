@@ -7,7 +7,7 @@
     flex-direction: row;
     align-items: center;
 
-    a {
+    .previewBtn {
         font-size: 16px;
         font-weight: 600;
         line-height: 19.36px;
@@ -18,7 +18,7 @@
         margin-right: 10px;
     }
 
-    button {
+    .createEventBtn {
         padding: 20px 16px;
         color: $tg-color;
         font-size: 17px;

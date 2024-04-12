@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setEventsLoading, setListEvent } from '../../redux/clientSlice';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { setPatientsEvents, setPatientsEventsLoading } from '../../redux/adminSlice';
 
 const MainPage = () => {
 	const WebApp = window.Telegram.WebApp;
@@ -19,6 +20,9 @@ const MainPage = () => {
 	const dispatch = useDispatch();
 
 	const events = useSelector((state) => state.client);
+
+	const patientEvents = useSelector((state) => state.admin.patientsEvents);
+	const patientToken = useSelector((state) => state.admin.formState.token);
 
 	const userInfo = useSelector((state) => state.user);
 
@@ -73,22 +77,52 @@ const MainPage = () => {
 	}, []);
 
 	useEffect(() => {
-		if (!events[calendarDate.toISOString().slice(0, 10)] && token) {
-			dispatch(setEventsLoading(true));
+		if (userInfo?.user?.role === 'user') {
+			if (!events[calendarDate.toISOString().slice(0, 10)] && token) {
+				dispatch(setEventsLoading(true));
 
-			get('/notify/getByDate', {
-				token: token,
-				date: calendarDate.toISOString().slice(0, 10),
-			})
-				.then((res) => {
-					const obj = { date: calendarDate.toISOString().slice(0, 10), info: res.result };
-					dispatch(setListEvent(obj));
+				get('/notify/getByDate', {
+					token: token,
+					date: calendarDate.toISOString().slice(0, 10),
 				})
-				.catch(() => {
-					dispatch(setListEvent());
-				});
+					.then((res) => {
+						const obj = { date: calendarDate.toISOString().slice(0, 10), info: res.result };
+						dispatch(setListEvent(obj));
+					})
+					.catch(() => {
+						dispatch(setListEvent());
+					});
+			}
 		}
-	}, [calendarDate, token]);
+
+		if (userInfo?.user?.role === 'admin') {
+			if (
+				(!patientEvents[patientToken] ||
+					!patientEvents[patientToken][calendarDate.toISOString().slice(0, 10)]) &&
+				patientToken
+			) {
+				dispatch(setPatientsEventsLoading(true));
+
+				get('/notify/getByDate', {
+					token: patientToken,
+					date: calendarDate.toISOString().slice(0, 10),
+				})
+					.then((res) => {
+						const obj = {
+							date: calendarDate.toISOString().slice(0, 10),
+							result: res.result,
+							token: patientToken,
+						};
+						dispatch(setPatientsEvents(obj));
+						dispatch(setPatientsEventsLoading(false));
+					})
+					.catch(() => {
+						dispatch(setPatientsEvents());
+						dispatch(setPatientsEventsLoading(false));
+					});
+			}
+		}
+	}, [calendarDate, token, patientToken]);
 	return (
 		<>
 			<div className={styles.containerHeader}>

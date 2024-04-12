@@ -21,13 +21,15 @@ const SelectValue = ({ value }) => {
 	);
 };
 
-const Select = ({ variants, onChange, children }) => {
-	const [value, setValue] = useState(null);
+const Select = ({ variants, onChange, children, value }) => {
 	const [activeDropDown, setActiveDropDown] = useState(false);
 	const dropDownRef = useRef(null);
 	const handleVariant = (index) => {
-		setValue(index);
 		setActiveDropDown(!activeDropDown);
+
+		if (typeof onChange === 'function') {
+			onChange(variants[index] ? variants[index] : null, variants[index] ? index : null);
+		}
 	};
 	const selectRef = useRef();
 	const handleSelect = (e) => {
@@ -39,12 +41,6 @@ const Select = ({ variants, onChange, children }) => {
 	};
 
 	useEffect(() => {
-		if (typeof onChange === 'function') {
-			onChange(variants[value]);
-		}
-	}, [value]);
-
-	useEffect(() => {
 		const clickWin = () => {
 			setActiveDropDown(false);
 		};
@@ -52,6 +48,7 @@ const Select = ({ variants, onChange, children }) => {
 
 		return () => window.removeEventListener('click', clickWin);
 	}, []);
+
 	return (
 		<div ref={selectRef} className={styles.container}>
 			<div onClick={handleSelect} className={styles.select}>

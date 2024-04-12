@@ -45,9 +45,11 @@ function App() {
 		}
 	}, []);
 
+
+
 	useEffect(() => {
 		if (user?.user?.role === 'admin' && user?.token) {
-			get('/users/getUsers', { token: user.token }).then((data) => {
+			get('/users/getAdminUsers', { token: user.token }).then((data) => {
 				dispatch(setPatients(data.users));
 			});
 		}

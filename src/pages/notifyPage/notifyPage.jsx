@@ -13,7 +13,6 @@ const NotifyPage = () => {
 	const attachmentRef = useRef(null);
 
 	useEffect(() => {
-		console.log('useEffect');
 		if (stateBlocks.text) {
 			if (textRef.current) {
 				textRef.current.style.height = `${textRef.current.scrollHeight}px`;
@@ -53,16 +52,15 @@ const NotifyPage = () => {
 			<div className={styles.info}>
 				<div className={styles.block}>
 					<button onClick={() => setStateBlocks({ ...stateBlocks, text: !stateBlocks.text })}>
-						Текст{' '}
-						<ArrowSVG className={stateBlocks.text && styles.active} width={20} height={20} />
+						Текст <ArrowSVG className={stateBlocks.text && styles.active} width={20} height={20} />
 					</button>
 
-					<p ref={textRef}>
+					<div className={styles.infoBlock} ref={textRef}>
 						Lorem ipsum dolor sit amet consectetur. Egestas elementum vitae tincidunt ultrices at
 						augue tempus urna in. Phasellus nunc suspendisse nulla viverra mi erat dui amet.
 						Tincidunt sed vel curabitur sit semper pharetra lacus fames. Metus ipsum tincidunt
 						mattis urna.
-					</p>
+					</div>
 				</div>
 
 				<div className={styles.block}>
@@ -72,7 +70,7 @@ const NotifyPage = () => {
 						<ArrowSVG className={stateBlocks.attachment && styles.active} width={20} height={20} />
 					</button>
 
-					<p ref={attachmentRef}>
+					<div className={styles.infoBlock} ref={attachmentRef}>
 						<LinkPreview
 							className={styles.linkPreview}
 							type="food"
@@ -85,7 +83,7 @@ const NotifyPage = () => {
 							<ImageLoadPreview src={img} />
 							<ImageLoadPreview src={img} />
 						</div>
-					</p>
+					</div>
 				</div>
 			</div>
 		</div>

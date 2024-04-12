@@ -7,14 +7,12 @@ import Modal from '../UI/Modal';
 import NotifyDescription from '../NotifyDescription';
 import { useState } from 'react';
 
-const Notify = ({ type = 'food', onClick, title, time, description, attachment_url }) => {
+const Notify = ({ type = 'food', onClick, title, time, description, preview_url, attachments }) => {
 	const [modalActive, setModalActive] = useState(false);
 
 	const closeModal = () => {
 		setModalActive(false);
 	};
-
-
 
 	return (
 		<>
@@ -44,8 +42,10 @@ const Notify = ({ type = 'food', onClick, title, time, description, attachment_u
 			<Modal active={modalActive}>
 				<NotifyDescription
 					time={time}
-					attachment_url={attachment_url}
+					preview_url={preview_url}
+					attachments={attachments}
 					title={title}
+					description={description}
 					type={type}
 					closeClick={closeModal}
 				/>

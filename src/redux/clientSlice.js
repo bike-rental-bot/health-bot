@@ -12,35 +12,7 @@ export const clientSlice = createSlice({
 		setListEvent: (state, action) => {
 			let info = action.payload?.info;
 			state.loading = false;
-			if (action.payload?.date && info) {
-				let dateInfo = {
-					hours: {},
-					nutrition: [],
-					preparations: [],
-					day_regime: [],
-				};
-				for (let i = 0; i < info.length; i++) {
-					let arrEl = info[i];
-
-					let el = {
-						description: arrEl.notify.description,
-						title: arrEl.notify.description,
-						type: arrEl.notify.type,
-						attachment_url: arrEl.notify.attachment_url,
-						is_completed: arrEl.is_completed,
-						time: arrEl.time,
-					};
-
-					dateInfo[el.type]?.push(el);
-					if (!dateInfo.hours[new Date(el.time).getHours()]) {
-						dateInfo.hours[new Date(el.time).getHours()] = [el];
-					} else {
-						dateInfo.hours[new Date(el.time).getHours()].push(el);
-					}
-				}
-
-				state[action.payload.date] = dateInfo;
-			}
+			state[action.payload.date] = info;
 
 			return state;
 		},
@@ -49,7 +21,7 @@ export const clientSlice = createSlice({
 
 			state = value;
 
-			return state
+			return state;
 		},
 	},
 });

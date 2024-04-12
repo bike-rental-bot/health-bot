@@ -8,8 +8,6 @@ function addLeadingZero(num) {
 const Table = ({ data, containerRef }) => {
 	const { loading } = useSelector((state) => state.client);
 
-
-
 	return (
 		<div className={'container'}>
 			<div ref={containerRef} className={styles.container}>
@@ -38,11 +36,11 @@ const Table = ({ data, containerRef }) => {
 													<div
 														key={el1}
 														className={`${styles.activity} ${
-															el1.type === 'nutrition' && styles.food
-														} ${el1.type === 'preparations' && styles.drugs} ${
-															el1.type === 'day_regime' && styles.act
+															el1.notify.type === 'nutrition' && styles.food
+														} ${el1.notify.type === 'preparations' && styles.drugs} ${
+															el1.notify.type === 'day_regime' && styles.act
 														}`}>
-														{el1.title}
+														{el1.notify.title}
 													</div>
 												);
 											})}

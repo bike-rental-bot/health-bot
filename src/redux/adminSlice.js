@@ -4,6 +4,7 @@ const adminState = {
 	isTextFieldsClose: true,
 	focusTextField: false,
 	formState: {
+		token: null,
 		type: 'nutrition',
 		title: '',
 		description: '',
@@ -12,6 +13,11 @@ const adminState = {
 		end_date: null,
 	},
 	patients: [],
+	patientsEvents: {
+		loading: false,
+		error: false,
+	},
+	selectUserValue: null,
 };
 
 export const adminSlice = createSlice({
@@ -30,10 +36,48 @@ export const adminSlice = createSlice({
 		setPatients: (state, action) => {
 			state.patients = action.payload;
 		},
+		setPatientsEvents: (state, action) => {
+			if (action.payload) {
+				const { token, date, result } = action.payload;
+
+				if (token && date) {
+					const updatedPatientsEvents = {
+						...state.patientsEvents,
+						[token]: {
+							...state.patientsEvents[token],
+							[date]: result,
+						},
+					};
+					return {
+						...state,
+						patientsEvents: updatedPatientsEvents,
+					};
+				}
+			}
+			return state;
+		},
+		setPatientsEventsLoading: (state, action) => {
+			state.patientsEvents.loading = action.payload;
+		},
+		setPatientsEventsError: (state, action) => {
+			state.patientsEvents.loading = action.payload;
+		},
+		setSelectUserValue: (state, action) => {
+			state.selectUserValue = action.payload;
+		},
 	},
 });
 
 // Action creators are generated for each case reducer function
-export const { setFieldsState, setFocusTextField, setFormState, setPatients } = adminSlice.actions;
+export const {
+	setFieldsState,
+	setFocusTextField,
+	setFormState,
+	setPatients,
+	setPatientsEvents,
+	setPatientsEventsLoading,
+	setPatientsEventsError,
+	setSelectUserValue,
+} = adminSlice.actions;
 
 export default adminSlice.reducer;

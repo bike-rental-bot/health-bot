@@ -1,14 +1,10 @@
-
 import AdminEventItem from '../UI/AdminEventItem';
 import styles from './styles.module.scss';
 import { useState } from 'react';
 
-
-const Archieve = () => {
-
+const Archieve = ({ searchValue, userToken }) => {
 	return (
 		<div className="container">
-
 			{<h3 className={styles.recent}>Недавние</h3>}
 
 			<div className={styles.events}>

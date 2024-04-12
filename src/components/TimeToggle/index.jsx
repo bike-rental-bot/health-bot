@@ -19,6 +19,11 @@ const TimeToggle = ({ calendarDate, setCalendarDate }) => {
 	const timetableRef = useRef();
 
 	const events = useSelector((state) => state.client);
+	const patientToken = useSelector((state) => state.admin.formState.token);
+	const patientsEvents = useSelector((state) => state.admin.patientsEvents);
+	const role = useSelector((state) => state?.user?.user?.role);
+
+	const eventsData = useRef(null);
 
 	const resizeFunction = useCallback(
 		(height) => {
@@ -41,6 +46,42 @@ const TimeToggle = ({ calendarDate, setCalendarDate }) => {
 			}
 		}
 	}, [calendarFull]);
+
+	const timeTableData = () => {
+		if (role === 'admin') {
+		
+			return (
+				patientsEvents &&
+				patientsEvents[patientToken] &&
+				patientsEvents[patientToken][calendarDate.toISOString().slice(0, 10)]?.hours
+			);
+		}
+
+		if (role === 'user') {
+			return events[calendarDate.toISOString().slice(0, 10)]?.hours;
+		}
+	};
+
+	useEffect(() => {
+		if (role === 'admin') {
+			console.log(
+				'timetable',
+				patientsEvents &&
+					patientsEvents[patientToken] &&
+					patientsEvents[patientToken][calendarDate.toISOString().slice(0, 10)],
+			);
+
+			eventsData.current =
+				patientsEvents &&
+				patientsEvents[patientToken] &&
+				patientsEvents[patientToken][calendarDate.toISOString().slice(0, 10)]?.hours;
+		}
+
+		if (role === 'user') {
+			eventsData.current = events[calendarDate.toISOString().slice(0, 10)]?.hours;
+		}
+	}, [events, patientsEvents, patientToken, calendarDate]);
+
 
 
 	return (
@@ -119,9 +160,9 @@ const TimeToggle = ({ calendarDate, setCalendarDate }) => {
 				</SwiperSlide>
 				<SwiperSlide>
 					<TimeTable
-					    curDate={calendarDate}
+						curDate={calendarDate}
 						setCurDate={setCalendarDate}
-						data={events[calendarDate.toISOString().slice(0, 10)]?.hours}
+						data={timeTableData()}
 						resizeFunction={resizeFunction}
 						full={timetableFull}
 						setFull={setTimeTableFull}

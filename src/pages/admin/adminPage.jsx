@@ -18,7 +18,7 @@ import img1 from '../../assets/images/tgUser1.png';
 import img2 from '../../assets/images/tgUser2.png';
 import img3 from '../../assets/images/tgUser3.png';
 import { useNavigate } from 'react-router-dom';
-import { setFormState } from '../../redux/adminSlice.js';
+import { setFormState, setSelectUserValue } from '../../redux/adminSlice.js';
 import AdminTogglerNotify from './../../components/AdminTogglerNotify/index';
 import AdminSearchForm from '../../components/AdminSearchForm/index';
 import config from '../../config.js';
@@ -55,6 +55,7 @@ const AdminPage = () => {
 	const userInfo = useSelector((state) => state.user);
 
 	const [date, setDate] = useState([]);
+	const selectUserValue = useSelector((state) => state.admin.selectUserValue);
 	const [calendarFull, setCalendarFull] = useState(false);
 	const [type, setType] = useState(0);
 	const [search, setSearch] = useState(false);
@@ -365,8 +366,6 @@ const AdminPage = () => {
 					if (type !== 1) {
 						isTimeChanged.current = false;
 					}
-
-					console.log('add result', res);
 				})
 				.catch((err) => {
 					setStateToasify({
@@ -436,6 +435,19 @@ const AdminPage = () => {
 		}
 	};
 
+	const onClickPreview = () => {
+		if (formState.token) {
+			navigate('/client');
+		} else {
+			setStateToasify({
+				...stateToasify,
+				active: true,
+				text: 'Выберите пациента для предпросмотра',
+				status: 'negative',
+			});
+		}
+	};
+
 	useEffect(() => {
 		const root = document.getElementById('root');
 		window.addEventListener('orientationchange', () => {
@@ -461,7 +473,6 @@ const AdminPage = () => {
 			<form
 				onSubmit={(e) => {
 					e.preventDefault();
-
 					onClickCreateEvent();
 				}}
 				enctype="multipart/form-data"
@@ -480,12 +491,14 @@ const AdminPage = () => {
 									? 'auto'
 									: 0,
 						}}>
-						<HeaderAdmin onClickCreateEvent={onClickCreateEvent} />
+						<HeaderAdmin onClickPreview={onClickPreview} />
 
 						<div className="container">
 							<Select
-								onChange={(value) => {
+								value={selectUserValue}
+								onChange={(value, index) => {
 									dispatch(setFormState({ ...formState, token: value?.token }));
+									dispatch(setSelectUserValue(index));
 								}}
 								variants={patients}
 							/>
