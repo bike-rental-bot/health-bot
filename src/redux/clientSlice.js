@@ -10,11 +10,13 @@ export const clientSlice = createSlice({
 	initialState: clientState,
 	reducers: {
 		setListEvent: (state, action) => {
-			let info = action.payload?.info;
-			state.loading = false;
-			state[action.payload.date] = info;
+			if (action.payload?.info && action.payload?.date) {
+				let info = action.payload?.info;
+				state.loading = false;
+				state[action.payload.date] = info;
 
-			return state;
+				return state;
+			}
 		},
 		setEventsLoading: (state, action) => {
 			let value = { ...state, loading: action.payload };

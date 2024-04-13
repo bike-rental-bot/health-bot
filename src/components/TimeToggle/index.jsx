@@ -39,10 +39,10 @@ const TimeToggle = ({ calendarDate, setCalendarDate }) => {
 		if (type === 0) {
 			if (calendarFull) {
 				swiperRef.current.style.transition = '0.5s';
-				swiperRef.current.style.height = `432px`;
+				swiperRef.current.style.height = `390px`;
 			} else {
 				swiperRef.current.style.transition = '0.5s';
-				swiperRef.current.style.height = `273px`;
+				swiperRef.current.style.height = `231px`;
 			}
 		}
 	}, [calendarFull]);

@@ -74,7 +74,7 @@ const MainPage = () => {
 			WebApp.offEvent('backButtonClicked', clickCloseBtn);
 			WebApp.offEvent('mainButtonClicked', clickMainBtn);
 		};
-	}, []);
+	}, [userInfo]);
 
 	useEffect(() => {
 		if (userInfo?.user?.role === 'user') {
@@ -123,6 +123,12 @@ const MainPage = () => {
 			}
 		}
 	}, [calendarDate, token, patientToken]);
+
+	useEffect(() => {
+		const root = document.getElementById('root');
+
+		root.style.paddingBottom = '0px';
+	}, []);
 	return (
 		<>
 			<div className={styles.containerHeader}>

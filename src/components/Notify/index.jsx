@@ -6,12 +6,36 @@ import Modal from '../UI/Modal';
 
 import NotifyDescription from '../NotifyDescription';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { get } from '../../lib/api';
 
-const Notify = ({ type = 'food', onClick, title, time, description, preview_url, attachments }) => {
+const Notify = ({
+	type = 'food',
+	onClick,
+	title,
+	time,
+	description,
+	preview_url,
+	attachments,
+	is_completed,
+	id,
+}) => {
 	const [modalActive, setModalActive] = useState(false);
+
+	const role = useSelector((state) => state.user?.user?.role);
+
+	const userToken = useSelector((state) => state.user.token);
 
 	const closeModal = () => {
 		setModalActive(false);
+	};
+
+	const fullFillClick = () => {
+		if (role === 'user') {
+			get('/notify/completeNotify', { task_id: id, token: userToken }).then((res) =>
+				console.log('complete', res),
+			);
+		}
 	};
 
 	return (
@@ -30,13 +54,10 @@ const Notify = ({ type = 'food', onClick, title, time, description, preview_url,
 
 				<div className={styles.text}>{description}</div>
 
-				<div className={styles.labelCont}>
-					<label>
-						<input type="checkbox" />
-						<span>
-							<TickSVG />
-						</span>
-					</label>
+				<div className={`${styles.labelCont}`}>
+					<div className={`${is_completed && styles[type]}`}>
+						<TickSVG />
+					</div>
 				</div>
 			</div>
 			<Modal active={modalActive}>
@@ -48,6 +69,8 @@ const Notify = ({ type = 'food', onClick, title, time, description, preview_url,
 					description={description}
 					type={type}
 					closeClick={closeModal}
+					fullFillClick={fullFillClick}
+					is_completed={is_completed}
 				/>
 			</Modal>
 		</>

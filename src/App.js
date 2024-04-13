@@ -33,7 +33,13 @@ function App() {
 				.then((data) => {
 					dispatch(setUserInfo(data));
 
-					navigate('/admin');
+					if (data?.user?.role === 'admin') {
+						navigate('/admin');
+					}
+
+					if (data?.user?.role === 'user') {
+						navigate('/client');
+					}
 				})
 				.catch((err) => {
 					navigate('/block');
@@ -44,8 +50,6 @@ function App() {
 			setStatus(`empty InitData`);
 		}
 	}, []);
-
-
 
 	useEffect(() => {
 		if (user?.user?.role === 'admin' && user?.token) {

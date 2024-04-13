@@ -19,7 +19,7 @@ const LinkPreview = ({
 		<>
 			<div
 				onClick={() => {
-					webApp.openLink(href);
+					webApp.openLink(href, { try_instant_view: true });
 				}}
 				style={style}
 				className={`${styles.container} ${styles.block} ${styles[type]} ${className}`}>

@@ -20,7 +20,7 @@ const TYPESMAP = {
 	activity: 'day_regime',
 };
 const NotifyList = ({ type, calendarDate }) => {
-	const { role } = useSelector((state) => state.user.user);
+	const role = useSelector((state) => state?.user?.user?.role);
 
 	const clientEvents = useSelector((state) => state.client);
 
@@ -28,29 +28,32 @@ const NotifyList = ({ type, calendarDate }) => {
 
 	const patientToken = useSelector((state) => state.admin.formState.token);
 
+	console.log('clientEvents', clientEvents);
+
 	if (role === 'user') {
 		return (
 			<>
-				{Array.isArray(clientEvents[calendarDate.toISOString().slice(0, 10)][type]) &&
-					clientEvents[calendarDate.toISOString().slice(0, 10)][type].map((el) => {
+				{clientEvents[calendarDate.toISOString().slice(0, 10)] &&
+					clientEvents[calendarDate.toISOString().slice(0, 10)][TYPESMAP[type]] &&
+					Array.isArray(clientEvents[calendarDate.toISOString().slice(0, 10)][TYPESMAP[type]]) &&
+					clientEvents[calendarDate.toISOString().slice(0, 10)][TYPESMAP[type]].map((el) => {
 						return (
 							<Notify
-								attachment_url={el.attachment_url}
-								title={el.title}
+								is_completed={el.is_completed}
+								preview_url={el.notify.preview_url}
+								attachments={el.notify.attachments}
+								title={el.notify.title}
 								time={formatTime(new Date(el.time))}
-								description={el.description}
+								description={el.notify.description}
 								type={type}
+								id={el.id}
+								key={el.id}
 							/>
 						);
 					})}
 			</>
 		);
 	}
-
-	console.log(
-		'huy',
-		adminEvents[patientToken] && adminEvents[patientToken][calendarDate.toISOString().slice(0, 10)],
-	);
 
 	if (role === 'admin') {
 		return (
@@ -65,12 +68,15 @@ const NotifyList = ({ type, calendarDate }) => {
 						(el) => {
 							return (
 								<Notify
+									is_completed={el.is_completed}
 									preview_url={el.notify.preview_url}
 									attachments={el.notify.attachments}
 									title={el.notify.title}
 									time={formatTime(new Date(el.time))}
 									description={el.notify.description}
 									type={type}
+									id={el.id}
+									key={el.id}
 								/>
 							);
 						},

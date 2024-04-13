@@ -28,6 +28,7 @@ const NotifyDescription = ({
 	type = 'food',
 	fullFillClick,
 	closeClick,
+	is_completed,
 }) => {
 	const [metaData, setMetaData] = useState(null);
 
@@ -137,13 +138,15 @@ const NotifyDescription = ({
 					</div>
 				</div>
 
-				<button
-					onClick={() => {
-						if (typeof fullFillClick === 'function') fullFillClick();
-					}}
-					className={`${styles.fullFillBtn} ${styles[type]}`}>
-					<span>Исполнить</span>
-				</button>
+				{!is_completed && (
+					<button
+						onClick={() => {
+							if (typeof fullFillClick === 'function') fullFillClick();
+						}}
+						className={`${styles.fullFillBtn} ${styles[type]}`}>
+						<span>Исполнить</span>
+					</button>
+				)}
 
 				<button
 					onClick={() => {
