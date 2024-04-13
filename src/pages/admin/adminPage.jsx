@@ -70,6 +70,7 @@ const AdminPage = () => {
 	});
 	const [user, setUser] = useState(null);
 	const { viewPort, isOpenKeyboard } = useSelector((state) => state.app);
+	const [archieveList, setArchieveList] = useState(null);
 
 	const swiperRef = useRef();
 	const typeSwiperContRef = useRef();
@@ -161,6 +162,36 @@ const AdminPage = () => {
 		let left = getPosition(typeSwiperContRef, archiveRef);
 		activityIndicatorRef.current.style.transform = `translate(${left}px)`;
 	};
+
+	const copyClick = (res) => {
+		setActiveTextFields({ title: true, description: true, link: true });
+
+		let images = [...formFiles];
+
+		if (Array.isArray(res.attachments)) {
+			for (let i = 0; i < 3 - formFiles.length && i < res.attachments.length; i++) {
+				images.push({
+					preview: {
+						src: res.attachments[i],
+						key: res.attachments[i],
+					},
+				});
+			}
+			setFormFiles(images);
+		}
+
+		dispatch(
+			setFormState({
+				...formState,
+				title: res?.title,
+				description: res?.description,
+				preview_url: res.preview_url,
+				type: res.type,
+			}),
+		);
+	};
+
+	console.log('formFiles', formFiles);
 
 	//измерение размеров блока main при изменении размеров окна
 	useEffect(() => {
@@ -330,10 +361,17 @@ const AdminPage = () => {
 
 	const onClickCreateEvent = async () => {
 		const formData = new FormData();
+		let attachments = [];
+		let addFileNum = 0;
 
 		for (let i = 0; i < formFiles.length; i++) {
-			formData.append('files', formFiles[i]?.file);
+			if (formFiles[i].file) {
+				addFileNum = addFileNum + 1;
+				formData.append('files', formFiles[i]?.file);
+			} else attachments.push(formFiles[i].preview.src);
 		}
+
+		console.log('addFileNum', addFileNum);
 
 		if (
 			isTimeChanged.current &&
@@ -341,17 +379,18 @@ const AdminPage = () => {
 			formState.title.trim() !== '' &&
 			formState.description.trim() !== ''
 		) {
-			let attachments = [];
-			if (formFiles.length > 0) {
+			if (addFileNum > 0) {
 				const uploadFiles = await fetch(`${config.API_BASE_URL}/notify/upload?token=${token}`, {
 					method: 'POST',
 					body: formData,
 				})
 					.then((res) => res.json())
 					.then((res) => {
-						attachments = res?.files ? res.files : [];
+						attachments = res?.files ? [...attachments, ...res.files] : [attachments];
 					});
 			}
+
+			console.log('res', attachments);
 			post('/notify/addNotify', {}, { ...formState, attachments })
 				.then((res) => {
 					dispatch(setFormState({ ...formState, title: '', attachment_url: '', description: '' }));
@@ -475,7 +514,7 @@ const AdminPage = () => {
 					e.preventDefault();
 					onClickCreateEvent();
 				}}
-				enctype="multipart/form-data"
+				enсtype="multipart/form-data"
 				ref={headerRef}
 				className={styles.header}>
 				{
@@ -674,7 +713,11 @@ const AdminPage = () => {
 					</SwiperSlide>
 
 					<SwiperSlide style={{ overflow: 'auto' }}>
-						<Archieve />
+						<Archieve
+							setNotifyList={setArchieveList}
+							copyClick={copyClick}
+							notifyList={archieveList}
+						/>
 					</SwiperSlide>
 				</Swiper>
 			</main>
@@ -686,7 +729,10 @@ const AdminPage = () => {
 					searchInputRef={searchInputRef}
 					clickBackBtn={() => setSearch(false)}
 					containerRef={searchInputContRef}
-					sendSearch={() => {}}
+					sendSearch={(res) => {
+						console.log('search result', res);
+						setArchieveList(res.result);
+					}}
 					onFocus={() => setSearchFocus(true)}
 					onBlur={() => setSearchFocus(false)}
 					togglerRef={typeSwiperContRef}

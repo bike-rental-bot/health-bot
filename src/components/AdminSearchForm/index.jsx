@@ -3,6 +3,8 @@ import ArrowLeft from '../Icons/ArrowLeft';
 import SearchSVG from '../Icons/Search';
 import styles from './style.module.scss';
 import { createPortal } from 'react-dom';
+import { get } from '../../lib/api';
+import { useSelector } from 'react-redux';
 
 const WebApp = window.Telegram.WebApp;
 
@@ -21,6 +23,8 @@ const AdminSearchForm = ({
 		}
 	}, []);
 
+	const token = useSelector((state) => state.user.token);
+
 	useEffect(() => {
 		WebApp.onEvent('viewportChanged', (e) => {
 			if (searchInputRef?.current && e.isStateStable) {
@@ -34,23 +38,37 @@ const AdminSearchForm = ({
 			}
 		});
 	}, []);
+
+	const formSubmit = (e) => {
+		e.preventDefault();
+		if (searchInputRef) {
+			searchInputRef.current.blur();
+		}
+
+		console.log('submit');
+
+		if (typeof sendSearch === 'function' && searchInputRef?.current?.value) {
+			get('/notify/searchByNotify', { token: token, q: searchInputRef.current.value })
+				.then((res) => {
+					sendSearch(res);
+				})
+				.catch(() => {});
+		}
+	};
+
+	useEffect(() => {
+		if (typeof sendSearch === 'function') {
+			get('/notify/searchByNotify', { token: token, q: '' })
+				.then((res) => {
+					sendSearch(res);
+				})
+				.catch(() => {});
+		}
+	}, []);
 	return (
 		<>
 			{createPortal(
-				<form
-					onSubmit={(e) => {
-						e.preventDefault();
-
-						if (searchInputRef) {
-							searchInputRef.current.blur();
-						}
-
-						if (typeof sendSearch === 'function') {
-							sendSearch();
-						}
-					}}
-					ref={containerRef}
-					className={styles.searchInput}>
+				<form onSubmit={formSubmit} ref={containerRef} className={styles.searchInput}>
 					<div className={`container ${styles.container}`}>
 						<button
 							type="button"
@@ -69,8 +87,6 @@ const AdminSearchForm = ({
 							<input
 								type={'search'}
 								onFocus={(e) => {
-									e.preventDefault();
-
 									if (onFocus === 'function') {
 										onFocus();
 									}
@@ -79,11 +95,7 @@ const AdminSearchForm = ({
 								}}
 								ref={searchInputRef}
 							/>
-							<button
-								onClick={(e) => {
-									e.preventDefault();
-								}}
-								type="submit">
+							<button type="submit">
 								<SearchSVG stroke="#7F7F84" width={16} height={16} />
 							</button>
 						</label>

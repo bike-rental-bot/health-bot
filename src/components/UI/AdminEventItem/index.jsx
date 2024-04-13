@@ -3,21 +3,20 @@ import styles from './styles.module.scss';
 import img from '../../../assets/images/tgImg.png';
 import ArrowSVG from '../../Icons/Arrow';
 
-const TEXT =
-	'Текст текст текст Текст текст текст Текст текст текст Текст текст текст Текст текст текст Текст текст текст Текст текст текст Текст текст текст Текст текст текст Текст текст текст Текст текст текст Текст текст текст Текст текст текст Текст текст текст Текст текст текст Текст текст текст Текст текст текст Текст текст текст Текст текст текст Текст текст текст Текст текст текст Текст текст текст Текст текст текст Текст текст текст';
-
-const copyText = (text) => {
-	navigator.clipboard
-		.writeText(text)
-		.then(() => {})
-		.catch((error) => {});
+const TYPESMAP = {
+	food: 'nutrition',
+	drugs: 'preparations',
+	activity: 'day_regime',
 };
+
 const AdminEventItem = ({
 	type = 'food',
-	text = TEXT,
-	images = [img, img],
-	header = 'Завтрак',
+	description,
+	images = [],
+	title = 'Завтрак',
 	time = '8:00',
+	preview_url,
+	copyClick,
 }) => {
 	const [isHidden, setIsHidden] = useState(true);
 	const infoRef = useRef();
@@ -32,6 +31,10 @@ const AdminEventItem = ({
 		}
 	}, [isHidden]);
 
+	if (title.trim() === 'Это заголовок') {
+		console.log(images);
+	}
+
 	return (
 		<div
 			ref={contRef}
@@ -43,21 +46,31 @@ const AdminEventItem = ({
 			<div className={`${styles.header} ${styles[type]} ${!isHidden && styles.open}`}>
 				{isHidden ? (
 					<div className={`${styles.hidden} ${styles[type]}`}>
-						<p>{header}</p> <p>{time}</p>
+						<p>{title}</p> <p>{time}</p>
 					</div>
 				) : (
 					<div className={`${styles.notHidden} ${styles[type]}`}>
-						<button 
-						    type={'button'}
-							onClick={(e) => {
-								copyText(text);
-								e.stopPropagation();
-							}}
-							className={styles.copyBtn}>
-							Копировать
-						</button>
+						<div>
+							<button
+								type={'button'}
+								onClick={(e) => {
+									if (typeof copyClick === 'function')
+										copyClick({
+											title,
+											description,
+											preview_url,
+											attachments: images,
+											type: TYPESMAP[type],
+										});
+									e.stopPropagation();
+								}}
+								className={styles.copyBtn}>
+								Копировать
+							</button>
+						</div>
+
 						<div className={styles.textHeader}>
-							<p>{header}</p>
+							<p>{title}</p>
 							<p>{time}</p>
 						</div>
 
@@ -88,15 +101,15 @@ const AdminEventItem = ({
 				ref={infoRef}
 				className={`${styles.info} ${styles[type]} ${!isHidden && styles.open}`}>
 				<div className={styles.text}>
-					<p>{text}</p>
+					<p>{description}</p>
 				</div>
 
 				<div className={styles.imgBlock}>
 					{Array.isArray(images) &&
-						images.map((el) => {
+						images.map((el, index) => {
 							return (
-								<div>
-									<img src={el} alt={'img'} />
+								<div key={`${el} ${index}`}>
+									<img src={el} alt={el} />
 								</div>
 							);
 						})}

@@ -10,6 +10,26 @@ const AdminTogglerNotify = ({ footerRef, clickSearch }) => {
 	const dispatch = useDispatch();
 	const formState = useSelector((state) => state.admin.formState);
 
+	useEffect(() => {
+		if (formState.type === EVENTTYPES[0] && indicatorTextareaRef?.current) {
+			indicatorTextareaRef.current.style.left = '0px';
+			indicatorTextareaRef.current.style.right = '0px';
+			indicatorTextareaRef.current.style.transform = 'translateX(2px)';
+		}
+
+		if (formState.type === EVENTTYPES[1] && indicatorTextareaRef?.current) {
+			indicatorTextareaRef.current.style.left = '0px';
+			indicatorTextareaRef.current.style.right = '0px';
+			indicatorTextareaRef.current.style.transform = 'translateX(100%)';
+		}
+
+		if (formState.type === EVENTTYPES[2] && indicatorTextareaRef?.current) {
+			indicatorTextareaRef.current.style.transform = 'translateX(200%)';
+			indicatorTextareaRef.current.style.left = '-2px';
+			indicatorTextareaRef.current.style.right = '0px';
+		}
+	}, [formState]);
+
 	return createPortal(
 		<footer ref={footerRef} className={styles.footer}>
 			<div className={styles.container}>
@@ -17,9 +37,6 @@ const AdminTogglerNotify = ({ footerRef, clickSearch }) => {
 					<label>
 						<input
 							onChange={() => {
-								indicatorTextareaRef.current.style.left = '0px';
-								indicatorTextareaRef.current.style.right = '0px';
-								indicatorTextareaRef.current.style.transform = 'translateX(2px)';
 								dispatch(setFormState({ ...formState, type: EVENTTYPES[0] }));
 							}}
 							type={'radio'}
@@ -33,10 +50,6 @@ const AdminTogglerNotify = ({ footerRef, clickSearch }) => {
 					<label>
 						<input
 							onChange={() => {
-								indicatorTextareaRef.current.style.left = '0px';
-								indicatorTextareaRef.current.style.right = '0px';
-								indicatorTextareaRef.current.style.transform = 'translateX(100%)';
-
 								dispatch(setFormState({ ...formState, type: EVENTTYPES[1] }));
 							}}
 							type={'radio'}
@@ -49,10 +62,6 @@ const AdminTogglerNotify = ({ footerRef, clickSearch }) => {
 					<label>
 						<input
 							onChange={(value) => {
-								indicatorTextareaRef.current.style.transform = 'translateX(200%)';
-								indicatorTextareaRef.current.style.left = '-2px';
-								indicatorTextareaRef.current.style.right = '0px';
-
 								dispatch(setFormState({ ...formState, type: EVENTTYPES[2] }));
 							}}
 							type={'radio'}

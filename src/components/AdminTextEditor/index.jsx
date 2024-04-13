@@ -34,7 +34,7 @@ const AdminTextEditor = ({
 	const formState = useSelector((state) => state.admin.formState);
 	const WebApp = window.Telegram.WebApp;
 
-	const debounceTextLink = useDebounce(formState.attachment_url, 500);
+	const debounceTextLink = useDebounce(formState.preview_url, 250);
 	const [metaData, setMetaData] = useState(null);
 	const dispatch = useDispatch();
 
@@ -243,7 +243,7 @@ const AdminTextEditor = ({
 						<DeleteButton
 							onClick={() => {
 								setMetaData(null);
-								dispatch(setFormState({ ...formState, attachment_url: '' }));
+								dispatch(setFormState({ ...formState, preview_url: '' }));
 							}}
 						/>
 
@@ -267,8 +267,8 @@ const AdminTextEditor = ({
 										fileList.splice(index, 1);
 										setFormFiles(fileList);
 									}}
-									key={el.preview.key}
-									src={el.preview.src}
+									key={el?.preview?.key}
+									src={el?.preview?.src}
 								/>
 							);
 						})}
