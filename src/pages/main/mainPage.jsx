@@ -30,36 +30,17 @@ const MainPage = () => {
 
 	useEffect(() => {
 		if (userInfo?.user?.role === 'admin') {
-			WebApp.MainButton.setText('Вернуться в админ-панель').show();
+			WebApp.MainButton.setParams({
+				text: 'Вернуться в админ-панель',
+				color: '#3192fd',
+			}).show();
 		}
 
 		if (userInfo?.user?.role === 'user') {
-			WebApp.MainButton.setText('Задать вопрос').show();
-		}
-		function clickCloseBtn() {
-			const tagName = document.activeElement.tagName.toLowerCase();
-
-			if (tagName === 'textarea' || tagName === 'input') {
-				document.activeElement.blur();
-			}
-
-			requestAnimationFrame(() => {
-				WebApp.showPopup(
-					{
-						title: 'health_bot',
-						message: 'Внесенные изменения могут быть потеряны',
-						buttons: [
-							{ id: 'close', type: 'destructive', text: 'Закрыть' },
-							{ id: 'cancel', type: 'cancel', text: 'Отмена' },
-						],
-					},
-					(id) => {
-						if (id === 'close') {
-							WebApp.close();
-						}
-					},
-				);
-			});
+			WebApp.MainButton.setParams({
+				text: 'Задать вопрос',
+				color: '#3192fd',
+			}).show();
 		}
 
 		function clickMainBtn() {
@@ -67,11 +48,10 @@ const MainPage = () => {
 
 			if (userInfo?.user?.role === 'user') WebApp.openTelegramLink('https://t.me/olegin_m');
 		}
-		WebApp.onEvent('backButtonClicked', clickCloseBtn);
+
 		WebApp.onEvent('mainButtonClicked', clickMainBtn);
 
 		return () => {
-			WebApp.offEvent('backButtonClicked', clickCloseBtn);
 			WebApp.offEvent('mainButtonClicked', clickMainBtn);
 		};
 	}, [userInfo]);

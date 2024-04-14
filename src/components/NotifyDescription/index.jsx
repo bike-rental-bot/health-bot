@@ -122,7 +122,7 @@ const NotifyDescription = ({
 							) : (
 								<div
 									onClick={() => {
-										WebApp.openLink(preview_url);
+										WebApp.openLink(preview_url, { try_instant_view: true });
 									}}
 									className={styles.link}>
 									{preview_url}
@@ -138,15 +138,15 @@ const NotifyDescription = ({
 					</div>
 				</div>
 
-				{!is_completed && (
+				{
 					<button
 						onClick={() => {
 							if (typeof fullFillClick === 'function') fullFillClick();
 						}}
-						className={`${styles.fullFillBtn} ${styles[type]}`}>
-						<span>Исполнить</span>
+						className={`${styles.fullFillBtn} ${styles[type]} ${is_completed && styles.completed}`}>
+						<span>{is_completed ? 'Исполнено' : 'Исполнить'}</span>
 					</button>
-				)}
+				}
 
 				<button
 					onClick={() => {

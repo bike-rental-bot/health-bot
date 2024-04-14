@@ -378,8 +378,8 @@ const AdminPage = () => {
 	};
 
 	const onClickPreview = () => {
-		if (formState.token) {
-			navigate('/client');
+		if (formState.user_id) {
+			navigate('/');
 		} else {
 			setStateToasify({
 				...stateToasify,

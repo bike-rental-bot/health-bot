@@ -7,7 +7,7 @@ import AppRoutes from './AppRoutes';
 import { get, post } from './lib/api';
 import svg from './assets/images/loader.svg';
 import { useNavigate } from 'react-router-dom';
-import { setUserInfo } from './redux/userSlice';
+import { setUserError, setUserInfo, setUserLoading } from './redux/userSlice';
 import { setAppState } from './redux/appSlice';
 import { setPatients } from './redux/adminSlice';
 
@@ -33,25 +33,54 @@ function App() {
 	}
 
 	useEffect(() => {
+		function clickCloseBtn() {
+			const tagName = document.activeElement.tagName.toLowerCase();
+
+			if (tagName === 'textarea' || tagName === 'input') {
+				document.activeElement.blur();
+			}
+
+			requestAnimationFrame(() => {
+				WebApp.showPopup(
+					{
+						title: 'health_bot',
+						message: 'Внесенные изменения могут быть потеряны',
+						buttons: [
+							{ id: 'close', type: 'destructive', text: 'Закрыть' },
+							{ id: 'cancel', type: 'cancel', text: 'Отмена' },
+						],
+					},
+					(id) => {
+						if (id === 'close') {
+							WebApp.close();
+						}
+					},
+				);
+			});
+		}
+
+		WebApp.onEvent('backButtonClicked', clickCloseBtn);
+
+		return () => {
+			WebApp.offEvent('backButtonClicked', clickCloseBtn);
+		};
+	}, []);
+
+	useEffect(() => {
 		if (WebApp.initData) {
 			post('/users/loginByInitData', {}, decodeURIComponent(WebApp.initData))
 				.then((data) => {
 					dispatch(setUserInfo(data));
-
-					if (data?.user?.role === 'admin') {
-						navigate('/admin');
-					}
-
-					if (data?.user?.role === 'user') {
-						navigate('/client');
-					}
+					dispatch(setUserLoading(false));
 				})
 				.catch((err) => {
 					navigate('/block');
+					dispatch(setUserLoading(false));
+					dispatch(setUserError(true));
 					setStatus(`server error ${err}`);
 				});
 		} else {
-			navigate('/admin');
+			navigate('/block');
 			setStatus(`empty InitData`);
 		}
 	}, []);
@@ -85,30 +114,21 @@ function App() {
 		};
 		WebApp.onEvent('viewportChanged', viewportChanged);
 
-		root.addEventListener('scroll', () => {
+		const rootScroll = () => {
 			setScrollPos(root.scrollTop);
 			setWScrollPos(window.screenTop);
-		});
+		};
 
-		return () => WebApp.offEvent('viewportChanged', viewportChanged);
+		root.addEventListener('scroll', rootScroll);
+
+		return () => {
+			WebApp.offEvent('viewportChanged', viewportChanged);
+			root.removeEventListener('scroll', rootScroll);
+		};
 	}, []);
-
-	useEffect(() => {
-		if (!openKeyboard) {
-			root.scrollTo({ top: 0 });
-		}
-	}, [openKeyboard]);
 
 	return (
 		<>
-			{/* webAPP: {WebApp.platform}
-			<div>
-				{' '}
-				viewport: {viewport} window.innerHeight: {window.innerHeight}
-			</div>
-			<div style={{ height: 40 }}></div>
-			<div> root: {scrollPos}</div>
-			<div> window: {wScrollPos}</div> */}
 			<AppRoutes />
 		</>
 	);

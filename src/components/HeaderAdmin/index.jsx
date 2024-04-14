@@ -5,18 +5,18 @@ import { Link } from 'react-router-dom';
 const HeaderAdmin = ({ onClickPreview }) => {
 	return (
 		<div className={`${styles.container} container`}>
-			<button 
-			    
+			<button
 				type="button"
 				onClick={() => {
 					if (typeof onClickPreview === 'function') onClickPreview();
 				}}
-				className={styles.previewBtn}
-				to={'/client'}>
+				className={styles.previewBtn}>
 				Предпросмотр
 			</button>
 
-			<button className={styles.createEventBtn} type={'submit'}>Создать</button>
+			<button className={styles.createEventBtn} type={'submit'}>
+				Создать
+			</button>
 		</div>
 	);
 };

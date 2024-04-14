@@ -6,8 +6,9 @@ import Modal from '../UI/Modal';
 
 import NotifyDescription from '../NotifyDescription';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { get } from '../../lib/api';
+import { setListEvent } from '../../redux/clientSlice';
 
 const Notify = ({
 	type = 'food',
@@ -19,6 +20,7 @@ const Notify = ({
 	attachments,
 	is_completed,
 	id,
+	calendarDate,
 }) => {
 	const [modalActive, setModalActive] = useState(false);
 
@@ -26,15 +28,29 @@ const Notify = ({
 
 	const userToken = useSelector((state) => state.user.token);
 
+	const dispatch = useDispatch();
+
 	const closeModal = () => {
 		setModalActive(false);
 	};
 
-	const fullFillClick = () => {
+	const fullFillClick = async () => {
 		if (role === 'user') {
 			get('/notify/completeNotify', { task_id: id, token: userToken }).then((res) =>
 				console.log('complete', res),
 			);
+
+			get('/notify/getByDate', {
+				token: userToken,
+				date: calendarDate.toISOString().slice(0, 10),
+			})
+				.then((res) => {
+					const obj = { date: calendarDate.toISOString().slice(0, 10), info: res.result };
+					dispatch(setListEvent(obj));
+				})
+				.catch(() => {
+					dispatch(setListEvent());
+				});
 		}
 	};
 

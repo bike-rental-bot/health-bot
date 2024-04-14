@@ -37,6 +37,36 @@
     background-color: white;
     border-radius: 8px;
     width: 100%;
+    margin-top: 20px;
+    position: relative;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0px;
+        left: 2px;
+        right: 2px;
+        height: 2px;
+        border-radius: 2px;
+    }
+
+    &.food {
+        &::before {
+            background-color: $nutricion-color;
+        }
+    }
+
+    &.activity {
+        &::before {
+            background-color: $activity-color;
+        }
+    }
+
+    &.drugs {
+        &::before {
+            background-color: $drugs-color;
+        }
+    }
 
     .block {
         width: 100%;
@@ -85,6 +115,17 @@
                         margin: 0;
                     }
                 }
+            }
+
+            .link {
+                color: $tg-color;
+                text-decoration: underline;
+            }
+        }
+
+        &:last-child {
+            &::after {
+                display: none;
             }
         }
 

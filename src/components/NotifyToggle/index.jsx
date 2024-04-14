@@ -20,18 +20,6 @@ const getPosition = (parentRef, childRef) => {
 	return childRect.left - parentRect.left;
 };
 
-const formatTime = (currentDate) => {
-	let hours = currentDate.getHours();
-	let minutes = currentDate.getMinutes();
-
-	hours = hours < 10 ? '0' + hours : hours;
-	minutes = minutes < 10 ? '0' + minutes : minutes;
-
-	// Создаем строку в формате "ЧЧ:ММ"
-	let formattedTime = hours + ':' + minutes;
-
-	return formattedTime;
-};
 
 const NotifyToggle = ({ calendarDate }) => {
 	const activityIndicatorRef = useRef();

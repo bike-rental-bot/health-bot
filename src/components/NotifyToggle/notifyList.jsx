@@ -1,18 +1,7 @@
 import Notify from '../Notify';
 import styles from './style.module.scss';
 import { useSelector } from 'react-redux';
-const formatTime = (currentDate) => {
-	let hours = currentDate.getHours();
-	let minutes = currentDate.getMinutes();
-
-	hours = hours < 10 ? '0' + hours : hours;
-	minutes = minutes < 10 ? '0' + minutes : minutes;
-
-	// Создаем строку в формате "ЧЧ:ММ"
-	let formattedTime = hours + ':' + minutes;
-
-	return formattedTime;
-};
+import { formatTime } from '../../functions';
 
 const TYPESMAP = {
 	food: 'nutrition',
@@ -28,8 +17,6 @@ const NotifyList = ({ type, calendarDate }) => {
 
 	const patientToken = useSelector((state) => state.admin.formState.token);
 
-	
-
 	if (role === 'user') {
 		return (
 			<>
@@ -43,11 +30,12 @@ const NotifyList = ({ type, calendarDate }) => {
 								preview_url={el.notify.preview_url}
 								attachments={el.notify.attachments}
 								title={el.notify.title}
-								time={formatTime(new Date(el.time))}
+								time={formatTime(el.time)}
 								description={el.notify.description}
 								type={type}
 								id={el.id}
 								key={el.id}
+								calendarDate={calendarDate}
 							/>
 						);
 					})}
@@ -72,11 +60,12 @@ const NotifyList = ({ type, calendarDate }) => {
 									preview_url={el.notify.preview_url}
 									attachments={el.notify.attachments}
 									title={el.notify.title}
-									time={formatTime(new Date(el.time))}
+									time={formatTime(el.time)}
 									description={el.notify.description}
 									type={type}
 									id={el.id}
 									key={el.id}
+									calendarDate={calendarDate}
 								/>
 							);
 						},

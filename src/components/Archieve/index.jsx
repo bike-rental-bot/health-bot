@@ -3,6 +3,7 @@ import styles from './styles.module.scss';
 import { useEffect, useState } from 'react';
 import { get } from '../../lib/api.js';
 import { useSelector } from 'react-redux';
+import { formatTime } from '../../functions.js';
 
 const TYPESMAP = {
 	nutrition: 'food',
@@ -10,18 +11,6 @@ const TYPESMAP = {
 	day_regime: 'activity',
 };
 
-const formatTime = (currentDate) => {
-	let hours = currentDate.getHours();
-	let minutes = currentDate.getMinutes();
-
-	hours = hours < 10 ? '0' + hours : hours;
-	minutes = minutes < 10 ? '0' + minutes : minutes;
-
-	// Создаем строку в формате "ЧЧ:ММ"
-	let formattedTime = hours + ':' + minutes;
-
-	return formattedTime;
-};
 
 const Archieve = ({ notifyList, copyClick, setNotifyList }) => {
 	const token = useSelector((state) => state.user?.token);
@@ -48,7 +37,7 @@ const Archieve = ({ notifyList, copyClick, setNotifyList }) => {
 								description={el.notify?.description}
 								images={el.notify?.attachments}
 								type={TYPESMAP[el.notify.type]}
-								time={formatTime(new Date(el.time))}
+								time={formatTime(el.time)}
 								preview_url={el.notify?.preview_url}
 								copyClick={copyClick}
 								key={`${el.id} ${new Date(el.time).toISOString()}`}

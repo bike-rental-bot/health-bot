@@ -16,7 +16,7 @@ export async function post(uri, searchParams, data) {
 				: {},
 	});
 
-	if (response.ok) {
+	if (response.status >= 200 && response.status < 400) {
 		return await response.json();
 	} else {
 		return Promise.reject(response.status);
@@ -25,8 +25,9 @@ export async function post(uri, searchParams, data) {
 
 export async function get(uri, searchParams = {}, options = {}) {
 	const response = await fetch(buildUrl(uri, searchParams, options));
-	if (response.ok) {
+	if (response.status >= 200 && response.status < 400) {
 		return await response.json();
+	} else {
+		return Promise.reject(response.status);
 	}
-	throw new Error('Bad response');
 }
