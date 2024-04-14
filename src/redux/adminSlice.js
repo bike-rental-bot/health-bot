@@ -4,7 +4,8 @@ const adminState = {
 	isTextFieldsClose: true,
 	focusTextField: false,
 	formState: {
-		id: null,
+		user_id: null,
+		token: null,
 		type: 'nutrition',
 		title: '',
 		description: '',

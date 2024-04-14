@@ -280,7 +280,8 @@ const AdminPage = () => {
 			isTimeChanged.current &&
 			date.length !== 0 &&
 			formState.title.trim() !== '' &&
-			formState.description.trim() !== ''
+			formState.description.trim() !== '' &&
+			formState.user_id
 		) {
 			if (addFileNum > 0) {
 				const uploadFiles = await fetch(`${config.API_BASE_URL}/notify/upload?token=${token}`, {
@@ -317,7 +318,7 @@ const AdminPage = () => {
 					});
 				});
 		} else {
-			if (!formState.token) {
+			if (!formState.user_id) {
 				setStateToasify({
 					...stateToasify,
 					active: true,
@@ -409,6 +410,52 @@ const AdminPage = () => {
 		WebApp.MainButton.hide();
 	}, []);
 
+	// изменение размеров блока
+	useEffect(() => {
+		const headerEl = headerRef?.current;
+		const secondElement = footerRef?.current;
+		const searchElement = searchInputContRef?.current;
+		const root = document.getElementById('root');
+
+		const resizeObserver = new ResizeObserver((entries) => {
+			clearTimeout(resizeObserverTimeout);
+
+			resizeObserverTimeout.current = setTimeout(() => {
+				for (let entry of entries) {
+					if (entry.target === headerEl) {
+						if (
+							document?.activeElement?.getBoundingClientRect().bottom >
+								footerRef.current?.getBoundingClientRect().top &&
+							window.innerHeight > WebApp.viewportHeight
+						) {
+							if (footerRef && footerRef.current) {
+								footerRef.current.style.visibility = 'hidden';
+								footerRef.current.style.opacity = '0';
+							}
+						} else {
+							if (footerRef && footerRef.current) {
+								footerRef.current.style.visibility = '';
+								footerRef.current.style.opacity = '';
+							}
+						}
+					}
+				}
+			}, 0);
+		});
+
+		if (headerEl) {
+			resizeObserver.observe(headerEl);
+		}
+
+		if (secondElement) {
+			resizeObserver.observe(secondElement);
+		}
+
+		return () => {
+			resizeObserver.disconnect();
+		};
+	}, [search, isOpenKeyboard]);
+
 	return (
 		<>
 			<form
@@ -438,7 +485,7 @@ const AdminPage = () => {
 							<Select
 								value={selectUserValue}
 								onChange={(value, index) => {
-									dispatch(setFormState({ ...formState, id: value?.id }));
+									dispatch(setFormState({ ...formState, user_id: value?.id, token: value?.token }));
 									dispatch(setSelectUserValue(index));
 								}}
 								variants={patients}
