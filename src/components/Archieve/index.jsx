@@ -40,7 +40,7 @@ const Archieve = ({ notifyList, copyClick, setNotifyList }) => {
 								time={formatTime(el.time)}
 								preview_url={el.notify?.preview_url}
 								copyClick={copyClick}
-								key={`${el.id} ${new Date(el.time).toISOString()}`}
+								key={`${el.id} ${el.time}`}
 							/>
 						);
 					})}

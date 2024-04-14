@@ -69,42 +69,41 @@ const AdminSearchForm = ({
 	}, []);
 	return (
 		<>
-			{createPortal(
-				<form onSubmit={formSubmit} ref={containerRef} className={styles.searchInput}>
-					<div className={`container ${styles.container}`}>
-						<button
-							type="button"
-							onClick={() => {
-								if (searchInputRef) {
-									searchInputRef.current.blur();
+		
+			<form onSubmit={formSubmit} ref={containerRef} className={styles.searchInput}>
+				<div className={`container ${styles.container}`}>
+					<button
+						type="button"
+						onClick={() => {
+							if (searchInputRef) {
+								searchInputRef.current.blur();
+							}
+							if (typeof clickBackBtn === 'function') {
+								clickBackBtn();
+							}
+						}}>
+						<ArrowLeft />
+					</button>
+
+					<label>
+						<input
+							type={'search'}
+							enterKeyHint='search'
+							onFocus={(e) => {
+								if (onFocus === 'function') {
+									onFocus();
 								}
-								if (typeof clickBackBtn === 'function') {
-									clickBackBtn();
-								}
-							}}>
-							<ArrowLeft />
+
+								if (typeof onBlur === 'function') onBlur();
+							}}
+							ref={searchInputRef}
+						/>
+						<button type="submit">
+							<SearchSVG stroke="#7F7F84" width={16} height={16} />
 						</button>
-
-						<label>
-							<input
-								type={'search'}
-								onFocus={(e) => {
-									if (onFocus === 'function') {
-										onFocus();
-									}
-
-									if (typeof onBlur === 'function') onBlur();
-								}}
-								ref={searchInputRef}
-							/>
-							<button type="submit">
-								<SearchSVG stroke="#7F7F84" width={16} height={16} />
-							</button>
-						</label>
-					</div>
-				</form>,
-				document.body,
-			)}
+					</label>
+				</div>
+			</form>
 		</>
 	);
 };

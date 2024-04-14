@@ -30,7 +30,7 @@ const AdminTogglerNotify = ({ footerRef, clickSearch }) => {
 		}
 	}, [formState]);
 
-	return createPortal(
+	return (
 		<footer ref={footerRef} className={styles.footer}>
 			<div className={styles.container}>
 				<div className={styles.toggler}>
@@ -78,8 +78,7 @@ const AdminTogglerNotify = ({ footerRef, clickSearch }) => {
 			<button type="button" onClick={clickSearch} className={styles.searchBtn}>
 				<SearchSVG />
 			</button>
-		</footer>,
-		document.body,
+		</footer>
 	);
 };
 

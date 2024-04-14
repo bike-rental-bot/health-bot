@@ -398,12 +398,18 @@ const AdminPage = () => {
 	}, []);
 
 	useEffect(() => {
-		const overflow = 1;
-		document.body.style.marginTop = `${overflow}px`;
-		document.body.style.paddingBottom = `${overflow}px`;
-		window.scrollTo(0, overflow);
-		const root = document.getElementById('root');
-		root.style.paddingBottom = '72px';
+		if (WebApp.platform === 'android') {
+			const overflow = 1;
+			document.body.style.marginTop = `${overflow}px`;
+			document.body.style.paddingBottom = `${overflow}px`;
+			document.body.style.background = '';
+			document.body.style.overflow = 'hidden';
+			document.body.style.height = `100vh`;
+			window.scrollTo(0, overflow);
+			const root = document.getElementById('root');
+			root.style.maxHeight = `${window.innerHeight}`;
+			// root.style.paddingBottom = '72px';
+		}
 	}, []);
 
 	useEffect(() => {
@@ -458,6 +464,9 @@ const AdminPage = () => {
 
 	return (
 		<>
+			{WebApp.platform === 'ios' && isOpenKeyboard && (
+				<div style={{ height: window.innerHeight - WebApp.viewportHeight + 30 }}></div>
+			)}
 			<form
 				onSubmit={(e) => {
 					e.preventDefault();
@@ -584,7 +593,7 @@ const AdminPage = () => {
 				</div>
 			</form>
 
-			<div style={{ flex: '1 0 auto', position: 'relative' }}>
+			<div style={{ flex: '1 0 auto', position: 'relative', minHeight: 0 }}>
 				<main ref={mainRef} className={styles.main}>
 					<Swiper
 						onSlideChangeTransitionStart={(swiper) => {
