@@ -5,8 +5,11 @@
 
 .main {
     background: white;
-    flex: 1 0 auto;
-
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     .weekDays {
         margin-top: 0px;
     }
@@ -93,7 +96,7 @@
 .type {
     width: 100%;
     display: flex;
-    position: relative;
+    position: sticky;
     background-color: rgba(243, 243, 243, 0.7490196078);
 
     margin-top: 20px;

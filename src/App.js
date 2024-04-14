@@ -20,6 +20,11 @@ function App() {
 	const params = new URLSearchParams(window.location.search);
 	const token = params.get('token');
 	const [status, setStatus] = useState('');
+	const viewport = useSelector((state) => state.app.viewPort);
+	const openKeyboard = useSelector((state) => state.app.isOpenKeyboard);
+	const root = document.getElementById('root');
+	const [scrollPos, setScrollPos] = useState(0);
+	const [wScrollPos, setWScrollPos] = useState(0);
 
 	if (WebApp) {
 		WebApp.expand();
@@ -46,7 +51,7 @@ function App() {
 					setStatus(`server error ${err}`);
 				});
 		} else {
-			navigate('/notify');
+			navigate('/admin');
 			setStatus(`empty InitData`);
 		}
 	}, []);
@@ -73,17 +78,37 @@ function App() {
 			} else {
 				let obj = {
 					viewPort: WebApp.viewportHeight,
+					isOpenKeyboard: false,
 				};
 				dispatch(setAppState(obj));
 			}
 		};
 		WebApp.onEvent('viewportChanged', viewportChanged);
 
+		root.addEventListener('scroll', () => {
+			setScrollPos(root.scrollTop);
+			setWScrollPos(window.screenTop);
+		});
+
 		return () => WebApp.offEvent('viewportChanged', viewportChanged);
 	}, []);
 
+	useEffect(() => {
+		if (!openKeyboard) {
+			root.scrollTo({ top: 0 });
+		}
+	}, [openKeyboard]);
+
 	return (
 		<>
+			{/* webAPP: {WebApp.platform}
+			<div>
+				{' '}
+				viewport: {viewport} window.innerHeight: {window.innerHeight}
+			</div>
+			<div style={{ height: 40 }}></div>
+			<div> root: {scrollPos}</div>
+			<div> window: {wScrollPos}</div> */}
 			<AppRoutes />
 		</>
 	);

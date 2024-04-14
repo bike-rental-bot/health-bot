@@ -191,101 +191,6 @@ const AdminPage = () => {
 		);
 	};
 
-	console.log('formFiles', formFiles);
-
-	//измерение размеров блока main при изменении размеров окна
-	useEffect(() => {
-		const func = () => {
-			if (headerRef.current && mainRef.current) {
-				const block1Bottom = headerRef?.current.getBoundingClientRect().height;
-				const block2Top = WebApp.viewportHeight - 72;
-				const distance = block2Top - block1Bottom;
-
-				mainRef.current.style.height = `${distance}px`;
-			}
-		};
-
-		const funcV = (e) => {
-			if (headerRef.current && mainRef.current) {
-				const block1Bottom = headerRef?.current.getBoundingClientRect().height;
-				const block2Top = WebApp.viewportHeight - 72;
-				const distance = block2Top - block1Bottom;
-
-				mainRef.current.style.height = `${
-					distance < 0 ? mainRef.current.offsetHeight : distance
-				}px`;
-			}
-		};
-
-		func();
-
-		window.addEventListener('orientationchange', func);
-		WebApp.onEvent('viewportChanged', funcV);
-
-		return () => {
-			window.removeEventListener('resize', func);
-			WebApp.offEvent('viewportChanged', funcV);
-		};
-	}, []);
-
-	// изменение размеров блока
-	useEffect(() => {
-		const headerEl = headerRef?.current;
-		const secondElement = footerRef?.current;
-		const searchElement = searchInputContRef?.current;
-		const root = document.getElementById('root');
-
-		const resizeObserver = new ResizeObserver((entries) => {
-			clearTimeout(resizeObserverTimeout);
-
-			resizeObserverTimeout.current = setTimeout(() => {
-				for (let entry of entries) {
-					if (entry.target === headerEl) {
-						if (
-							document?.activeElement?.getBoundingClientRect().bottom >
-								footerRef.current?.getBoundingClientRect().top &&
-							window.innerHeight > WebApp.viewportHeight
-						) {
-							if (footerRef && footerRef.current) {
-								footerRef.current.style.visibility = 'hidden';
-								footerRef.current.style.opacity = '0';
-							}
-						} else {
-							if (footerRef && footerRef.current) {
-								footerRef.current.style.visibility = '';
-								footerRef.current.style.opacity = '';
-							}
-						}
-					}
-
-					if (mainRef.current) {
-						const distance =
-							WebApp.viewportHeight - headerEl.getBoundingClientRect().bottom - 72 - root.scrollTop;
-
-						if (distance > 50) {
-							mainRef.current.style.height = `${distance}px`;
-						} else {
-							mainRef.current.style.height = `${0}px`;
-						}
-					}
-				}
-			}, 0);
-		});
-
-		if (headerEl) {
-			resizeObserver.observe(headerEl);
-		}
-
-		if (secondElement) {
-			resizeObserver.observe(secondElement);
-		}
-
-		return () => {
-			resizeObserver.disconnect();
-		};
-	}, [search, isOpenKeyboard]);
-
-	//положение индикатора вкладок при изменении размеров окна
 	useEffect(() => {
 		function resizeWin() {
 			if (type === 0) {
@@ -371,8 +276,6 @@ const AdminPage = () => {
 			} else attachments.push(formFiles[i].preview.src);
 		}
 
-		console.log('addFileNum', addFileNum);
-
 		if (
 			isTimeChanged.current &&
 			date.length !== 0 &&
@@ -390,8 +293,7 @@ const AdminPage = () => {
 					});
 			}
 
-			console.log('res', attachments);
-			post('/notify/addNotify', {}, { ...formState, attachments })
+			post('/notify/addNotify', {}, { ...formState, attachments, token })
 				.then((res) => {
 					dispatch(setFormState({ ...formState, title: '', attachment_url: '', description: '' }));
 					setActiveTextFields({ ...ACTIVETEXTFIELDS });
@@ -536,7 +438,7 @@ const AdminPage = () => {
 							<Select
 								value={selectUserValue}
 								onChange={(value, index) => {
-									dispatch(setFormState({ ...formState, token: value?.token }));
+									dispatch(setFormState({ ...formState, id: value?.id }));
 									dispatch(setSelectUserValue(index));
 								}}
 								variants={patients}
@@ -635,92 +537,94 @@ const AdminPage = () => {
 				</div>
 			</form>
 
-			<main ref={mainRef} className={styles.main}>
-				<Swiper
-					onSlideChangeTransitionStart={(swiper) => {
-						setType(swiper.activeIndex);
+			<div style={{ flex: '1 0 auto', position: 'relative' }}>
+				<main ref={mainRef} className={styles.main}>
+					<Swiper
+						onSlideChangeTransitionStart={(swiper) => {
+							setType(swiper.activeIndex);
 
-						if (swiper.activeIndex === 2) {
-							mainRef.current.style.maxHeight = `${window.innerHeight}px`;
-						}
-					}}
-					initialSlide={type}
-					style={{ height: '100%' }}
-					className="container"
-					onProgress={progressSwiper}
-					ref={swiperRef}>
-					<SwiperSlide style={{ overflow: 'auto' }}>
-						<div className={`container ${styles.noSidePadding}`}>
-							<MyDatePicker
-								full={calendarFull}
-								setFull={setCalendarFull}
-								value={date}
-								weekDaysContainerClassName={styles.weekDays}
-								fullBtnClassName={styles.fullBtnDatePicker}
-								multiple={true}
-								onChange={(value) => {
-									const datesUTC = [];
+							if (swiper.activeIndex === 2) {
+								mainRef.current.style.maxHeight = `${window.innerHeight}px`;
+							}
+						}}
+						initialSlide={type}
+						style={{ height: '100%' }}
+						className="container"
+						onProgress={progressSwiper}
+						ref={swiperRef}>
+						<SwiperSlide style={{ overflow: 'auto' }}>
+							<div className={`container ${styles.noSidePadding}`}>
+								<MyDatePicker
+									full={calendarFull}
+									setFull={setCalendarFull}
+									value={date}
+									weekDaysContainerClassName={styles.weekDays}
+									fullBtnClassName={styles.fullBtnDatePicker}
+									multiple={true}
+									onChange={(value) => {
+										const datesUTC = [];
 
-									for (let i = 0; i < value.length; i++) {
-										let momentDate = moment.utc([
-											value[i].getFullYear(),
-											value[i].getMonth(),
-											value[i].getDate(),
-											timeParams.current.hour,
-											timeParams.current.minute,
-										]);
+										for (let i = 0; i < value.length; i++) {
+											let momentDate = moment.utc([
+												value[i].getFullYear(),
+												value[i].getMonth(),
+												value[i].getDate(),
+												timeParams.current.hour,
+												timeParams.current.minute,
+											]);
 
-										momentDate = momentDate.toISOString().slice(0, -5);
+											momentDate = momentDate.toISOString().slice(0, -5);
 
-										datesUTC.push(momentDate);
-									}
+											datesUTC.push(momentDate);
+										}
 
-									dispatch(setFormState({ ...formState, time: datesUTC }));
+										dispatch(setFormState({ ...formState, time: datesUTC }));
 
-									setDate(value);
-								}}
+										setDate(value);
+									}}
+								/>
+							</div>
+						</SwiperSlide>
+
+						<SwiperSlide>
+							<div style={{ padding: '40px 0', height: '100%' }}>
+								<TimePicker
+									onChange={(value) => {
+										timeParams.current.hour = value.hours;
+										timeParams.current.minute = value.minutes;
+
+										const datesUTC = [];
+
+										for (let i = 0; i < date.length; i++) {
+											let momentDate = moment.utc([
+												date[i].getFullYear(),
+												date[i].getMonth(),
+												date[i].getDate(),
+												timeParams.current.hour,
+												timeParams.current.minute,
+											]);
+
+											momentDate = momentDate.toISOString().slice(0, -5);
+
+											datesUTC.push(momentDate);
+										}
+
+										dispatch(setFormState({ ...formState, time: datesUTC }));
+									}}
+								/>
+							</div>
+						</SwiperSlide>
+
+						<SwiperSlide style={{ overflow: 'auto' }}>
+							<Archieve
+								setNotifyList={setArchieveList}
+								copyClick={copyClick}
+								notifyList={archieveList}
 							/>
-						</div>
-					</SwiperSlide>
-
-					<SwiperSlide>
-						<div style={{ padding: '40px 0', height: '100%' }}>
-							<TimePicker
-								onChange={(value) => {
-									timeParams.current.hour = value.hours;
-									timeParams.current.minute = value.minutes;
-
-									const datesUTC = [];
-
-									for (let i = 0; i < date.length; i++) {
-										let momentDate = moment.utc([
-											date[i].getFullYear(),
-											date[i].getMonth(),
-											date[i].getDate(),
-											timeParams.current.hour,
-											timeParams.current.minute,
-										]);
-
-										momentDate = momentDate.toISOString().slice(0, -5);
-
-										datesUTC.push(momentDate);
-									}
-
-									dispatch(setFormState({ ...formState, time: datesUTC }));
-								}}
-							/>
-						</div>
-					</SwiperSlide>
-
-					<SwiperSlide style={{ overflow: 'auto' }}>
-						<Archieve
-							setNotifyList={setArchieveList}
-							copyClick={copyClick}
-							notifyList={archieveList}
-						/>
-					</SwiperSlide>
-				</Swiper>
-			</main>
+						</SwiperSlide>
+					</Swiper>
+				</main>
+			</div>
 
 			{!search && <AdminTogglerNotify clickSearch={clickSearch} footerRef={footerRef} />}
 
@@ -730,7 +634,6 @@ const AdminPage = () => {
 					clickBackBtn={() => setSearch(false)}
 					containerRef={searchInputContRef}
 					sendSearch={(res) => {
-						console.log('search result', res);
 						setArchieveList(res.result);
 					}}
 					onFocus={() => setSearchFocus(true)}

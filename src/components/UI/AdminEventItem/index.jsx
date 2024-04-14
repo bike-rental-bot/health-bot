@@ -31,10 +31,6 @@ const AdminEventItem = ({
 		}
 	}, [isHidden]);
 
-	if (title.trim() === 'Это заголовок') {
-		console.log(images);
-	}
-
 	return (
 		<div
 			ref={contRef}
@@ -81,25 +77,7 @@ const AdminEventItem = ({
 				)}
 			</div>
 
-			<div
-				onTouchMove={(e) => {
-					e.preventDefault();
-					infoRef.current.blur();
-				}}
-				onTouchStart={(e) => {
-					e.preventDefault();
-					infoRef.current.blur();
-				}}
-				onTouchEnd={(e) => {
-					e.preventDefault();
-					infoRef.current.blur();
-				}}
-				onClick={(e) => {
-					e.preventDefault();
-					infoRef.current.blur();
-				}}
-				ref={infoRef}
-				className={`${styles.info} ${styles[type]} ${!isHidden && styles.open}`}>
+			<div ref={infoRef} className={`${styles.info} ${styles[type]} ${!isHidden && styles.open}`}>
 				<div className={styles.text}>
 					<p>{description}</p>
 				</div>

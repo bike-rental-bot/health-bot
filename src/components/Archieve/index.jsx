@@ -26,10 +26,10 @@ const formatTime = (currentDate) => {
 const Archieve = ({ notifyList, copyClick, setNotifyList }) => {
 	const token = useSelector((state) => state.user?.token);
 	useEffect(() => {
-		console.log('allllllldregtbfw')
+		
 		get('/notify/searchByNotify', { token: token, q: '' })
 			.then((res) => {
-				console.log('archieve list', res)
+			
 				setNotifyList(res.result);
 			})
 			.catch(() => {});

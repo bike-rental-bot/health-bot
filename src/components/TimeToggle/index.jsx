@@ -49,7 +49,6 @@ const TimeToggle = ({ calendarDate, setCalendarDate }) => {
 
 	const timeTableData = () => {
 		if (role === 'admin') {
-		
 			return (
 				patientsEvents &&
 				patientsEvents[patientToken] &&
@@ -61,28 +60,6 @@ const TimeToggle = ({ calendarDate, setCalendarDate }) => {
 			return events[calendarDate.toISOString().slice(0, 10)]?.hours;
 		}
 	};
-
-	useEffect(() => {
-		if (role === 'admin') {
-			console.log(
-				'timetable',
-				patientsEvents &&
-					patientsEvents[patientToken] &&
-					patientsEvents[patientToken][calendarDate.toISOString().slice(0, 10)],
-			);
-
-			eventsData.current =
-				patientsEvents &&
-				patientsEvents[patientToken] &&
-				patientsEvents[patientToken][calendarDate.toISOString().slice(0, 10)]?.hours;
-		}
-
-		if (role === 'user') {
-			eventsData.current = events[calendarDate.toISOString().slice(0, 10)]?.hours;
-		}
-	}, [events, patientsEvents, patientToken, calendarDate]);
-
-
 
 	return (
 		<div className={`container ${styles.container}`}>

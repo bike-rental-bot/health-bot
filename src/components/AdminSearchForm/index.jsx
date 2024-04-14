@@ -25,27 +25,29 @@ const AdminSearchForm = ({
 
 	const token = useSelector((state) => state.user.token);
 
+	const openKeyboard = useSelector((state) => state.app.isOpenKeyboard);
+
 	useEffect(() => {
 		WebApp.onEvent('viewportChanged', (e) => {
 			if (searchInputRef?.current && e.isStateStable) {
 				const root = document.getElementById('root');
 
 				if (togglerRef) {
-					requestAnimationFrame(() => {
-						root.scrollTo({ top: togglerRef.offsetTop - root.offsetTop });
-					});
+					if (openKeyboard) {
+						requestAnimationFrame(() => {
+							root.scrollTo({ top: 0 });
+						});
+					}
 				}
 			}
 		});
-	}, []);
+	}, [openKeyboard]);
 
 	const formSubmit = (e) => {
 		e.preventDefault();
 		if (searchInputRef) {
 			searchInputRef.current.blur();
 		}
-
-		console.log('submit');
 
 		if (typeof sendSearch === 'function' && searchInputRef?.current?.value) {
 			get('/notify/searchByNotify', { token: token, q: searchInputRef.current.value })
