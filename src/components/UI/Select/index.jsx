@@ -2,13 +2,14 @@ import { useEffect, useState, useRef } from 'react';
 import ArrowSVG from '../../Icons/Arrow';
 import styles from './styles.module.scss';
 import img1 from '../../../assets/images/tgUser1.png';
+import avatarIMG from "../../../assets/images/user.png";
 
 const SelectValue = ({ value }) => {
 	return (
 		<>
 			{value ? (
 				<div className={styles.userInfo}>
-					<img width={34} height={34} src={img1} alt="tgImg" />
+					<img width={34} height={34} src={value.photo} alt="tgImg" />
 					<div>
 						<p>{value?.full_name.trim()}</p>
 						<p>{value?.mention}</p>
@@ -73,7 +74,7 @@ const Select = ({ variants, onChange, children, value }) => {
 									handleVariant(index);
 								}}
 								key={index}>
-								<img width={34} height={34} src={img1} alt="tgImg" />
+								<img width={34} height={34} src={el?.photo ? el.photo : avatarIMG} alt="tgImg" />
 								<div>
 									<p>{el?.full_name.trim()}</p>
 									<p>{el?.mention}</p>
