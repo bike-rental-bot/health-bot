@@ -27,21 +27,21 @@ const AdminSearchForm = ({
 
 	const openKeyboard = useSelector((state) => state.app.isOpenKeyboard);
 
-	useEffect(() => {
-		WebApp.onEvent('viewportChanged', (e) => {
-			if (searchInputRef?.current && e.isStateStable) {
-				const root = document.getElementById('root');
+	// useEffect(() => {
+	// 	WebApp.onEvent('viewportChanged', (e) => {
+	// 		if (searchInputRef?.current && e.isStateStable) {
+	// 			const root = document.getElementById('root');
 
-				if (togglerRef) {
-					if (openKeyboard) {
-						requestAnimationFrame(() => {
-							root.scrollTo({ top: 0 });
-						});
-					}
-				}
-			}
-		});
-	}, [openKeyboard]);
+	// 			if (togglerRef) {
+	// 				if (openKeyboard) {
+	// 					requestAnimationFrame(() => {
+	// 						root.scrollTo({ top: 0 });
+	// 					});
+	// 				}
+	// 			}
+	// 		}
+	// 	});
+	// }, [openKeyboard]);
 
 	const formSubmit = (e) => {
 		e.preventDefault();

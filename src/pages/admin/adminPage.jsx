@@ -464,9 +464,7 @@ const AdminPage = () => {
 
 	return (
 		<>
-			{WebApp.platform === 'ios' && isOpenKeyboard && (
-				<div style={{ height: window.innerHeight - WebApp.viewportHeight + 30 }}></div>
-			)}
+			
 			<form
 				onSubmit={(e) => {
 					e.preventDefault();
