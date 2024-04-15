@@ -9,7 +9,7 @@ const SelectValue = ({ value }) => {
 		<>
 			{value ? (
 				<div className={styles.userInfo}>
-					<img width={34} height={34} src={value.photo} alt="tgImg" />
+					<img width={34} height={34} src={value.photo ? value.photo : avatarIMG} alt="tgImg" />
 					<div>
 						<p>{value?.full_name.trim()}</p>
 						<p>{value?.mention}</p>
