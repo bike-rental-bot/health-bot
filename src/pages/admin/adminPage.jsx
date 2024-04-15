@@ -14,14 +14,12 @@ import moment from 'moment';
 import { post } from '../../lib/api.js';
 import Toasify from '../../components/UI/Toasify/index.jsx';
 import Select from '../../components/UI/Select';
-import img1 from '../../assets/images/tgUser1.png';
-import img2 from '../../assets/images/tgUser2.png';
-import img3 from '../../assets/images/tgUser3.png';
 import { useNavigate } from 'react-router-dom';
 import { setFormState, setSelectUserValue } from '../../redux/adminSlice.js';
 import AdminTogglerNotify from './../../components/AdminTogglerNotify/index';
 import AdminSearchForm from '../../components/AdminSearchForm/index';
 import config from '../../config.js';
+import { toggleIndicator1, toggleIndicator2, toggleIndicator3, startDateFunction } from './functions.js';
 
 const tg = window?.Telegram?.WebApp;
 
@@ -37,24 +35,19 @@ const ACTIVETEXTFIELDS = {
 	link: false,
 };
 
-const variants = [
-	{ id: 1, img: img1, name: 'Анастасия', nickname: '@nasty' },
-	{ id: 2, img: img2, name: 'Леонид', nickname: '@lenya' },
-	{ id: 3, img: img3, name: 'Александр', nickname: '@alex' },
-	{ id: 1, img: img1, name: 'Анастасия', nickname: '@nasty' },
-	{ id: 2, img: img2, name: 'Леонид', nickname: '@lenya' },
-	{ id: 3, img: img3, name: 'Александр', nickname: '@alex' },
-];
+
 
 const AdminPage = () => {
 	const WebApp = window.Telegram.WebApp;
+
+	const formState = useSelector((state) => state.admin.formState);
 
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
 	const userInfo = useSelector((state) => state.user);
 
-	const [date, setDate] = useState([]);
+	const [date, setDate] = useState(formState?.time ? startDateFunction(formState?.time) : []);
 	const selectUserValue = useSelector((state) => state.admin.selectUserValue);
 	const [calendarFull, setCalendarFull] = useState(false);
 	const [type, setType] = useState(0);
@@ -68,7 +61,6 @@ const AdminPage = () => {
 		text: '',
 		isActive: false,
 	});
-	const [user, setUser] = useState(null);
 	const { viewPort, isOpenKeyboard } = useSelector((state) => state.app);
 	const [archieveList, setArchieveList] = useState(null);
 
@@ -86,11 +78,9 @@ const AdminPage = () => {
 	const headerRef = useRef();
 	const resizeObserverTimeout = useRef();
 	const isTimeChanged = useRef(false);
-	const timeParams = useRef({ minute: 0, hour: 0 });
+	const [timeParams, setTimeParams] = useState({ minutes: 0, hours: 0 });
 
 	const token = useSelector((state) => state.user.token);
-
-	const formState = useSelector((state) => state.admin.formState);
 
 	const patients = useSelector((state) => state.admin.patients);
 
@@ -98,7 +88,7 @@ const AdminPage = () => {
 
 	const clickSearch = () => {
 		setSearch(!search);
-		swiperRef?.current.swiper.slideTo(2);
+		swiperRef?.current?.swiper?.slideTo(2);
 	};
 
 	const progressSwiper = (swiper) => {
@@ -143,26 +133,6 @@ const AdminPage = () => {
 		}
 	};
 
-	const toggleIndicator1 = () => {
-		activityIndicatorRef.current.style.transition = '0.25s';
-		activityIndicatorRef.current.style.transform = `translate(20px)`;
-		activityIndicatorRef.current.style.width = ``;
-	};
-
-	const toggleIndicator2 = () => {
-		activityIndicatorRef.current.style.transition = '0.25s';
-		activityIndicatorRef.current.style.width = `${timeRef.current.offsetWidth}px`;
-		let left = getPosition(typeSwiperContRef, timeRef);
-		activityIndicatorRef.current.style.transform = `translate(${left}px)`;
-	};
-
-	const toggleIndicator3 = () => {
-		activityIndicatorRef.current.style.transition = '0.25s';
-		activityIndicatorRef.current.style.width = `${archiveRef.current.offsetWidth}px`;
-		let left = getPosition(typeSwiperContRef, archiveRef);
-		activityIndicatorRef.current.style.transform = `translate(${left}px)`;
-	};
-
 	const copyClick = (res) => {
 		setActiveTextFields({ title: true, description: true, link: true });
 
@@ -194,13 +164,13 @@ const AdminPage = () => {
 	useEffect(() => {
 		function resizeWin() {
 			if (type === 0) {
-				toggleIndicator1();
+				toggleIndicator1(activityIndicatorRef);
 			}
 			if (type === 1) {
-				toggleIndicator2();
+				toggleIndicator2(activityIndicatorRef, timeRef, typeSwiperContRef);
 			}
 			if (type === 2) {
-				toggleIndicator3();
+				toggleIndicator3(activityIndicatorRef, archiveRef, typeSwiperContRef);
 			}
 		}
 	}, []);
@@ -304,6 +274,8 @@ const AdminPage = () => {
 						text: 'Событие создано',
 						status: 'positive',
 					});
+
+					setDate([]);
 
 					if (type !== 1) {
 						isTimeChanged.current = false;
@@ -462,9 +434,31 @@ const AdminPage = () => {
 		};
 	}, [search, isOpenKeyboard]);
 
+
+	console.log('form', formState);
+
+	useEffect(() => {
+		const datesUTC = [];
+
+		for (let i = 0; i < date.length; i++) {
+			let momentDate = moment.utc([
+				date[i].getFullYear(),
+				date[i].getMonth(),
+				date[i].getDate(),
+				timeParams.hours,
+				timeParams.minutes,
+			]);
+
+			momentDate = momentDate?.toISOString()?.slice(0, -5);
+
+			datesUTC.push(momentDate);
+		}
+
+		dispatch(setFormState({ ...formState, time: datesUTC }));
+	}, [date, timeParams]);
+
 	return (
 		<>
-			
 			<form
 				onSubmit={(e) => {
 					e.preventDefault();
@@ -529,7 +523,7 @@ const AdminPage = () => {
 								onChange={() => {
 									if (swiperRef?.current?.swiper) swiperRef.current.swiper.slideTo(0);
 									else {
-										toggleIndicator1();
+										toggleIndicator1(activityIndicatorRef);
 										setType(0);
 									}
 								}}
@@ -550,7 +544,7 @@ const AdminPage = () => {
 									if (swiperRef?.current?.swiper) {
 										swiperRef?.current?.swiper?.slideTo(1);
 									} else {
-										toggleIndicator2();
+										toggleIndicator2(activityIndicatorRef, timeRef, typeSwiperContRef);
 										setType(1);
 									}
 								}}
@@ -571,7 +565,7 @@ const AdminPage = () => {
 									if (swiperRef?.current?.swiper) {
 										swiperRef?.current?.swiper?.slideTo(2);
 									} else {
-										toggleIndicator3();
+										toggleIndicator3(activityIndicatorRef, archiveRef, typeSwiperContRef);
 										setType(2);
 									}
 								}}
@@ -596,10 +590,6 @@ const AdminPage = () => {
 					<Swiper
 						onSlideChangeTransitionStart={(swiper) => {
 							setType(swiper.activeIndex);
-
-							if (swiper.activeIndex === 2) {
-								mainRef.current.style.maxHeight = `${window.innerHeight}px`;
-							}
 						}}
 						initialSlide={type}
 						style={{ height: '100%' }}
@@ -616,24 +606,6 @@ const AdminPage = () => {
 									fullBtnClassName={styles.fullBtnDatePicker}
 									multiple={true}
 									onChange={(value) => {
-										const datesUTC = [];
-
-										for (let i = 0; i < value.length; i++) {
-											let momentDate = moment.utc([
-												value[i].getFullYear(),
-												value[i].getMonth(),
-												value[i].getDate(),
-												timeParams.current.hour,
-												timeParams.current.minute,
-											]);
-
-											momentDate = momentDate.toISOString().slice(0, -5);
-
-											datesUTC.push(momentDate);
-										}
-
-										dispatch(setFormState({ ...formState, time: datesUTC }));
-
 										setDate(value);
 									}}
 								/>
@@ -644,26 +616,7 @@ const AdminPage = () => {
 							<div style={{ padding: '40px 0', height: '100%' }}>
 								<TimePicker
 									onChange={(value) => {
-										timeParams.current.hour = value.hours;
-										timeParams.current.minute = value.minutes;
-
-										const datesUTC = [];
-
-										for (let i = 0; i < date.length; i++) {
-											let momentDate = moment.utc([
-												date[i].getFullYear(),
-												date[i].getMonth(),
-												date[i].getDate(),
-												timeParams.current.hour,
-												timeParams.current.minute,
-											]);
-
-											momentDate = momentDate.toISOString().slice(0, -5);
-
-											datesUTC.push(momentDate);
-										}
-
-										dispatch(setFormState({ ...formState, time: datesUTC }));
+										setTimeParams({ ...value });
 									}}
 								/>
 							</div>

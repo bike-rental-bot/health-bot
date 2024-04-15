@@ -11,6 +11,7 @@ const MonthDays = ({
 	multiple = false,
 }) => {
 	const weekDaysRef = useRef(null);
+	
 	return (
 		<div ref={weekDaysRef} className={`date-picker__week-days`}>
 			{Array.isArray(monthDays) &&

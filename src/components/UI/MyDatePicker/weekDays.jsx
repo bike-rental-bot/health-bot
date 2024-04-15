@@ -38,7 +38,8 @@ const WeekDays = ({
 				return (
 					<span
 						key={`${el1.value.getDate()}`}
-						onClick={() => {
+						onClick={(e) => {
+							e.stopPropagation();
 							if (!multiple) {
 								const date = new Date(
 									el1.value.getFullYear(),

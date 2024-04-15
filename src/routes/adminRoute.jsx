@@ -2,6 +2,9 @@ import { useSelector } from 'react-redux';
 import loaderSvg from '../assets/images/loader.svg';
 import { useNavigate } from 'react-router-dom';
 import AdminPage from '../pages/admin/adminPage';
+import AdminPageIOS from '../pages/admin/adminPageIOS';
+
+const WebApp = window.Telegram.WebApp;
 
 const AdminRoute = () => {
 	const loading = useSelector((state) => state.user.loading);
@@ -28,7 +31,7 @@ const AdminRoute = () => {
 			return null;
 		}
 		if (user.role === 'admin' || user.role === 'owner') {
-			return <AdminPage />;
+			return <>{WebApp.platform === 'ios' ? <AdminPageIOS /> : <AdminPage />}</>;
 		}
 	}
 };

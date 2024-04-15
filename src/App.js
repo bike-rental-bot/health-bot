@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { setUserError, setUserInfo, setUserLoading } from './redux/userSlice';
 import { setAppState } from './redux/appSlice';
 import { setPatients } from './redux/adminSlice';
+import AdminPageIOS from './pages/admin/adminPageIOS';
 
 const WebApp = window.Telegram.WebApp;
 
@@ -114,23 +115,16 @@ function App() {
 		};
 		WebApp.onEvent('viewportChanged', viewportChanged);
 
-		const rootScroll = () => {
-			setScrollPos(root.scrollTop);
-			setWScrollPos(window.screenTop);
-		};
-
-		root.addEventListener('scroll', rootScroll);
-
 		return () => {
 			WebApp.offEvent('viewportChanged', viewportChanged);
-			root.removeEventListener('scroll', rootScroll);
 		};
 	}, []);
 
 	return (
 		<>
-			
 			<AppRoutes />
+
+			{/* <AdminPageIOS /> */}
 		</>
 	);
 }

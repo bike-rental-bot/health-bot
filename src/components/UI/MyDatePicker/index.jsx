@@ -302,43 +302,11 @@ const MyDatePicker = ({
 	const [slide, setSlide] = useState(null);
 	const [slideCal, setSlideCal] = useState(null);
 	const weekDaysRef = useRef(null);
-	const [currentMonth, setCurrentMonth] = useState(
-		!multiple
-			? {
-					month: value ? value.getMonth() : new Date().getMonth(),
-					year: value ? value.getFullYear() : new Date().getFullYear(),
-			  }
-			: {
-					month: value[0] ? new Date(value[0])?.getMonth() : new Date().getMonth(),
-					year: value[0] ? new Date(value[0])?.getFullYear() : new Date().getFullYear(),
-			  },
-	);
+	const [currentMonth, setCurrentMonth] = useState();
 
-	const currentWeek = useRef(
-		multiple
-			? getWeekNumber(
-					currentMonth.year,
-					currentMonth.month,
-					value && Array.isArray(value) && value.length > 0 ? value[0] : new Date(),
-			  )
-			: getWeekNumber(currentMonth.year, currentMonth.month, dateValue ? dateValue : new Date()),
-	);
+	const currentWeek = useRef();
 
-	const [monthDays, setMonthDays] = useState(
-		multiple
-			? selectMonthDays(
-					currentMonth.year,
-					currentMonth.month,
-					dateValueMultiple[0] ? dateValueMultiple[0] : new Date(),
-					currentWeek.current,
-			  )
-			: selectMonthDays(
-					currentMonth.year,
-					currentMonth.month,
-					dateValue ? dateValue : new Date(),
-					currentWeek.current,
-			  ),
-	);
+	const [monthDays, setMonthDays] = useState();
 
 	const handlePrevMonth = () => {
 		if (
@@ -390,7 +358,7 @@ const MyDatePicker = ({
 					),
 				);
 			} else {
-				if (dateValueMultiple[0]) {
+				if (!dateValueMultiple[0]) {
 					currentWeek.current = getWeekNumber(
 						addMonth.year,
 						addMonth.month,
@@ -568,6 +536,48 @@ const MyDatePicker = ({
 		}
 	}, [value]);
 
+	useEffect(() => {
+		let curMonth = !multiple
+			? {
+					month: value ? value.getMonth() : new Date().getMonth(),
+					year: value ? value.getFullYear() : new Date().getFullYear(),
+			  }
+			: {
+					month: new Date(value[0])?.getMonth()
+						? new Date(value[0])?.getMonth()
+						: new Date().getMonth(),
+					year: new Date(value[0])?.getFullYear()
+						? new Date(value[0])?.getFullYear()
+						: new Date().getFullYear(),
+			  };
+
+		setCurrentMonth(curMonth);
+
+		currentWeek.current = multiple
+			? getWeekNumber(
+					curMonth.year,
+					curMonth.month,
+					value && Array.isArray(value) && value.length > 0 ? value[0] : new Date(),
+			  )
+			: getWeekNumber(curMonth.year, curMonth.month, dateValue ? dateValue : new Date());
+
+		setMonthDays(
+			multiple
+				? selectMonthDays(
+						curMonth.year,
+						curMonth.month,
+						dateValueMultiple[0] ? dateValueMultiple[0] : new Date(),
+						currentWeek.current,
+				  )
+				: selectMonthDays(
+						curMonth.year,
+						curMonth.month,
+						dateValue ? dateValue : new Date(),
+						currentWeek.current,
+				  ),
+		);
+	}, []);
+
 	return (
 		<div ref={calendarRef} className={styles.container}>
 			<div className={styles.panelMonth}>
@@ -586,18 +596,21 @@ const MyDatePicker = ({
 					onClick={handlePrevMonth}>
 					<ArrowSVG style={{ transform: 'rotate(90deg)' }} />
 				</button>
-				<div>
-					<TransitionGroup>
-						<CSSTransition
-							key={`${MONTHS[currentMonth.month]} ${currentMonth.year}`}
-							timeout={250}
-							classNames={`slide-month-${slide}`}>
-							<Month>
-								{MONTHS[currentMonth.month]} {currentMonth.year}
-							</Month>
-						</CSSTransition>
-					</TransitionGroup>
-				</div>
+				{MONTHS[currentMonth?.month] && currentMonth?.year && (
+					<div>
+						<TransitionGroup>
+							<CSSTransition
+								key={`${MONTHS[currentMonth?.month]} ${currentMonth?.year}`}
+								timeout={250}
+								classNames={`slide-month-${slide}`}>
+								<Month>
+									{MONTHS[currentMonth?.month]} {currentMonth?.year}
+								</Month>
+							</CSSTransition>
+						</TransitionGroup>
+					</div>
+				)}
+
 				<button type={'button'} key={'btnNext'} onClick={handleNextMonth}>
 					<ArrowSVG style={{ transform: 'rotate(-90deg)' }} />
 				</button>
@@ -610,32 +623,34 @@ const MyDatePicker = ({
 					))}
 				</div>
 
-				<div
-					style={{
-						width: '100%',
-						position: 'relative',
-						overflow: 'hidden',
-						height: full ? 240 : 80,
-						transition: '0.5s',
-					}}>
-					<TransitionGroup>
-						<CSSTransition
-							key={monthDays[0].days[0].value.getTime()}
-							timeout={500}
-							classNames="slide">
-							<MonthDays
-								monthDays={monthDays}
-								dateValue={dateValue}
-								setDateValue={setDateValue}
-								dateValueMultiple={dateValueMultiple}
-								setDateValueMultiple={setDateValueMultiple}
-								full={full}
-								min={min}
-								multiple={multiple}
-							/>
-						</CSSTransition>
-					</TransitionGroup>
-				</div>
+				{monthDays && monthDays[0]?.days[0]?.value?.getTime() && (
+					<div
+						style={{
+							width: '100%',
+							position: 'relative',
+							overflow: 'hidden',
+							height: full ? 240 : 80,
+							transition: '0.5s',
+						}}>
+						<TransitionGroup>
+							<CSSTransition
+								key={monthDays[0]?.days[0]?.value?.getTime()}
+								timeout={500}
+								classNames="slide">
+								<MonthDays
+									monthDays={monthDays}
+									dateValue={dateValue}
+									setDateValue={setDateValue}
+									dateValueMultiple={dateValueMultiple}
+									setDateValueMultiple={setDateValueMultiple}
+									full={full}
+									min={min}
+									multiple={multiple}
+								/>
+							</CSSTransition>
+						</TransitionGroup>
+					</div>
+				)}
 			</div>
 
 			<button

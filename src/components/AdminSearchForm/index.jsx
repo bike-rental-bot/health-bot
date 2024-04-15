@@ -16,6 +16,7 @@ const AdminSearchForm = ({
 	onBlur,
 	searchInputRef,
 	togglerRef,
+	className,
 }) => {
 	useEffect(() => {
 		if (searchInputRef?.current) {
@@ -69,8 +70,10 @@ const AdminSearchForm = ({
 	}, []);
 	return (
 		<>
-		
-			<form onSubmit={formSubmit} ref={containerRef} className={styles.searchInput}>
+			<form
+				onSubmit={formSubmit}
+				ref={containerRef}
+				className={`${styles.searchInput} ${className}`}>
 				<div className={`container ${styles.container}`}>
 					<button
 						type="button"
@@ -88,7 +91,7 @@ const AdminSearchForm = ({
 					<label>
 						<input
 							type={'search'}
-							enterKeyHint='search'
+							enterKeyHint="search"
 							onFocus={(e) => {
 								if (onFocus === 'function') {
 									onFocus();

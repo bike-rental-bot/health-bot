@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import ArrowSVG from '../../Icons/Arrow';
 import styles from './styles.module.scss';
 import img1 from '../../../assets/images/tgUser1.png';
-import avatarIMG from "../../../assets/images/user.png";
+import avatarIMG from '../../../assets/images/user.png';
 
 const SelectValue = ({ value }) => {
 	return (
@@ -22,7 +22,7 @@ const SelectValue = ({ value }) => {
 	);
 };
 
-const Select = ({ variants, onChange, children, value }) => {
+const Select = ({ variants, onChange, children, value, className }) => {
 	const [activeDropDown, setActiveDropDown] = useState(false);
 	const dropDownRef = useRef(null);
 	const handleVariant = (index) => {
@@ -51,7 +51,7 @@ const Select = ({ variants, onChange, children, value }) => {
 	}, []);
 
 	return (
-		<div ref={selectRef} className={styles.container}>
+		<div ref={selectRef} className={`${styles.container} ${className}`}>
 			<div onClick={handleSelect} className={styles.select}>
 				<SelectValue value={value !== null ? variants[value] : null} />
 				<ArrowSVG />

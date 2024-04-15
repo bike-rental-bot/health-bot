@@ -40,7 +40,7 @@ const AdminTogglerNotify = ({ footerRef, clickSearch }) => {
 								dispatch(setFormState({ ...formState, type: EVENTTYPES[0] }));
 							}}
 							type={'radio'}
-							defaultChecked
+							checked={formState.type === EVENTTYPES[0]}
 							value={0}
 							name={'adminTypeEvent'}
 						/>
@@ -53,8 +53,8 @@ const AdminTogglerNotify = ({ footerRef, clickSearch }) => {
 								dispatch(setFormState({ ...formState, type: EVENTTYPES[1] }));
 							}}
 							type={'radio'}
-							value={1}
 							name={'adminTypeEvent'}
+							checked={formState.type === EVENTTYPES[1]}
 						/>
 						<span>Витамины</span>
 					</label>
@@ -67,6 +67,7 @@ const AdminTogglerNotify = ({ footerRef, clickSearch }) => {
 							type={'radio'}
 							value={2}
 							name={'adminTypeEvent'}
+							checked={formState.type === EVENTTYPES[2]}
 						/>
 						<span>Активность</span>
 					</label>
