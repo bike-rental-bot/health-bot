@@ -26,9 +26,17 @@
   bottom: 0;
 }
 
-body {
+body,
+html {
   background: white;
   height: 100vh;
+  height: 100%;
+  width: 100%;
+  width: 100vw;
+}
+
+body{
+  overflow: hidden;
 }
 
 button {

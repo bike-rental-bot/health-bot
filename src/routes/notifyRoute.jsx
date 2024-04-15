@@ -33,7 +33,7 @@ const NotifyRoute = () => {
 				})
 				.catch(() => {
 					let not = { info: null, loading: false, error: true };
-					if (role === 'admin') {
+					if (role === 'admin' || role === 'owner') {
 						navigate('/admin');
 					}
 					if (role === 'user') {
@@ -62,13 +62,13 @@ const NotifyRoute = () => {
 		if (!notify?.error) {
 			return (
 				<NotifyPage
-					description={notify.info.notify.description}
+					description={notify?.info?.notify?.description}
 					time={formatTime(notify.info.time)}
-					title={notify.info.notify.title}
-					attachments={notify.info.notify.attachments}
-					preview_url={notify.info.notify.preview_url}
-					is_completed={notify.info.is_completed}
-					type={TYPESMAP[notify.info.notify.type]}
+					title={notify?.info?.notify?.title}
+					attachments={notify?.info?.notify?.attachments}
+					preview_url={notify?.info?.notify?.preview_url}
+					is_completed={notify?.info?.is_completed}
+					type={TYPESMAP[notify?.info?.notify?.type]}
 					id={notify.info.notify.id}
 				/>
 			);
