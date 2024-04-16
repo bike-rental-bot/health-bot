@@ -5,12 +5,14 @@
     flex: 0 0 auto;
     padding: 16px 0;
     border-top: 1px solid #cbcbcb;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
     display: flex;
     padding-left: 16px;
+    visibility: visible !important;
+    opacity: 1 !important;
 
     .container {
         width: 100%;
