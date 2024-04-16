@@ -59,6 +59,8 @@ main {
   ::-webkit-scrollbar-track {
     background: #f3f3f3; // Color of the scrollbar track
   }
+
+  -webkit-overflow-scrolling: auto;
 }
 
 input[type="search"]::-webkit-search-decoration,
