@@ -17,6 +17,7 @@ import AdminTogglerNotify from '../../components/AdminTogglerNotify/index.jsx';
 import AdminSearchForm from '../../components/AdminSearchForm/index.jsx';
 import Archieve from '../../components/Archieve/index.jsx';
 import { useNavigate } from 'react-router-dom';
+import SearchSVG from '../../components/Icons/Search.jsx';
 
 const ACTIVETEXTFIELDS = {
 	title: false,
@@ -259,11 +260,6 @@ const AdminPageIOS = () => {
 		});
 	};
 
-	const clickSearch = () => {
-		setType(1);
-		setSearch(!search);
-	};
-
 	const onClickPreview = () => {
 		if (formState.user_id) {
 			navigate('/');
@@ -376,73 +372,104 @@ const AdminPageIOS = () => {
 		document.body.style.height = `100vh`;
 		window.scrollTo(0, overflow);
 		const root = document.getElementById('root');
-		// root.style.maxHeight = `${window.innerHeight}`; 
+		// root.style.maxHeight = `${window.innerHeight}`;
 	}, []);
 
 	return (
 		<>
-			<form
-				onSubmit={(e) => {
-					e.preventDefault();
-					onClickCreateEvent();
-				}}
-				enсtype="multipart/form-data"
-				ref={headerRef}
-				className={styles.headerIOSCont}>
-				<HeaderAdmin onClickPreview={onClickPreview} />
-
-				<div className={`container ${styles.container}`}>
-					<div className={`${styles.toggler} ${styles.ios}`}>
-						<label>
-							<input
-								onChange={() => {
-									setType(0);
-								}}
-								checked={type === 0}
-								value={0}
-								type={'radio'}
-								name="time"
-							/>
-							<span>Создать</span>
-						</label>
-						<label>
-							<input
-								onChange={() => {
-									setType(1);
-								}}
-								checked={type === 1}
-								value={1}
-								type={'radio'}
-								name="time"
-							/>
-							<span>Архив</span>
-						</label>
-
-						<span ref={indicatorRef} className={styles.indicator}></span>
-					</div>
-
-					<Select
-						value={selectUserValue}
-						onChange={(value, index) => {
-							dispatch(setFormState({ ...formState, user_id: value?.id, token: value?.token }));
-							dispatch(setSelectUserValue(index));
+			<div ref={headerRef} className={styles.headerIOSCont}>
+				{!searchFocus && (
+					<form
+						onSubmit={(e) => {
+							e.preventDefault();
+							onClickCreateEvent();
 						}}
-						variants={patients}
-						className={styles.iosSelect}
-					/>
-					{type === 0 && (
-						<AdminTextEditor
-							activeTextFields={activeTextFields}
-							setActiveTextFields={setActiveTextFields}
-							focusTextFields={focusTextFields}
-							setFocusTextFields={setFocusTextFields}
-							textForm={formState}
-							setTextForm={setFormState}
-							formFiles={formFiles}
-							setFormFiles={setFormFiles}
-						/>
-					)}
-				</div>
+						enсtype="multipart/form-data">
+						<HeaderAdmin onClickPreview={onClickPreview} />
+
+						<div className={`container ${styles.container}`}>
+							<div className={`${styles.toggler} ${styles.ios}`}>
+								<label>
+									<input
+										onChange={() => {
+											setType(0);
+										}}
+										checked={type === 0}
+										value={0}
+										type={'radio'}
+										name="time"
+									/>
+									<span>Создать</span>
+								</label>
+								<label>
+									<input
+										onChange={() => {
+											setType(1);
+										}}
+										checked={type === 1}
+										value={1}
+										type={'radio'}
+										name="time"
+									/>
+									<span>Архив</span>
+								</label>
+
+								<span ref={indicatorRef} className={styles.indicator}></span>
+							</div>
+
+							<Select
+								value={selectUserValue}
+								onChange={(value, index) => {
+									dispatch(setFormState({ ...formState, user_id: value?.id, token: value?.token }));
+									dispatch(setSelectUserValue(index));
+								}}
+								variants={patients}
+								className={styles.iosSelect}
+							/>
+							{type === 0 && (
+								<AdminTextEditor
+									activeTextFields={activeTextFields}
+									setActiveTextFields={setActiveTextFields}
+									focusTextFields={focusTextFields}
+									setFocusTextFields={setFocusTextFields}
+									textForm={formState}
+									setTextForm={setFormState}
+									formFiles={formFiles}
+									setFormFiles={setFormFiles}
+								/>
+							)}
+						</div>
+					</form>
+				)}
+
+				{type === 1 && (
+					<form
+						className={`container ${styles.searchInputIOS} ${searchFocus && styles.focus}`}
+						onSubmit={(e) => {
+							e.preventDefault();
+						}}>
+						<label>
+							<input
+								onBlur={() => {
+									const root = document.getElementById('root');
+									root.scrollTo(0, 0);
+									window.scrollTo(0, 0);
+									setSearchFocus(false);
+								}}
+								onFocus={() => {
+									setSearchFocus(true);
+								}}
+								placeholder="Поиск по архиву"
+								enterKeyHint="search"
+								type={'search'}
+							/>
+
+							<button>
+								<SearchSVG />
+							</button>
+						</label>
+					</form>
+				)}
 
 				{type === 0 && (
 					<div className={`${styles.type}`}>
@@ -492,7 +519,7 @@ const AdminPageIOS = () => {
 						</div>
 					</div>
 				)}
-			</form>
+			</div>
 
 			<div style={{ flex: '1 0 auto', position: 'relative', minHeight: 50 }}>
 				<main ref={mainRef} className={styles.main}>
@@ -546,9 +573,9 @@ const AdminPageIOS = () => {
 				<span className={styles.toasify}>{stateToasify.text}</span>
 			</Toasify>
 
-			{!search && <AdminTogglerNotify clickSearch={clickSearch} footerRef={footerRef} />}
+			{!search && <AdminTogglerNotify className={styles.iosFooter} footerRef={footerRef} />}
 
-			{search && (
+			{/* {search && (
 				<AdminSearchForm
 					className={styles.iosSearch}
 					searchInputRef={searchInputRef}
@@ -561,7 +588,7 @@ const AdminPageIOS = () => {
 					onBlur={() => setSearchFocus(false)}
 					togglerRef={typeSwiperContRef}
 				/>
-			)}
+			)} */}
 		</>
 	);
 };

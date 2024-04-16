@@ -5,7 +5,7 @@ import { EVENTTYPES } from '../../config';
 import { useDispatch, useSelector } from 'react-redux';
 import { setFormState } from '../../redux/adminSlice';
 import { createPortal } from 'react-dom';
-const AdminTogglerNotify = ({ clickSearch, footerRef }) => {
+const AdminTogglerNotify = ({ clickSearch, footerRef, className }) => {
 	const indicatorTextareaRef = useRef(null);
 	const dispatch = useDispatch();
 	const formState = useSelector((state) => state.admin.formState);
@@ -31,7 +31,7 @@ const AdminTogglerNotify = ({ clickSearch, footerRef }) => {
 	}, [formState]);
 
 	return (
-		<footer ref={footerRef} className={styles.footer}>
+		<footer ref={footerRef} className={`${styles.footer} ${className}`}>
 			<div className={styles.container}>
 				<div className={styles.toggler}>
 					<label>
@@ -76,9 +76,11 @@ const AdminTogglerNotify = ({ clickSearch, footerRef }) => {
 				</div>
 			</div>
 
-			<button type="button" onClick={clickSearch} className={styles.searchBtn}>
-				<SearchSVG />
-			</button>
+			{clickSearch && (
+				<button type="button" onClick={clickSearch} className={styles.searchBtn}>
+					<SearchSVG />
+				</button>
+			)}
 		</footer>
 	);
 };

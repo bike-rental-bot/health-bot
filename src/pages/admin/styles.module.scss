@@ -241,12 +241,59 @@
 
 .iosSelect {
     margin: 20px 0 0 0;
-
-    &:last-child {
-        margin-bottom: 20px;
-    }
 }
 
 .iosSearch {
     position: static;
+}
+
+.searchInputIOS {
+    margin: 10px 0;
+    width: 100%;
+    background-color: #f6f6f6;
+
+    &.focus{
+        margin: 0;
+        padding: 0;
+
+        input{
+            background-color: #f6f6f6;
+        }
+    }
+
+
+    label {
+        min-height: 40px;
+        display: flex;
+        width: 100%;
+        position: relative;
+        border-radius: 9px;
+        border: 0;
+
+        input {
+            width: 100%;
+            border: 0;
+            outline: 0;
+            padding: 0 30px 0 20px;
+            border-radius: 5px;
+        }
+
+        button {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+
+            svg {
+                path {
+                    stroke: #7f7f84;
+                }
+            }
+        }
+    }
+}
+
+
+.iosFooter{
+    padding-right: 20px !important;
 }
