@@ -347,8 +347,6 @@ const AdminPageIOS = () => {
 	// 	};
 	// }, [search, isOpenKeyboard]);
 
-	console.log('form', formState);
-
 	useEffect(() => {
 		const datesUTC = [];
 
@@ -368,6 +366,18 @@ const AdminPageIOS = () => {
 
 		dispatch(setFormState({ ...formState, time: datesUTC }));
 	}, [date, timeParams]);
+
+	useEffect(() => {
+		const overflow = 1;
+		document.body.style.marginTop = `${overflow}px`;
+		document.body.style.paddingBottom = `${overflow}px`;
+		document.body.style.background = '';
+		document.body.style.overflow = 'hidden';
+		document.body.style.height = `100vh`;
+		window.scrollTo(0, overflow);
+		const root = document.getElementById('root');
+		// root.style.maxHeight = `${window.innerHeight}`; 
+	}, []);
 
 	return (
 		<>

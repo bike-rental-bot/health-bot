@@ -94,10 +94,24 @@ const TextField = ({
 						onFocus={() => {
 							if (typeof onFocus === 'function') onFocus();
 							setFocus(true);
+
+							if (WebApp.platform === 'ios') {
+								const root = document.getElementById('root');
+
+								root.scrollTo(0, 0);
+								window.scrollTo(0, 0);
+							}
 						}}
 						onBlur={() => {
 							if (typeof onFocus === 'function') onBlur();
 							setFocus(false);
+
+							if (WebApp.platform === 'ios') {
+								const root = document.getElementById('root');
+
+								root.scrollTo(0, 0);
+								window.scrollTo(0, 0);
+							}
 						}}
 						onChange={(e) => {
 							e.preventDefault();
