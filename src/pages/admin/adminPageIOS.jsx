@@ -296,50 +296,50 @@ const AdminPageIOS = () => {
 	}, [mainType]);
 
 	// изменение размеров блока
-	useEffect(() => {
-		const headerEl = headerRef?.current;
-		const secondElement = footerRef?.current;
-		const searchElement = searchInputContRef?.current;
-		const root = document.getElementById('root');
+	// useEffect(() => {
+	// 	const headerEl = headerRef?.current;
+	// 	const secondElement = footerRef?.current;
+	// 	const searchElement = searchInputContRef?.current;
+	// 	const root = document.getElementById('root');
 
-		const resizeObserver = new ResizeObserver((entries) => {
-			clearTimeout(resizeObserverTimeout);
+	// 	const resizeObserver = new ResizeObserver((entries) => {
+	// 		clearTimeout(resizeObserverTimeout);
 
-			resizeObserverTimeout.current = setTimeout(() => {
-				for (let entry of entries) {
-					if (entry.target === headerEl) {
-						if (
-							document?.activeElement?.getBoundingClientRect().bottom >
-								footerRef.current?.getBoundingClientRect().top &&
-							window.innerHeight > WebApp.viewportHeight
-						) {
-							if (footerRef && footerRef.current) {
-								footerRef.current.style.visibility = 'hidden';
-								footerRef.current.style.opacity = '0';
-							}
-						} else {
-							if (footerRef && footerRef.current) {
-								footerRef.current.style.visibility = '';
-								footerRef.current.style.opacity = '';
-							}
-						}
-					}
-				}
-			}, 0);
-		});
+	// 		resizeObserverTimeout.current = setTimeout(() => {
+	// 			for (let entry of entries) {
+	// 				if (entry.target === headerEl) {
+	// 					if (
+	// 						document?.activeElement?.getBoundingClientRect().bottom >
+	// 							footerRef.current?.getBoundingClientRect().top &&
+	// 						window.innerHeight > WebApp.viewportHeight
+	// 					) {
+	// 						if (footerRef && footerRef.current) {
+	// 							footerRef.current.style.visibility = 'hidden';
+	// 							footerRef.current.style.opacity = '0';
+	// 						}
+	// 					} else {
+	// 						if (footerRef && footerRef.current) {
+	// 							footerRef.current.style.visibility = '';
+	// 							footerRef.current.style.opacity = '';
+	// 						}
+	// 					}
+	// 				}
+	// 			}
+	// 		}, 0);
+	// 	});
 
-		if (headerEl) {
-			resizeObserver.observe(headerEl);
-		}
+	// 	if (headerEl) {
+	// 		resizeObserver.observe(headerEl);
+	// 	}
 
-		if (secondElement) {
-			resizeObserver.observe(secondElement);
-		}
+	// 	if (secondElement) {
+	// 		resizeObserver.observe(secondElement);
+	// 	}
 
-		return () => {
-			resizeObserver.disconnect();
-		};
-	}, [search, isOpenKeyboard]);
+	// 	return () => {
+	// 		resizeObserver.disconnect();
+	// 	};
+	// }, [search, isOpenKeyboard]);
 
 	console.log('form', formState);
 

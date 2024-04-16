@@ -185,54 +185,54 @@ const AdminPage = () => {
 		}
 	}, [type]);
 
-	useEffect(() => {
-		const root = document.getElementById('root');
-		function scroll() {
-			if (footerRef.current) {
-				if (
-					document?.activeElement?.getBoundingClientRect().bottom >
-						footerRef.current?.getBoundingClientRect().top &&
-					(document?.activeElement?.tagName.toLowerCase() === 'textarea' ||
-						document?.activeElement?.tagName.toLowerCase() === 'input')
-				) {
-					footerRef.current.style.visibility = 'hidden';
-					footerRef.current.style.opacity = '0';
-				} else {
-					footerRef.current.style.visibility = '';
-					footerRef.current.style.opacity = '';
-				}
-			}
-		}
-		function viewportChanged() {
-			if (footerRef?.current) {
-				if (window.innerHeight > WebApp.viewportHeight) {
-					if (
-						document?.activeElement?.getBoundingClientRect()?.bottom >
-							footerRef?.current?.getBoundingClientRect()?.top &&
-						(document?.activeElement?.tagName.toLowerCase() === 'textarea' ||
-							document?.activeElement?.tagName.toLowerCase() === 'input')
-					) {
-						footerRef.current.style.visibility = 'hidden';
-						footerRef.current.style.opacity = '0';
-					} else {
-						footerRef.current.style.visibility = '';
-						footerRef.current.style.opacity = '';
-					}
-				} else {
-					footerRef.current.style.visibility = '';
-					footerRef.current.style.opacity = '';
-				}
-			}
-		}
-		root.addEventListener('scroll', scroll);
+	// useEffect(() => {
+	// 	const root = document.getElementById('root');
+	// 	function scroll() {
+	// 		if (footerRef.current) {
+	// 			if (
+	// 				document?.activeElement?.getBoundingClientRect().bottom >
+	// 					footerRef.current?.getBoundingClientRect().top &&
+	// 				(document?.activeElement?.tagName.toLowerCase() === 'textarea' ||
+	// 					document?.activeElement?.tagName.toLowerCase() === 'input')
+	// 			) {
+	// 				footerRef.current.style.visibility = 'hidden';
+	// 				footerRef.current.style.opacity = '0';
+	// 			} else {
+	// 				footerRef.current.style.visibility = '';
+	// 				footerRef.current.style.opacity = '';
+	// 			}
+	// 		}
+	// 	}
+	// 	function viewportChanged() {
+	// 		if (footerRef?.current) {
+	// 			if (window.innerHeight > WebApp.viewportHeight) {
+	// 				if (
+	// 					document?.activeElement?.getBoundingClientRect()?.bottom >
+	// 						footerRef?.current?.getBoundingClientRect()?.top &&
+	// 					(document?.activeElement?.tagName.toLowerCase() === 'textarea' ||
+	// 						document?.activeElement?.tagName.toLowerCase() === 'input')
+	// 				) {
+	// 					footerRef.current.style.visibility = 'hidden';
+	// 					footerRef.current.style.opacity = '0';
+	// 				} else {
+	// 					footerRef.current.style.visibility = '';
+	// 					footerRef.current.style.opacity = '';
+	// 				}
+	// 			} else {
+	// 				footerRef.current.style.visibility = '';
+	// 				footerRef.current.style.opacity = '';
+	// 			}
+	// 		}
+	// 	}
+	// 	root.addEventListener('scroll', scroll);
 
-		WebApp.onEvent('viewportChanged', viewportChanged);
+	// 	WebApp.onEvent('viewportChanged', viewportChanged);
 
-		return () => {
-			root.removeEventListener('scroll', scroll);
-			WebApp.offEvent('viewportChanged', viewportChanged);
-		};
-	}, []);
+	// 	return () => {
+	// 		root.removeEventListener('scroll', scroll);
+	// 		WebApp.offEvent('viewportChanged', viewportChanged);
+	// 	};
+	// }, []);
 
 	const onClickCreateEvent = async () => {
 		const formData = new FormData();
