@@ -122,9 +122,9 @@ function App() {
 
 	return (
 		<>
-			{/* <AppRoutes /> */}
-
-			<AdminPageIOS />
+			<AppRoutes />
+{/* 
+			<AdminPageIOS /> */}
 		</>
 	);
 }
