@@ -494,7 +494,7 @@ const AdminPageIOS = () => {
 				)}
 			</form>
 
-			<div style={{ flex: '1 0 auto', position: 'relative', minHeight: 200 }}>
+			<div style={{ flex: '1 0 auto', position: 'relative', minHeight: 50 }}>
 				<main ref={mainRef} className={styles.main}>
 					{type === 0 ? (
 						<Swiper
