@@ -31,7 +31,7 @@ const AdminTogglerNotify = ({ footerRef, clickSearch }) => {
 	}, [formState]);
 
 	return (
-		<footer ref={footerRef} className={styles.footer}>
+		<footer className={styles.footer}>
 			<div className={styles.container}>
 				<div className={styles.toggler}>
 					<label>
