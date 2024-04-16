@@ -17,7 +17,6 @@ import AdminTogglerNotify from '../../components/AdminTogglerNotify/index.jsx';
 import AdminSearchForm from '../../components/AdminSearchForm/index.jsx';
 import Archieve from '../../components/Archieve/index.jsx';
 import { useNavigate } from 'react-router-dom';
-import { disableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 
 const ACTIVETEXTFIELDS = {
 	title: false,
@@ -284,30 +283,23 @@ const AdminPageIOS = () => {
 			setSearch(false);
 			indicatorRef.current.style.transform = 'translateX(0)';
 			indicatorRef.current.style.left = '2px';
-			root.style.position = 'relative';
-			clearAllBodyScrollLocks();
 		}
 
 		if (type === 1) {
 			indicatorRef.current.style.transform = 'translateX(100%)';
 			indicatorRef.current.style.left = '-2px';
-
-			if (search) {
-				root.style.position = 'fixed';
-				disableBodyScroll(root);
-			}
 		}
-
-		return () => {
-			clearAllBodyScrollLocks();
-		};
-	}, [type, search]);
+	}, [type]);
 
 	useEffect(() => {
 		if (mainType === 1) {
 			isTimeChanged.current = true;
 		}
 	}, [mainType]);
+
+	useEffect(() => {
+		WebApp.MainButton.hide();
+	}, []);
 
 	// изменение размеров блока
 	// useEffect(() => {
