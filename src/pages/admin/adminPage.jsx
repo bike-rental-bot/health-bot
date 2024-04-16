@@ -379,8 +379,7 @@ const AdminPage = () => {
 			document.body.style.height = `100vh`;
 			window.scrollTo(0, overflow);
 			const root = document.getElementById('root');
-			root.style.maxHeight = `${window.innerHeight}`;
-			root.style.paddingBottom = '72px';
+			// root.style.maxHeight = `${window.innerHeight}`;
 		}
 	}, []);
 

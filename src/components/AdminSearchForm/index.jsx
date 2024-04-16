@@ -97,7 +97,18 @@ const AdminSearchForm = ({
 									onFocus();
 								}
 
+								const root = document.getElementById('root');
+
+								root.scrollTo(0, 0);
+								window.scrollTo(0, 0);
+							}}
+							onBlur={() => {
 								if (typeof onBlur === 'function') onBlur();
+
+								const root = document.getElementById('root');
+
+								root.scrollTo(0, 0);
+								window.scrollTo(0, 0);
 							}}
 							ref={searchInputRef}
 						/>
