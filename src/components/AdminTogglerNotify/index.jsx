@@ -5,7 +5,7 @@ import { EVENTTYPES } from '../../config';
 import { useDispatch, useSelector } from 'react-redux';
 import { setFormState } from '../../redux/adminSlice';
 import { createPortal } from 'react-dom';
-const AdminTogglerNotify = ({ footerRef, clickSearch }) => {
+const AdminTogglerNotify = ({ clickSearch }) => {
 	const indicatorTextareaRef = useRef(null);
 	const dispatch = useDispatch();
 	const formState = useSelector((state) => state.admin.formState);
