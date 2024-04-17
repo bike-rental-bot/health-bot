@@ -285,6 +285,15 @@ const AdminPage = () => {
 					if (type !== 1) {
 						isTimeChanged.current = false;
 					}
+
+					if ('vibrate' in navigator) {
+						// Вызываем вибрацию с определенным временем вибрации и временем паузы
+						// В этом примере устройство будет вибрировать 1000 мс, затем пауза 500 мс,
+						// и это повторится еще два раза (итого 3 вибрации)
+						navigator.vibrate([200]);
+					} else {
+						console.log('API для вибрации не поддерживается');
+					}
 				})
 				.catch((err) => {
 					setStateToasify({
@@ -643,9 +652,9 @@ const AdminPage = () => {
 					containerRef={searchInputContRef}
 					sendSearch={(res) => {
 						console.log('search', res);
-						searchInputRef.current.blur();
 						setArchieveList(res);
 					}}
+				
 					onFocus={() => setSearchFocus(true)}
 					onBlur={() => setSearchFocus(false)}
 					togglerRef={typeSwiperContRef}

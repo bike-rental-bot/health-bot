@@ -46,6 +46,8 @@ const TimePick = ({ onChange }) => {
 				minutes: startDate().getMinutes(),
 			};
 
+			setDateWithTime(startDate())
+
 			onChange(obj);
 		}
 	}, []);

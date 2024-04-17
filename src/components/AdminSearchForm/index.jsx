@@ -54,7 +54,6 @@ const AdminSearchForm = ({
 		if (typeof sendSearch === 'function' && searchInputRef?.current?.value !== undefined) {
 			get('/notify/searchByNotify', { token: token, q: searchInputRef.current.value })
 				.then((res) => {
-					console.log('search result', res)
 					sendSearch(uniqueArchiveNotify(res));
 				})
 				.catch(() => {});
@@ -65,7 +64,6 @@ const AdminSearchForm = ({
 		if (typeof sendSearch === 'function') {
 			get('/notify/searchByNotify', { token: token, q: '' })
 				.then((res) => {
-
 					sendSearch(uniqueArchiveNotify(res));
 				})
 				.catch(() => {});
