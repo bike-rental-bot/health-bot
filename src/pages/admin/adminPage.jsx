@@ -496,7 +496,6 @@ const AdminPage = () => {
 						style={{
 							overflow: 'hidden',
 							height:
-								!isOpenKeyboard ||
 								!search ||
 								focusTextFields.description ||
 								focusTextFields.link ||
