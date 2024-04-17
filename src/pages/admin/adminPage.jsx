@@ -190,9 +190,9 @@ const AdminPage = () => {
 
 	useEffect(() => {
 		const root = document.getElementById('root');
-		let activeElement = document.activeElement;
-		let dataNameValue = activeElement.getAttribute('data-name');
 		function scroll() {
+			let activeElement = document.activeElement;
+			let dataNameValue = activeElement.getAttribute('data-name');
 			if (footerRef.current) {
 				if (
 					document?.activeElement?.getBoundingClientRect().bottom >
@@ -206,24 +206,48 @@ const AdminPage = () => {
 					footerRef.current.style.opacity = '';
 				}
 			}
+
+			if (searchInputContRef?.current) {
+				if (
+					document?.activeElement?.getBoundingClientRect().bottom >
+						searchInputContRef.current?.getBoundingClientRect().top &&
+					dataNameValue === 'input-create-event'
+				) {
+					searchInputContRef.current.style.visibility = 'hidden';
+					searchInputContRef.current.style.opacity = '0';
+				} else {
+					searchInputContRef.current.style.visibility = '';
+					searchInputContRef.current.style.opacity = '';
+				}
+			}
 		}
 		function viewportChanged() {
+			let activeElement = document.activeElement;
+			let dataNameValue = activeElement.getAttribute('data-name');
 			if (footerRef?.current) {
-				if (window.innerHeight > WebApp.viewportHeight) {
-					if (
-						document?.activeElement?.getBoundingClientRect()?.bottom >
-							footerRef?.current?.getBoundingClientRect()?.top &&
-						dataNameValue === 'input-create-event'
-					) {
-						footerRef.current.style.visibility = 'hidden';
-						footerRef.current.style.opacity = '0';
-					} else {
-						footerRef.current.style.visibility = '';
-						footerRef.current.style.opacity = '';
-					}
+				if (
+					document?.activeElement?.getBoundingClientRect()?.bottom >
+						footerRef?.current?.getBoundingClientRect()?.top &&
+					dataNameValue === 'input-create-event'
+				) {
+					footerRef.current.style.visibility = 'hidden';
+					footerRef.current.style.opacity = '0';
 				} else {
 					footerRef.current.style.visibility = '';
 					footerRef.current.style.opacity = '';
+				}
+			}
+			if (searchInputContRef?.current) {
+				if (
+					document?.activeElement?.getBoundingClientRect().bottom >
+						searchInputContRef.current?.getBoundingClientRect().top &&
+					dataNameValue === 'input-create-event'
+				) {
+					searchInputContRef.current.style.visibility = 'hidden';
+					searchInputContRef.current.style.opacity = '0';
+				} else {
+					searchInputContRef.current.style.visibility = '';
+					searchInputContRef.current.style.opacity = '';
 				}
 			}
 		}
