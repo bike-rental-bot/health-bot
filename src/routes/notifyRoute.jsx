@@ -64,6 +64,7 @@ const NotifyRoute = () => {
 				<NotifyPage
 					description={notify?.info?.notify?.description}
 					time={formatTime(notify.info.time)}
+					calendarDate={notify.info.time}
 					title={notify?.info?.notify?.title}
 					attachments={notify?.info?.notify?.attachments}
 					preview_url={notify?.info?.notify?.preview_url}

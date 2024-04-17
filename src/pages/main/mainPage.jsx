@@ -29,6 +29,10 @@ const MainPage = () => {
 	const { loading } = useSelector((state) => state.client);
 
 	useEffect(() => {
+		document.body.style.background = 'white';
+	}, []);
+
+	useEffect(() => {
 		if (userInfo?.user?.role === 'admin') {
 			WebApp.MainButton.setParams({
 				text: 'Вернуться в админ-панель',

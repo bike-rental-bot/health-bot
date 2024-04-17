@@ -5,9 +5,11 @@ import LinkPreview from './../../components/UI/LinkPreview/index';
 import ImageLoadPreview from './../../components/ImageLoadPreview/index';
 import { useEffect, useState } from 'react';
 import { useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { get } from '../../lib/api';
 import { useNavigate } from 'react-router-dom';
+import { TYPESMAP } from '../../config';
+import { setEventComplete } from '../../redux/clientSlice';
 
 const regexLink = new RegExp(
 	'^(https?:\\/\\/)?' + // Протокол (http:// или https://)
@@ -32,18 +34,28 @@ const NotifyPage = ({
 	title,
 	time,
 	id,
+	calendarDate,
 	type = 'food',
 	is_completed,
 }) => {
+	const dispatch = useDispatch();
 	const [stateBlocks, setStateBlocks] = useState({ text: true, attachment: true });
 	const [metaData, setMetaData] = useState({ info: null, loading: true });
 	const userToken = useSelector((state) => state.user.token);
 	const role = useSelector((state) => state.user.user.role);
 	const [completeClick, setCompleteClick] = useState(false);
 
+	const clientEvents = useSelector((state) => state.client);
+
 	const textRef = useRef(null);
 	const attachmentRef = useRef(null);
 	const navigate = useNavigate();
+
+	console.log(
+		'calendar',
+		calendarDate.slice(0, 10),
+		clientEvents[calendarDate.slice(0, 10)] && clientEvents[calendarDate.slice(0, 10)][TYPESMAP[type]],
+	);
 
 	useEffect(() => {
 		if (stateBlocks.text) {
@@ -103,6 +115,19 @@ const NotifyPage = ({
 			if (role === 'user' && !is_completed && !completeClick) {
 				get('/notify/completeNotify', { task_id: id, token: userToken }).then((res) => {
 					WebApp.MainButton.setParams({ text: 'Исполнено', color: '#a9a9a9' });
+
+					if (
+						clientEvents[calendarDate.slice(0, 10)] &&
+						clientEvents[calendarDate.slice(0, 10)][TYPESMAP[type]]
+					) {
+						console.log(clientEvents);
+						let obj = {
+							date: calendarDate.slice(0, 10),
+							id: id,
+							type: TYPESMAP[type],
+						};
+						dispatch(setEventComplete(obj));
+					}
 				});
 			}
 		};

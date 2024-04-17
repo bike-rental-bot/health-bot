@@ -30,16 +30,19 @@ export const clientSlice = createSlice({
 		setEventComplete: (state, action) => {
 			const { date, id, type } = action.payload;
 
+			console.log(date, id, type);
+
 			if (state && state[date] && state[date][type] && id !== undefined) {
-				let arr = [...state[action.payload?.date][type]];
-				state[action.payload?.date][type] = '';
+				let arr = [...state[date][type]];
 
 				for (let i = 0; i < arr.length; i++) {
-					if (arr[i].id === id) {
+					if (arr[i].id == id) {
 						arr[i].is_completed = true;
 						break;
 					}
 				}
+
+				console.log(arr);
 
 				state[action.payload?.date][type] = arr;
 				return state;
