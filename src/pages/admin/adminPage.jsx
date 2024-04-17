@@ -190,13 +190,14 @@ const AdminPage = () => {
 
 	useEffect(() => {
 		const root = document.getElementById('root');
+		let activeElement = document.activeElement;
+		let dataNameValue = activeElement.getAttribute('data-name');
 		function scroll() {
 			if (footerRef.current) {
 				if (
 					document?.activeElement?.getBoundingClientRect().bottom >
 						footerRef.current?.getBoundingClientRect().top &&
-					(document?.activeElement?.tagName.toLowerCase() === 'textarea' ||
-						document?.activeElement?.tagName.toLowerCase() === 'input')
+					dataNameValue === 'input-create-event'
 				) {
 					footerRef.current.style.visibility = 'hidden';
 					footerRef.current.style.opacity = '0';
@@ -212,8 +213,7 @@ const AdminPage = () => {
 					if (
 						document?.activeElement?.getBoundingClientRect()?.bottom >
 							footerRef?.current?.getBoundingClientRect()?.top &&
-						(document?.activeElement?.tagName.toLowerCase() === 'textarea' ||
-							document?.activeElement?.tagName.toLowerCase() === 'input')
+						dataNameValue === 'input-create-event'
 					) {
 						footerRef.current.style.visibility = 'hidden';
 						footerRef.current.style.opacity = '0';

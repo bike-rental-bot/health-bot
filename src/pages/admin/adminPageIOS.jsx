@@ -128,9 +128,6 @@ const AdminPageIOS = () => {
 					setDate([]);
 
 					if ('vibrate' in navigator) {
-						// Вызываем вибрацию с определенным временем вибрации и временем паузы
-						// В этом примере устройство будет вибрировать 1000 мс, затем пауза 500 мс,
-						// и это повторится еще два раза (итого 3 вибрации)
 						navigator.vibrate([200]);
 					} else {
 						console.log('API для вибрации не поддерживается');
@@ -342,51 +339,113 @@ const AdminPageIOS = () => {
 		WebApp.MainButton.hide();
 	}, []);
 
-	// изменение размеров блока
-	// useEffect(() => {
-	// 	const headerEl = headerRef?.current;
-	// 	const secondElement = footerRef?.current;
-	// 	const searchElement = searchInputContRef?.current;
-	// 	const root = document.getElementById('root');
+	useEffect(() => {
+		const headerEl = headerRef?.current;
+		const secondElement = footerRef?.current;
+		const searchElement = searchInputContRef?.current;
+		const root = document.getElementById('root');
 
-	// 	const resizeObserver = new ResizeObserver((entries) => {
-	// 		clearTimeout(resizeObserverTimeout);
+		const resizeObserver = new ResizeObserver((entries) => {
+			clearTimeout(resizeObserverTimeout);
 
-	// 		resizeObserverTimeout.current = setTimeout(() => {
-	// 			for (let entry of entries) {
-	// 				if (entry.target === headerEl) {
-	// 					if (
-	// 						document?.activeElement?.getBoundingClientRect().bottom >
-	// 							footerRef.current?.getBoundingClientRect().top &&
-	// 						window.innerHeight > WebApp.viewportHeight
-	// 					) {
-	// 						if (footerRef && footerRef.current) {
-	// 							footerRef.current.style.visibility = 'hidden';
-	// 							footerRef.current.style.opacity = '0';
-	// 						}
-	// 					} else {
-	// 						if (footerRef && footerRef.current) {
-	// 							footerRef.current.style.visibility = '';
-	// 							footerRef.current.style.opacity = '';
-	// 						}
-	// 					}
-	// 				}
-	// 			}
-	// 		}, 0);
-	// 	});
+			resizeObserverTimeout.current = setTimeout(() => {
+				for (let entry of entries) {
+					let activeElement = document.activeElement;
+					let dataNameValue = activeElement.getAttribute('data-name');
+					if (entry.target === headerEl) {
+						if (footerRef?.current) {
+							if (
+								document?.activeElement?.getBoundingClientRect().bottom >
+									footerRef.current?.getBoundingClientRect().top &&
+								window.innerHeight > WebApp.viewportHeight &&
+								dataNameValue === 'input-create-event'
+							) {
+								footerRef.current.style.visibility = 'hidden';
+								footerRef.current.style.opacity = '0';
+							} else {
+								footerRef.current.style.visibility = '';
+								footerRef.current.style.opacity = '';
+							}
+						}
+					}
+				}
+			}, 0);
+		});
 
-	// 	if (headerEl) {
-	// 		resizeObserver.observe(headerEl);
-	// 	}
+		if (headerEl) {
+			resizeObserver.observe(headerEl);
+		}
 
-	// 	if (secondElement) {
-	// 		resizeObserver.observe(secondElement);
-	// 	}
+		if (secondElement) {
+			resizeObserver.observe(secondElement);
+		}
 
-	// 	return () => {
-	// 		resizeObserver.disconnect();
-	// 	};
-	// }, [search, isOpenKeyboard]);
+		return () => {
+			resizeObserver.disconnect();
+		};
+	}, [search]);
+
+	useEffect(() => {
+		const root = document.getElementById('root');
+
+		function scroll() {
+			let activeElement = document.activeElement;
+			let dataNameValue = activeElement.getAttribute('data-name');
+			console.log(
+				'scroll',
+				document?.activeElement.getBoundingClientRect().bottom >
+					footerRef.current?.getBoundingClientRect().top,
+			);
+			if (footerRef?.current) {
+				console.log(
+					'scroll',
+					document?.activeElement.getBoundingClientRect().bottom >
+						footerRef.current?.getBoundingClientRect().top,
+					activeElement,
+				);
+				if (
+					document?.activeElement?.getBoundingClientRect().bottom >
+						footerRef.current?.getBoundingClientRect().top &&
+					dataNameValue === 'input-create-event'
+				) {
+					footerRef.current.style.visibility = 'hidden';
+					footerRef.current.style.opacity = '0';
+				} else {
+					footerRef.current.style.visibility = '';
+					footerRef.current.style.opacity = '';
+				}
+			}
+		}
+		function viewportChanged() {
+			let activeElement = document.activeElement;
+			let dataNameValue = activeElement.getAttribute('data-name');
+			if (footerRef?.current) {
+				if (
+					document?.activeElement?.getBoundingClientRect()?.bottom >
+						footerRef?.current?.getBoundingClientRect()?.top &&
+					dataNameValue === 'input-create-event'
+				) {
+					footerRef.current.style.visibility = 'hidden';
+					footerRef.current.style.opacity = '0';
+				} else {
+					footerRef.current.style.visibility = '';
+					footerRef.current.style.opacity = '';
+				}
+			} else {
+				footerRef.current.style.visibility = '';
+				footerRef.current.style.opacity = '';
+			}
+		}
+		root.addEventListener('scroll', scroll);
+
+		WebApp.onEvent('viewportChanged', viewportChanged);
+
+		return () => {
+			root.removeEventListener('scroll', scroll);
+			WebApp.offEvent('viewportChanged', viewportChanged);
+		};
+	}, []);
+
 	useEffect(() => {
 		const datesUTC = [];
 
