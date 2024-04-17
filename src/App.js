@@ -45,7 +45,7 @@ function App() {
 			requestAnimationFrame(() => {
 				WebApp.showPopup(
 					{
-						title: 'health_bot',
+						title: 'Ecopulse',
 						message: 'Внесенные изменения могут быть потеряны',
 						buttons: [
 							{ id: 'close', type: 'destructive', text: 'Закрыть' },
