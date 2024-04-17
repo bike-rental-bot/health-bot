@@ -69,7 +69,7 @@ const NotifyRoute = () => {
 					preview_url={notify?.info?.notify?.preview_url}
 					is_completed={notify?.info?.is_completed}
 					type={TYPESMAP[notify?.info?.notify?.type]}
-					id={notify.info.id}
+					id={notify_id}
 				/>
 			);
 		}
