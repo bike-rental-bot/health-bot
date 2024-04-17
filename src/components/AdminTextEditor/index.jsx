@@ -183,7 +183,6 @@ const AdminTextEditor = ({
 					<div className={styles.inputAttachment}>
 						<label className={styles.inputFile}>
 							<input
-								data-name="input-create-event"
 								onChange={handleFileChange}
 								multiple={true}
 								accept=".jpg, .jpeg, .png"
@@ -195,6 +194,7 @@ const AdminTextEditor = ({
 						<label className={styles.inputText}>
 							<input
 								value={formState.preview_url}
+								data-name="input-create-event"
 								ref={inputAttachmentRef}
 								onChange={handleInputLink}
 								placeholder="Вставьте ссылку или вложение"
