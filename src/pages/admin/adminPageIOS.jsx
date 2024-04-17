@@ -53,6 +53,7 @@ const AdminPageIOS = () => {
 
 	const patients = useSelector((state) => state.admin.patients);
 	const token = useSelector((state) => state.user.token);
+	const [error, setError] = useState(null);
 
 	const swiperRef = useRef(null);
 	const footerRef = useRef(null);
@@ -102,6 +103,14 @@ const AdminPageIOS = () => {
 					.then((res) => res.json())
 					.then((res) => {
 						attachments = res?.files ? [...attachments, ...res.files] : [attachments];
+					})
+					.catch((err) => {
+						setStateToasify({
+							...stateToasify,
+							active: true,
+							text: `Ошибка сервера ${err}`,
+							status: 'negative',
+						});
 					});
 			}
 
@@ -126,7 +135,7 @@ const AdminPageIOS = () => {
 					setStateToasify({
 						...stateToasify,
 						active: true,
-						text: 'Ошибка сервера',
+						text: `Ошибка сервера ${err}`,
 						status: 'negative',
 					});
 				});

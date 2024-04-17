@@ -30,8 +30,6 @@ export const clientSlice = createSlice({
 		setEventComplete: (state, action) => {
 			const { date, id, type } = action.payload;
 
-			console.log('action', date, id, type);
-
 			if (state && state[date] && state[date][type] && id !== undefined) {
 				let arr = [...state[action.payload?.date][type]];
 				state[action.payload?.date][type] = '';
@@ -42,8 +40,6 @@ export const clientSlice = createSlice({
 						break;
 					}
 				}
-
-				console.log('action array', arr);
 
 				state[action.payload?.date][type] = arr;
 				return state;

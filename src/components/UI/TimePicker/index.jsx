@@ -18,26 +18,32 @@ const dateConfig = {
 	},
 };
 
-let DateWithTime;
+const startDate = () => {
+	let DateWithTime;
 
-const currentDate = new Date();
-const currentMinutes = currentDate.getMinutes();
+	const currentDate = new Date();
+	const currentMinutes = currentDate.getMinutes();
 
-if (currentMinutes % 5 !== 0) {
-	const diff = 5 - (currentMinutes % 5);
-	const newDate = new Date(currentDate.getTime() + diff * 60000); // Добавляем минуты для деления на 5
+	if (currentMinutes % 5 !== 0) {
+		const diff = 5 - (currentMinutes % 5);
+		const newDate = new Date(currentDate.getTime() + diff * 60000); // Добавляем минуты для деления на 5
 
-	DateWithTime = newDate;
-}
+		DateWithTime = newDate;
+
+		return DateWithTime;
+	}
+
+	return currentDate;
+};
 
 const TimePick = ({ onChange }) => {
-	const [dateWithTime, setDateWithTime] = useState(DateWithTime);
+	const [dateWithTime, setDateWithTime] = useState();
 
 	useEffect(() => {
-		if (typeof onChange === 'function' && DateWithTime) {
+		if (typeof onChange === 'function') {
 			const obj = {
-				hours: DateWithTime?.getHours(),
-				minutes: DateWithTime?.getMinutes(),
+				hours: startDate().getHours(),
+				minutes: startDate().getMinutes(),
 			};
 
 			onChange(obj);

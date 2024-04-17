@@ -38,7 +38,7 @@ const AdminEventItem = ({
 				setIsHidden(!isHidden);
 				contRef.current.blur();
 			}}
-			className={`${styles.container} ${styles[type]}`}>
+			className={`${styles.container} ${styles[type]} ${!isHidden && styles.open}`}>
 			<div className={`${styles.header} ${styles[type]} ${!isHidden && styles.open}`}>
 				{isHidden ? (
 					<div className={`${styles.hidden} ${styles[type]}`}>

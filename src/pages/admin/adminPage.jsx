@@ -19,7 +19,12 @@ import { setFormState, setSelectUserValue } from '../../redux/adminSlice.js';
 import AdminTogglerNotify from './../../components/AdminTogglerNotify/index';
 import AdminSearchForm from '../../components/AdminSearchForm/index';
 import config from '../../config.js';
-import { toggleIndicator1, toggleIndicator2, toggleIndicator3, startDateFunction } from './functions.js';
+import {
+	toggleIndicator1,
+	toggleIndicator2,
+	toggleIndicator3,
+	startDateFunction,
+} from './functions.js';
 
 const tg = window?.Telegram?.WebApp;
 
@@ -34,8 +39,6 @@ const ACTIVETEXTFIELDS = {
 	description: false,
 	link: false,
 };
-
-
 
 const AdminPage = () => {
 	const WebApp = window.Telegram.WebApp;
@@ -261,6 +264,8 @@ const AdminPage = () => {
 					.then((res) => res.json())
 					.then((res) => {
 						attachments = res?.files ? [...attachments, ...res.files] : [attachments];
+					}).catch((res) => {
+						
 					});
 			}
 
@@ -432,7 +437,6 @@ const AdminPage = () => {
 	// 		resizeObserver.disconnect();
 	// 	};
 	// }, [search, isOpenKeyboard]);
-
 
 	useEffect(() => {
 		const datesUTC = [];
@@ -638,7 +642,8 @@ const AdminPage = () => {
 					clickBackBtn={() => setSearch(false)}
 					containerRef={searchInputContRef}
 					sendSearch={(res) => {
-						console.log('search', res)
+						console.log('search', res);
+						searchInputRef.current.blur();
 						setArchieveList(res);
 					}}
 					onFocus={() => setSearchFocus(true)}
