@@ -481,8 +481,6 @@ const AdminPage = () => {
 		dispatch(setFormState({ ...formState, time: datesUTC }));
 	}, [date, timeParams]);
 
-	console.log('setSeatch', search, searchFocus)
-
 	return (
 		<>
 			<form
@@ -534,8 +532,8 @@ const AdminPage = () => {
 				<div
 					style={{
 						marginTop:
-							!isOpenKeyboard ||
 							!search ||
+							!searchFocus ||
 							focusTextFields.description ||
 							focusTextFields.link ||
 							focusTextFields.title
