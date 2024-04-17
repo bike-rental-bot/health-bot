@@ -199,6 +199,13 @@ const AdminTextEditor = ({
 								onChange={handleInputLink}
 								placeholder="Вставьте ссылку или вложение"
 								type="text"
+								onBlur={() => {
+									const root = document.getElementById('root');
+									if (WebApp.platform === 'ios') {
+										root.scrollTo(0, 0);
+										window.scrollTo(0, 0);
+									}
+								}}
 							/>
 						</label>
 					</div>
