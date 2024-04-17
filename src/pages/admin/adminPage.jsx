@@ -264,9 +264,8 @@ const AdminPage = () => {
 					.then((res) => res.json())
 					.then((res) => {
 						attachments = res?.files ? [...attachments, ...res.files] : [attachments];
-					}).catch((res) => {
-						
-					});
+					})
+					.catch((res) => {});
 			}
 
 			post('/notify/addNotify', {}, { ...formState, attachments, token })
@@ -401,51 +400,66 @@ const AdminPage = () => {
 		WebApp.MainButton.hide();
 	}, []);
 
-	// изменение размеров блока
-	// useEffect(() => {
-	// 	const headerEl = headerRef?.current;
-	// 	const secondElement = footerRef?.current;
-	// 	const searchElement = searchInputContRef?.current;
-	// 	const root = document.getElementById('root');
+	useEffect(() => {
+		const headerEl = headerRef?.current;
+		const secondElement = footerRef?.current;
+		const searchElement = searchInputContRef?.current;
+		const root = document.getElementById('root');
 
-	// 	const resizeObserver = new ResizeObserver((entries) => {
-	// 		clearTimeout(resizeObserverTimeout);
+		const resizeObserver = new ResizeObserver((entries) => {
+			clearTimeout(resizeObserverTimeout);
 
-	// 		resizeObserverTimeout.current = setTimeout(() => {
-	// 			for (let entry of entries) {
-	// 				if (entry.target === headerEl) {
-	// 					if (
-	// 						document?.activeElement?.getBoundingClientRect().bottom >
-	// 							footerRef.current?.getBoundingClientRect().top &&
-	// 						window.innerHeight > WebApp.viewportHeight
-	// 					) {
-	// 						if (footerRef && footerRef.current) {
-	// 							footerRef.current.style.visibility = 'hidden';
-	// 							footerRef.current.style.opacity = '0';
-	// 						}
-	// 					} else {
-	// 						if (footerRef && footerRef.current) {
-	// 							footerRef.current.style.visibility = '';
-	// 							footerRef.current.style.opacity = '';
-	// 						}
-	// 					}
-	// 				}
-	// 			}
-	// 		}, 0);
-	// 	});
+			resizeObserverTimeout.current = setTimeout(() => {
+				for (let entry of entries) {
+					let activeElement = document.activeElement;
+					let dataNameValue = activeElement.getAttribute('data-name');
+					if (entry.target === headerEl) {
+						if (footerRef?.current) {
+							if (
+								document?.activeElement?.getBoundingClientRect().bottom >
+									footerRef.current?.getBoundingClientRect().top &&
+								window.innerHeight > WebApp.viewportHeight &&
+								dataNameValue === 'input-create-event'
+							) {
+								footerRef.current.style.visibility = 'hidden';
+								footerRef.current.style.opacity = '0';
+							} else {
+								footerRef.current.style.visibility = '';
+								footerRef.current.style.opacity = '';
+							}
+						}
 
-	// 	if (headerEl) {
-	// 		resizeObserver.observe(headerEl);
-	// 	}
+						if (searchInputContRef?.current) {
+							if (
+								document?.activeElement?.getBoundingClientRect().bottom >
+									searchInputContRef.current?.getBoundingClientRect().top &&
+								window.innerHeight > WebApp.viewportHeight &&
+								dataNameValue === 'input-create-event'
+							) {
+								searchInputContRef.current.style.visibility = 'hidden';
+								searchInputContRef.current.style.opacity = '0';
+							} else {
+								searchInputContRef.current.style.visibility = '';
+								searchInputContRef.current.style.opacity = '';
+							}
+						}
+					}
+				}
+			}, 0);
+		});
 
-	// 	if (secondElement) {
-	// 		resizeObserver.observe(secondElement);
-	// 	}
+		if (headerEl) {
+			resizeObserver.observe(headerEl);
+		}
 
-	// 	return () => {
-	// 		resizeObserver.disconnect();
-	// 	};
-	// }, [search, isOpenKeyboard]);
+		if (secondElement) {
+			resizeObserver.observe(secondElement);
+		}
+
+		return () => {
+			resizeObserver.disconnect();
+		};
+	}, [search]);
 
 	useEffect(() => {
 		const datesUTC = [];
@@ -654,7 +668,6 @@ const AdminPage = () => {
 						console.log('search', res);
 						setArchieveList(res);
 					}}
-				
 					onFocus={() => setSearchFocus(true)}
 					onBlur={() => setSearchFocus(false)}
 					togglerRef={typeSwiperContRef}

@@ -42,8 +42,6 @@ export const clientSlice = createSlice({
 					}
 				}
 
-				console.log(arr);
-
 				state[action.payload?.date][type] = arr;
 				return state;
 			}
