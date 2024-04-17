@@ -102,7 +102,6 @@ const NotifyPage = ({
 		const mainBtnClick = () => {
 			if (role === 'user' && !is_completed && !completeClick) {
 				get('/notify/completeNotify', { task_id: id, token: userToken }).then((res) => {
-					console.log('complete', res);
 					WebApp.MainButton.setParams({ text: 'Исполнено', color: '#a9a9a9' });
 				});
 			}

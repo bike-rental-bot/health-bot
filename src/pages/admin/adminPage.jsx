@@ -434,8 +434,6 @@ const AdminPage = () => {
 	// }, [search, isOpenKeyboard]);
 
 
-	console.log('form', formState);
-
 	useEffect(() => {
 		const datesUTC = [];
 
@@ -640,7 +638,8 @@ const AdminPage = () => {
 					clickBackBtn={() => setSearch(false)}
 					containerRef={searchInputContRef}
 					sendSearch={(res) => {
-						setArchieveList(res.result);
+						console.log('search', res)
+						setArchieveList(res);
 					}}
 					onFocus={() => setSearchFocus(true)}
 					onBlur={() => setSearchFocus(false)}

@@ -57,7 +57,7 @@ const Select = ({ variants, onChange, children, value, className }) => {
 			}
 		} else {
 			if (dropDownRef.current) {
-				dropDownRef.current.style.height = `0 px`;
+				dropDownRef.current.style.height = `0px`;
 			}
 		}
 	}, [activeDropDown]);

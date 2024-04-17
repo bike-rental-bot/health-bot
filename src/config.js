@@ -3,3 +3,9 @@ export default {
 };
 
 export const EVENTTYPES = ['nutrition', 'preparations', 'day_regime'];
+
+export const TYPESMAP = {
+	food: 'nutrition',
+	drugs: 'preparations',
+	activity: 'day_regime',
+};

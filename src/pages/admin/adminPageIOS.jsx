@@ -19,6 +19,7 @@ import Archieve from '../../components/Archieve/index.jsx';
 import { useNavigate } from 'react-router-dom';
 import SearchSVG from '../../components/Icons/Search.jsx';
 import { get } from '../../lib/api.js';
+import { searchByNotify } from '../../functions.js';
 
 const ACTIVETEXTFIELDS = {
 	title: false,
@@ -474,14 +475,7 @@ const AdminPageIOS = () => {
 							e.preventDefault();
 							if (searchInputRef?.current) {
 								searchInputRef.current.blur();
-								get('/notify/searchByNotify', {
-									token: token,
-									q: searchInputRef.current.value,
-								})
-									.then((res) => {
-										setArchieveList(res?.result);
-									})
-									.catch(() => {});
+								searchByNotify(token, searchInputRef.current.value, setArchieveList);
 							}
 						}}>
 						<label>

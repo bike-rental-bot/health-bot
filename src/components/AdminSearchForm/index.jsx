@@ -5,6 +5,7 @@ import styles from './style.module.scss';
 import { createPortal } from 'react-dom';
 import { get } from '../../lib/api';
 import { useSelector } from 'react-redux';
+import { uniqueArchiveNotify } from '../../functions';
 
 const WebApp = window.Telegram.WebApp;
 
@@ -50,10 +51,11 @@ const AdminSearchForm = ({
 			searchInputRef.current.blur();
 		}
 
-		if (typeof sendSearch === 'function' && searchInputRef?.current?.value) {
+		if (typeof sendSearch === 'function' && searchInputRef?.current?.value !== undefined) {
 			get('/notify/searchByNotify', { token: token, q: searchInputRef.current.value })
 				.then((res) => {
-					sendSearch(res);
+					console.log('search result', res)
+					sendSearch(uniqueArchiveNotify(res));
 				})
 				.catch(() => {});
 		}
@@ -63,7 +65,8 @@ const AdminSearchForm = ({
 		if (typeof sendSearch === 'function') {
 			get('/notify/searchByNotify', { token: token, q: '' })
 				.then((res) => {
-					sendSearch(res);
+
+					sendSearch(uniqueArchiveNotify(res));
 				})
 				.catch(() => {});
 		}
@@ -98,14 +101,11 @@ const AdminSearchForm = ({
 								}
 
 								const root = document.getElementById('root');
-
-
 							}}
 							onBlur={() => {
 								if (typeof onBlur === 'function') onBlur();
 
 								const root = document.getElementById('root');
- 
 							}}
 							ref={searchInputRef}
 						/>

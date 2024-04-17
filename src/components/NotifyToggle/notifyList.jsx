@@ -17,6 +17,8 @@ const NotifyList = ({ type, calendarDate }) => {
 
 	const patientToken = useSelector((state) => state.admin.formState.token);
 
+	console.log('client events', clientEvents);
+
 	if (role === 'user') {
 		return (
 			<>

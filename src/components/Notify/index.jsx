@@ -8,7 +8,8 @@ import NotifyDescription from '../NotifyDescription';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { get } from '../../lib/api';
-import { setListEvent } from '../../redux/clientSlice';
+import { setListEvent, setEventComplete } from '../../redux/clientSlice';
+import { TYPESMAP } from '../../config';
 
 const Notify = ({
 	type = 'food',
@@ -45,8 +46,12 @@ const Notify = ({
 				date: calendarDate.toISOString().slice(0, 10),
 			})
 				.then((res) => {
-					const obj = { date: calendarDate.toISOString().slice(0, 10), info: res.result };
-					dispatch(setListEvent(obj));
+					let obj = {
+						date: calendarDate.toISOString().slice(0, 10),
+						id: id,
+						type: TYPESMAP[type],
+					};
+					dispatch(setEventComplete(obj));
 				})
 				.catch(() => {
 					dispatch(setListEvent());

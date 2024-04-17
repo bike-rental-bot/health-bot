@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { get } from '../../lib/api.js';
 import { useSelector } from 'react-redux';
 import { formatTime } from '../../functions.js';
+import { searchByNotify } from '../../functions.js';
 
 const TYPESMAP = {
 	nutrition: 'food',
@@ -11,17 +12,10 @@ const TYPESMAP = {
 	day_regime: 'activity',
 };
 
-
 const Archieve = ({ notifyList, copyClick, setNotifyList }) => {
 	const token = useSelector((state) => state.user?.token);
 	useEffect(() => {
-		
-		get('/notify/searchByNotify', { token: token, q: '' })
-			.then((res) => {
-			
-				setNotifyList(res.result);
-			})
-			.catch(() => {});
+		searchByNotify(token, '', setNotifyList);
 	}, [token]);
 
 	return (
