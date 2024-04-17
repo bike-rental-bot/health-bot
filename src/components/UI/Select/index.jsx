@@ -50,6 +50,18 @@ const Select = ({ variants, onChange, children, value, className }) => {
 		return () => window.removeEventListener('click', clickWin);
 	}, []);
 
+	useEffect(() => {
+		if (activeDropDown) {
+			if (dropDownRef.current) {
+				dropDownRef.current.style.height = `${dropDownRef.current.scrollHeight}px`;
+			}
+		} else {
+			if (dropDownRef.current) {
+				dropDownRef.current.style.height = `0 px`;
+			}
+		}
+	}, [activeDropDown]);
+
 	return (
 		<div ref={selectRef} className={`${styles.container} ${className}`}>
 			<div onClick={handleSelect} className={styles.select}>

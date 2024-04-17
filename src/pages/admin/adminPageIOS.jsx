@@ -227,6 +227,15 @@ const AdminPageIOS = () => {
 		}
 	};
 
+	useEffect(() => {
+		if (type === 0) {
+			activityIndicatorRef.current.style.transition = '0s';
+			activityIndicatorRef.current.style.transform = `translate(20px)`;
+			activityIndicatorRef.current.style.width = ``;
+			setMainType(0);
+		}
+	}, [type]);
+
 	const copyClick = (res) => {
 		setActiveTextFields({ title: true, description: true, link: true });
 
@@ -359,7 +368,6 @@ const AdminPageIOS = () => {
 	// 		resizeObserver.disconnect();
 	// 	};
 	// }, [search, isOpenKeyboard]);
-
 	useEffect(() => {
 		const datesUTC = [];
 
