@@ -288,6 +288,22 @@ const AdminPageIOS = () => {
 	}, [type]);
 
 	useEffect(() => {
+		const root = document.getElementById('root');
+		if (indicatorRef.current) {
+			indicatorRef.current.style.transition = '0s';
+			if (type === 0) {
+				indicatorRef.current.style.transform = 'translateX(0)';
+				indicatorRef.current.style.left = '2px';
+			}
+
+			if (type === 1) {
+				indicatorRef.current.style.transform = 'translateX(100%)';
+				indicatorRef.current.style.left = '-2px';
+			}
+		}
+	}, [searchFocus]);
+
+	useEffect(() => {
 		if (mainType === 1) {
 			isTimeChanged.current = true;
 		}
