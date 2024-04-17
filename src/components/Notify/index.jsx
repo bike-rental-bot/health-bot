@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { get } from '../../lib/api';
 import { setListEvent, setEventComplete } from '../../redux/clientSlice';
 import { TYPESMAP } from '../../config';
+import { useNavigate } from 'react-router-dom';
 
 const Notify = ({
 	type = 'food',
@@ -23,48 +24,22 @@ const Notify = ({
 	id,
 	calendarDate,
 }) => {
-	const [modalActive, setModalActive] = useState(false);
 
 	const role = useSelector((state) => state.user?.user?.role);
+
+	const navigate = useNavigate();
 
 	const userToken = useSelector((state) => state.user.token);
 
 	const dispatch = useDispatch();
 
-	const closeModal = () => {
-		setModalActive(false);
-	};
 
-	const fullFillClick = async () => {
-		if (role === 'user') {
-			get('/notify/completeNotify', { task_id: id, token: userToken }).then((res) =>
-				console.log('complete', res),
-			);
-
-			get('/notify/getByDate', {
-				token: userToken,
-				date: calendarDate.toISOString().slice(0, 10),
-			})
-				.then((res) => {
-					let obj = {
-						date: calendarDate.toISOString().slice(0, 10),
-						id: id,
-						type: TYPESMAP[type],
-					};
-					dispatch(setEventComplete(obj));
-				})
-				.catch(() => {
-					dispatch(setListEvent());
-				});
-		}
-	};
 
 	return (
 		<>
 			<div
 				onClick={() => {
-					setModalActive(true);
-					if (typeof onClick === 'function') onClick();
+					navigate(`/notify/${id}`);
 				}}
 				className={styles.container}>
 				<div className={`${styles.header} ${styles[type]}`}>
@@ -81,19 +56,7 @@ const Notify = ({
 					</div>
 				</div>
 			</div>
-			<Modal active={modalActive}>
-				<NotifyDescription
-					time={time}
-					preview_url={preview_url}
-					attachments={attachments}
-					title={title}
-					description={description}
-					type={type}
-					closeClick={closeModal}
-					fullFillClick={fullFillClick}
-					is_completed={is_completed}
-				/>
-			</Modal>
+
 		</>
 	);
 };

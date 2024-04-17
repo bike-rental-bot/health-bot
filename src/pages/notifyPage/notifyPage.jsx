@@ -115,8 +115,7 @@ const NotifyPage = ({
 		<div className={`container ${styles.container}`}>
 			<button
 				onClick={() => {
-					if (role === 'admin') navigate('/admin');
-					if (role === 'user') navigate('/');
+					navigate('/');
 				}}
 				className={styles.backBtn}>
 				<ArrowSVG width={10} height={10} style={{ transform: 'rotate(90deg)' }} />{' '}
