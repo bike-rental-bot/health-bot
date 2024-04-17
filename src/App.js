@@ -11,6 +11,7 @@ import { setUserError, setUserInfo, setUserLoading } from './redux/userSlice';
 import { setAppState } from './redux/appSlice';
 import { setPatients } from './redux/adminSlice';
 import AdminPageIOS from './pages/admin/adminPageIOS';
+import AdminPage from './pages/admin/adminPage';
 
 const WebApp = window.Telegram.WebApp;
 
@@ -122,9 +123,9 @@ function App() {
 
 	return (
 		<>
-			<AppRoutes />
+			{/* <AppRoutes /> */}
 
-			{/* <AdminPageIOS /> */}
+			<AdminPage />
 		</>
 	);
 }

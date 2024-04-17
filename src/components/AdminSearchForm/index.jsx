@@ -94,7 +94,7 @@ const AdminSearchForm = ({
 							type={'search'}
 							enterKeyHint="search"
 							onFocus={(e) => {
-								if (onFocus === 'function') {
+								if (typeof onFocus === 'function') {
 									onFocus();
 								}
 
