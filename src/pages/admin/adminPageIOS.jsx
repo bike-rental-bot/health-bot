@@ -46,6 +46,7 @@ const AdminPageIOS = () => {
 		isActive: false,
 	});
 	const [search, setSearch] = useState(false);
+	const [searchValue, setSearchValue] = useState('');
 	const [calendarFull, setCalendarFull] = useState(false);
 	const [searchFocus, setSearchFocus] = useState(false);
 	const [archieveList, setArchieveList] = useState(null);
@@ -389,9 +390,8 @@ const AdminPageIOS = () => {
 		function scroll() {
 			let activeElement = document.activeElement;
 			let dataNameValue = activeElement.getAttribute('data-name');
-		
+
 			if (footerRef?.current) {
-				
 				if (
 					document?.activeElement?.getBoundingClientRect().bottom >
 						footerRef.current?.getBoundingClientRect().top &&
@@ -541,7 +541,7 @@ const AdminPageIOS = () => {
 							e.preventDefault();
 							if (searchInputRef?.current) {
 								searchInputRef.current.blur();
-								searchByNotify(token, searchInputRef.current.value, setArchieveList);
+								setSearchValue(searchInputRef?.current?.value);
 							}
 						}}>
 						<label>
@@ -657,11 +657,7 @@ const AdminPageIOS = () => {
 							</SwiperSlide>
 						</Swiper>
 					) : (
-						<Archieve
-							setNotifyList={setArchieveList}
-							copyClick={copyClick}
-							notifyList={archieveList}
-						/>
+						<Archieve copyClick={copyClick} searchValue={searchValue} />
 					)}
 				</main>
 			</div>
