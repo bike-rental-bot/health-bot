@@ -64,8 +64,7 @@ const AdminPage = () => {
 		text: '',
 		isActive: false,
 	});
-	const { viewPort, isOpenKeyboard } = useSelector((state) => state.app);
-	const [archieveList, setArchieveList] = useState(null);
+	const [searchValue, setSearchValue] = useState('');
 
 	const swiperRef = useRef();
 	const typeSwiperContRef = useRef();
@@ -190,7 +189,7 @@ const AdminPage = () => {
 
 	useEffect(() => {
 		const root = document.getElementById('root');
-		function scroll() {
+		function hideFunc() {
 			let activeElement = document.activeElement;
 			let dataNameValue = activeElement.getAttribute('data-name');
 			if (footerRef.current) {
@@ -221,35 +220,11 @@ const AdminPage = () => {
 				}
 			}
 		}
+		function scroll() {
+			hideFunc();
+		}
 		function viewportChanged() {
-			let activeElement = document.activeElement;
-			let dataNameValue = activeElement.getAttribute('data-name');
-			if (footerRef?.current) {
-				if (
-					document?.activeElement?.getBoundingClientRect()?.bottom >
-						footerRef?.current?.getBoundingClientRect()?.top &&
-					dataNameValue === 'input-create-event'
-				) {
-					footerRef.current.style.visibility = 'hidden';
-					footerRef.current.style.opacity = '0';
-				} else {
-					footerRef.current.style.visibility = '';
-					footerRef.current.style.opacity = '';
-				}
-			}
-			if (searchInputContRef?.current) {
-				if (
-					document?.activeElement?.getBoundingClientRect().bottom >
-						searchInputContRef.current?.getBoundingClientRect().top &&
-					dataNameValue === 'input-create-event'
-				) {
-					searchInputContRef.current.style.visibility = 'hidden';
-					searchInputContRef.current.style.opacity = '0';
-				} else {
-					searchInputContRef.current.style.visibility = '';
-					searchInputContRef.current.style.opacity = '';
-				}
-			}
+			hideFunc();
 		}
 		root.addEventListener('scroll', scroll);
 
@@ -310,12 +285,7 @@ const AdminPage = () => {
 					}
 
 					if ('vibrate' in navigator) {
-						// Вызываем вибрацию с определенным временем вибрации и временем паузы
-						// В этом примере устройство будет вибрировать 1000 мс, затем пауза 500 мс,
-						// и это повторится еще два раза (итого 3 вибрации)
 						navigator.vibrate([200]);
-					} else {
-						console.log('API для вибрации не поддерживается');
 					}
 				})
 				.catch((err) => {
@@ -671,11 +641,7 @@ const AdminPage = () => {
 						</SwiperSlide>
 
 						<SwiperSlide style={{ overflow: 'auto' }}>
-							<Archieve
-								setNotifyList={setArchieveList}
-								copyClick={copyClick}
-								notifyList={archieveList}
-							/>
+							<Archieve searchValue={searchValue} copyClick={copyClick} />
 						</SwiperSlide>
 					</Swiper>
 				</main>
@@ -689,8 +655,7 @@ const AdminPage = () => {
 					clickBackBtn={() => setSearch(false)}
 					containerRef={searchInputContRef}
 					sendSearch={(res) => {
-						console.log('search', res);
-						setArchieveList(res);
+						setSearchValue(res);
 					}}
 					onFocus={() => setSearchFocus(true)}
 					onBlur={() => setSearchFocus(false)}

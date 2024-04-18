@@ -129,8 +129,6 @@ const AdminPageIOS = () => {
 
 					if ('vibrate' in navigator) {
 						navigator.vibrate([200]);
-					} else {
-						console.log('API для вибрации не поддерживается');
 					}
 
 					if (type !== 1) {
@@ -391,18 +389,9 @@ const AdminPageIOS = () => {
 		function scroll() {
 			let activeElement = document.activeElement;
 			let dataNameValue = activeElement.getAttribute('data-name');
-			console.log(
-				'scroll',
-				document?.activeElement.getBoundingClientRect().bottom >
-					footerRef.current?.getBoundingClientRect().top,
-			);
+		
 			if (footerRef?.current) {
-				console.log(
-					'scroll',
-					document?.activeElement.getBoundingClientRect().bottom >
-						footerRef.current?.getBoundingClientRect().top,
-					activeElement,
-				);
+				
 				if (
 					document?.activeElement?.getBoundingClientRect().bottom >
 						footerRef.current?.getBoundingClientRect().top &&

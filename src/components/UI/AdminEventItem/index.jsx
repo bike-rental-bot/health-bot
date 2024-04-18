@@ -17,6 +17,7 @@ const AdminEventItem = ({
 	time = '8:00',
 	preview_url,
 	copyClick,
+	index,
 }) => {
 	const [isHidden, setIsHidden] = useState(true);
 	const infoRef = useRef();
@@ -33,6 +34,7 @@ const AdminEventItem = ({
 
 	return (
 		<div
+			data-index={index}
 			ref={contRef}
 			onClick={() => {
 				setIsHidden(!isHidden);

@@ -10,7 +10,7 @@ export const clientSlice = createSlice({
 	initialState: clientState,
 	reducers: {
 		setListEvent: (state, action) => {
-			console.log('action', action.payload);
+			
 			if (action.payload?.info && action.payload?.date) {
 				let info = action.payload?.info;
 				state.loading = false;
@@ -29,8 +29,6 @@ export const clientSlice = createSlice({
 
 		setEventComplete: (state, action) => {
 			const { date, id, type } = action.payload;
-
-			console.log(date, id, type);
 
 			if (state && state[date] && state[date][type] && id !== undefined) {
 				let arr = [...state[date][type]];

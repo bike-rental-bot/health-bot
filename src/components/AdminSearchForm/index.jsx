@@ -52,21 +52,13 @@ const AdminSearchForm = ({
 		}
 
 		if (typeof sendSearch === 'function' && searchInputRef?.current?.value !== undefined) {
-			get('/notify/searchByNotify', { token: token, q: searchInputRef.current.value })
-				.then((res) => {
-					sendSearch(uniqueArchiveNotify(res));
-				})
-				.catch(() => {});
+			sendSearch(searchInputRef?.current?.value);
 		}
 	};
 
 	useEffect(() => {
 		if (typeof sendSearch === 'function') {
-			get('/notify/searchByNotify', { token: token, q: '' })
-				.then((res) => {
-					sendSearch(uniqueArchiveNotify(res));
-				})
-				.catch(() => {});
+			sendSearch('');
 		}
 	}, []);
 	return (

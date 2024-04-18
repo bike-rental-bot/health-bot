@@ -51,12 +51,6 @@ const NotifyPage = ({
 	const attachmentRef = useRef(null);
 	const navigate = useNavigate();
 
-	console.log(
-		'calendar',
-		calendarDate.slice(0, 10),
-		clientEvents[calendarDate.slice(0, 10)] && clientEvents[calendarDate.slice(0, 10)][TYPESMAP[type]],
-	);
-
 	useEffect(() => {
 		if (stateBlocks.text) {
 			if (textRef.current) {
@@ -120,7 +114,6 @@ const NotifyPage = ({
 						clientEvents[calendarDate.slice(0, 10)] &&
 						clientEvents[calendarDate.slice(0, 10)][TYPESMAP[type]]
 					) {
-						console.log(clientEvents);
 						let obj = {
 							date: calendarDate.slice(0, 10),
 							id: id,
