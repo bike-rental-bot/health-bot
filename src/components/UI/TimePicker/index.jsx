@@ -6,6 +6,9 @@ import DatePicker from 'react-mobile-datepicker';
 import TimePicker from './index';
 import React from 'react';
 import './style.scss';
+import DeskTimePicker from './DeskTimePicker';
+
+const WebApp = window.Telegram.WebApp;
 
 const dateConfig = {
 	hour: {
@@ -46,7 +49,7 @@ const TimePick = ({ onChange }) => {
 				minutes: startDate().getMinutes(),
 			};
 
-			setDateWithTime(startDate())
+			setDateWithTime(startDate());
 
 			onChange(obj);
 		}
@@ -54,26 +57,39 @@ const TimePick = ({ onChange }) => {
 
 	return (
 		<>
-			<DatePicker
-				onChange={(e) => {
-					const obj = {
-						hours: e.getHours(),
-						minutes: e.getMinutes(),
-					};
+			{WebApp.platform === 'android' || WebApp.platform === 'ios' ? (
+				<DatePicker
+					onChange={(e) => {
+						const obj = {
+							hours: e.getHours(),
+							minutes: e.getMinutes(),
+						};
 
-					if (typeof onChange === 'function') onChange(obj);
+						if (typeof onChange === 'function') onChange(obj);
 
-					setDateWithTime(e);
-				}}
-				theme={'ios'}
-				value={dateWithTime}
-				showCaption={false}
-				showFooter={false}
-				showHeader={false}
-				dateConfig={dateConfig}
-				isOpen={true}
-				isPopup={false}
-			/>
+						setDateWithTime(e);
+					}}
+					theme={'ios'}
+					value={dateWithTime}
+					showCaption={false}
+					showFooter={false}
+					showHeader={false}
+					dateConfig={dateConfig}
+					isOpen={true}
+					isPopup={false}
+				/>
+			) : (
+				<DeskTimePicker
+					startHour={startDate()?.getHours() ? startDate()?.getHours() : 0}
+					startMinute={startDate()?.getMinutes() ? startDate()?.getMinutes() : 0}
+					onChange={(obj) => {
+						console.log('object', obj);
+						if (typeof onChange === 'function') {
+							onChange(obj);
+						}
+					}}
+				/>
+			)}
 		</>
 	);
 };

@@ -19,7 +19,6 @@ import Archieve from '../../components/Archieve/index.jsx';
 import { useNavigate } from 'react-router-dom';
 import SearchSVG from '../../components/Icons/Search.jsx';
 import { get } from '../../lib/api.js';
-import { searchByNotify } from '../../functions.js';
 
 const ACTIVETEXTFIELDS = {
 	title: false,

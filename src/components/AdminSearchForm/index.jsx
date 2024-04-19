@@ -5,7 +5,7 @@ import styles from './style.module.scss';
 import { createPortal } from 'react-dom';
 import { get } from '../../lib/api';
 import { useSelector } from 'react-redux';
-import { uniqueArchiveNotify } from '../../functions';
+
 
 const WebApp = window.Telegram.WebApp;
 

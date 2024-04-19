@@ -4,7 +4,6 @@ import { useEffect, useState, useRef } from 'react';
 import { get } from '../../lib/api.js';
 import { useSelector } from 'react-redux';
 import { formatTime } from '../../functions.js';
-import { searchByNotify } from '../../functions.js';
 import { TYPESMAP as REVTYPESMAP } from '../../config.js';
 
 const TYPESMAP = {

@@ -475,6 +475,8 @@ const AdminPage = () => {
 		dispatch(setFormState({ ...formState, time: datesUTC }));
 	}, [date, timeParams]);
 
+	console.log('formState', formState)
+
 	return (
 		<>
 			<form

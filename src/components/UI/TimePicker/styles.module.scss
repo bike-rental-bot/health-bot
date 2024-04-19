@@ -1,0 +1,122 @@
+@import "../../../index.scss";
+.container {
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+
+    // div {
+    //     display: flex;
+    //     align-items: center;
+    //     justify-content: center;
+    //     width: 66px;
+    //     height: 66px;
+    //     font-size: 36px;
+    //     border-radius: 10px;
+    //     border: 1px solid $additional-text-color;
+    //     cursor: pointer;
+
+    //     &:first-child {
+    //         margin-right: 10px;
+    //     }
+
+    //     &:last-child {
+    //         margin-left: 10px;
+    //     }
+    // }
+
+    div {
+        width: 66px;
+        display: flex;
+        flex-direction: column;
+
+        &:first-child {
+            margin-right: 10px;
+        }
+
+        &:last-child {
+            margin-left: 10px;
+        }
+
+        button {
+            font-size: 36px;
+            color: $additional-text-color;
+            font-weight: 700;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 66px;
+            width: 68px;
+            border: 1px solid $additional-text-color;
+            border-radius: 10px;
+
+            input {
+                font-size: 36px;
+                width: 66px;
+                border: 0;
+                text-align: center;
+                outline: 0;
+            }
+        }
+    }
+}
+
+// .modalContainer {
+//     position: absolute;
+//     top: 16px;
+//     left: 16px;
+//     bottom: 16px;
+//     right: 16px;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+// }
+
+// .modalSelect {
+//     background-color: white;
+//     border-radius: 10px;
+//     width: 100%;
+//     max-height: 100%;
+//     z-index: 101;
+
+//     overflow: auto;
+
+//     .header {
+//         padding: 20px 16px;
+//         display: flex;
+//         justify-content: space-between;
+//         align-items: center;
+//         border-bottom: 1px solid $additional-text-color;
+//         position: sticky;
+//         top: 0;
+//         left: 0;
+//         background-color: white;
+
+//         svg {
+//             width: 20px;
+//             height: 20px;
+//             path {
+//                 fill: $additional-text-color;
+//             }
+//         }
+//     }
+
+//     ul {
+//         li {
+//             padding: 10px 20px;
+//             cursor: pointer;
+
+//             &.active {
+//                 background: rgba(0, 0, 0, 0.05);
+//             }
+
+//             &:hover {
+//                 background: rgba(0, 0, 0, 0.05);
+//             }
+//         }
+//     }
+// }
