@@ -473,7 +473,7 @@ const AdminPageIOS = () => {
 		document.body.style.height = `100vh`;
 		window.scrollTo(0, overflow);
 		const root = document.getElementById('root');
-		// root.style.maxHeight = `${window.innerHeight}`;
+		root.style.height = `${window.innerHeight}`;
 	}, []);
 
 	return (

@@ -100,11 +100,53 @@ const AdminTextEditor = ({
 
 	const inputAttachmentRef = useRef();
 
+	const labelRef1 = useRef();
+	const inputRef1 = useRef();
+
+	const labelRef2 = useRef();
+	const inputRef2 = useRef();
+
 	// useEffect(() => {
 	// 	if (activeTextFields.link) {
 	// 		if (inputAttachmentRef && inputAttachmentRef.current) inputAttachmentRef.current.focus();
 	// 	}
 	// }, [activeTextFields]);
+
+	const scrollToElem = (labelRef) => {
+		const root = document.getElementById('root');
+		if (root && labelRef?.current) {
+			if (WebApp.platform === 'android') {
+				setTimeout(() => {
+					root.scrollTo({
+						top: labelRef.current.offsetTop,
+						behavior: 'smooth',
+					});
+				}, 250);
+			}
+
+			if (WebApp.platform === 'ios') {
+				const pixelsToBottom = root.scrollHeight - (root.scrollTop + root.clientHeight);
+				setTimeout(() => {
+					root.scrollTo({
+						top: labelRef.current.offsetTop - pixelsToBottom,
+						behavior: 'smooth',
+					});
+				}, 250);
+			}
+		}
+	};
+
+	useEffect(() => {
+		if (activeTextFields.title && !activeTextFields.description && !activeTextFields.link) {
+			inputRef1.current.focus();
+			inputRef2.current.blur();
+		}
+
+		if (!activeTextFields.title && activeTextFields.description && !activeTextFields.link) {
+			inputRef2.current.focus();
+			inputRef1.current.blur();
+		}
+	}, [activeTextFields]);
 
 	return (
 		<>
@@ -114,23 +156,31 @@ const AdminTextEditor = ({
 						dispatch(setFormState({ ...formState, title: value }));
 					}}
 					name={'Заголовок'}
+					textareaRef={inputRef1}
+					labelRef={labelRef1}
 					placeholder={'Введите заголовок'}
 					isOpen={activeTextFields.title}
-					onChangeFull={(value) =>
-						setActiveTextFields({
-							...activeTextFields,
-							title: value,
-							description: false,
-							link: false,
-						})
-					}
+					onClickBtn={(active) => {
+						if (active) {
+							setActiveTextFields({
+								...activeTextFields,
+								title: true,
+								description: false,
+								link: false,
+							});
+						} else {
+							setActiveTextFields({
+								...activeTextFields,
+								title: false,
+								description: false,
+								link: false,
+							});
+						}
+					}}
 					onFocus={() => {
-						setFocusTextFields({ ...focusTextFields, title: true });
-						setActiveTextFields({ ...activeTextFields, description: false, link: false });
+						scrollToElem(labelRef1);
 					}}
-					onBlur={() => {
-						setFocusTextFields({ ...focusTextFields, title: false });
-					}}
+					onBlur={() => {}}
 					value={formState.title}
 				/>
 
@@ -139,22 +189,30 @@ const AdminTextEditor = ({
 						dispatch(setFormState({ ...formState, description: value }));
 					}}
 					name={'Текст'}
+					textareaRef={inputRef2}
+					labelRef={labelRef2}
 					isOpen={activeTextFields.description}
-					onChangeFull={(value) =>
-						setActiveTextFields({
-							...activeTextFields,
-							title: false,
-							description: value,
-							link: false,
-						})
-					}
-					placeholder={'Введите текст'}
-					onFocus={() => {
-						setFocusTextFields({ ...focusTextFields, description: true });
-						setActiveTextFields({ ...activeTextFields, title: false, link: false });
+					onClickBtn={(active) => {
+						if (active) {
+							setActiveTextFields({
+								...activeTextFields,
+								title: false,
+								description: true,
+								link: false,
+							});
+						 } else {
+							setActiveTextFields({
+								...activeTextFields,
+								title: false,
+								description: false,
+								link: false,
+							});
+						}
 					}}
-					onBlur={() => {
-						setFocusTextFields({ ...focusTextFields, description: false });
+					placeholder={'Введите текст'}
+					onBlur={() => {}}
+					onFocus={() => {
+						scrollToElem(labelRef2);
 					}}
 					value={formState.description}
 				/>
@@ -195,7 +253,6 @@ const AdminTextEditor = ({
 							<input
 								value={formState.preview_url}
 								data-name="input-create-event"
-								ref={inputAttachmentRef}
 								onChange={handleInputLink}
 								placeholder="Вставьте ссылку или вложение"
 								type="text"

@@ -12,13 +12,13 @@ const TextField = ({
 	value,
 	onBlur,
 	onFocus,
+	onClickBtn,
+	textareaRef,
+	labelRef,
 	onChangeFull,
 	isOpen = false,
 }) => {
 	const [active, setActive] = useState(isOpen);
-	const textareaRef = useRef(null);
-	const labelRef = useRef(null);
-	const [focus, setFocus] = useState(false);
 	const firstFocus = useRef(false);
 	const buttonRef = useRef(false);
 	const { viewPort, isOpenKeyboard } = useSelector((state) => state.app);
@@ -45,47 +45,36 @@ const TextField = ({
 	useEffect(() => {
 		if (active && textareaRef.current) {
 			textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-			// textareaRef.current.focus();
 		}
 		if (!active) {
 			firstFocus.current = false;
 		}
 	}, [active]);
 
-	// useEffect(() => {
-	// 	const root = document.getElementById('root');
-	// 	function viewportChanged() {
-	// 		if (focus) {
-	// 			setTimeout(() => {
-	// 				if (root && labelRef.current) {
-	// 					root.scrollTo({
-	// 						top: labelRef.current.offsetTop - root.offsetTop,
-	// 						behavior: 'smooth',
-	// 					});
-	// 				}
-	// 			}, 300);
-	// 		}
-	// 	}
-
-	// 	viewportChanged();
-	// }, [isOpenKeyboard, viewPort, focus]);
-
 	return (
 		<div ref={labelRef} className={styles.textField}>
 			<button
 				ref={buttonRef}
 				type={'button'}
-				onClick={() => {
+				onClick={(e) => {
+					e.preventDefault()
+					e.stopPropagation()
 					setActive(!active);
 					buttonRef.current.blur();
-					if (typeof onChangeFull === 'function') onChangeFull(!active);
+
+					if (typeof onClickBtn === 'function') onClickBtn(!active);
 				}}>
 				{name}
 				<ArrowSVG className={`${styles.arrow} ${active && styles.active}`} width={19} height={19} />
 			</button>
 
-			{active && (
-				<label>
+			{
+				<label
+					style={{
+						height: active ? 'auto' : '0px',
+						overflow: 'hidden',
+						paddingBottom: active ? '14px' : '0',
+					}}>
 					<textarea
 						data-name="input-create-event"
 						style={{ maxHeight: 100 }}
@@ -93,7 +82,6 @@ const TextField = ({
 						ref={textareaRef}
 						onFocus={() => {
 							if (typeof onFocus === 'function') onFocus();
-							setFocus(true);
 
 							if (WebApp.platform === 'ios') {
 								const root = document.getElementById('root');
@@ -104,7 +92,6 @@ const TextField = ({
 						}}
 						onBlur={() => {
 							if (typeof onFocus === 'function') onBlur();
-							setFocus(false);
 
 							if (WebApp.platform === 'ios') {
 								const root = document.getElementById('root');
@@ -128,7 +115,7 @@ const TextField = ({
 						placeholder={placeholder}
 					/>
 				</label>
-			)}
+			}
 		</div>
 	);
 };
