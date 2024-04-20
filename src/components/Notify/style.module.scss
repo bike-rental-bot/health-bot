@@ -79,6 +79,12 @@
         text-align: left;
         color: $additional-text-color;
         margin: 24px 0 0 0;
+        max-height: 80px;
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
         @media (max-width: 368px) {
             line-height: 18px;
@@ -101,18 +107,17 @@
             align-items: center;
             justify-content: center;
 
-            &.food{
+            &.food {
                 background-color: $nutricion-color;
             }
 
-            &.activity{
+            &.activity {
                 background-color: $activity-color;
             }
 
-            &.drugs{
+            &.drugs {
                 background-color: $drugs-color;
             }
         }
-
     }
 }

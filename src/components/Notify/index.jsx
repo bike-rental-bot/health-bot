@@ -24,7 +24,6 @@ const Notify = ({
 	id,
 	calendarDate,
 }) => {
-
 	const role = useSelector((state) => state.user?.user?.role);
 
 	const navigate = useNavigate();
@@ -32,8 +31,6 @@ const Notify = ({
 	const userToken = useSelector((state) => state.user.token);
 
 	const dispatch = useDispatch();
-
-
 
 	return (
 		<>
@@ -48,7 +45,9 @@ const Notify = ({
 					<span className={styles.time}>{time}</span>
 				</div>
 
-				<div className={styles.text}>{description}</div>
+				<div className={styles.text}>
+					{description}
+				</div>
 
 				<div className={`${styles.labelCont}`}>
 					<div className={`${is_completed && styles[type]}`}>
@@ -56,7 +55,6 @@ const Notify = ({
 					</div>
 				</div>
 			</div>
-
 		</>
 	);
 };
