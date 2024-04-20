@@ -129,6 +129,7 @@ const NotifyPage = ({
 
 		return () => WebApp.offEvent('mainButtonClicked', mainBtnClick);
 	}, []);
+
 	return (
 		<div className={`container ${styles.container}`}>
 			<button
@@ -152,7 +153,9 @@ const NotifyPage = ({
 					</button>
 
 					<div className={styles.infoBlock} ref={textRef}>
-						{description}
+						{description.split('\n').map((el) => {
+							if (el.length > 0) return <p>{el}</p>;
+						})}
 					</div>
 				</div>
 

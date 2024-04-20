@@ -45,6 +45,7 @@ const AdminPageIOS = () => {
 		isActive: false,
 	});
 	const [search, setSearch] = useState(false);
+	const [postLoading, setPostLoading] = useState(false);
 	const [searchValue, setSearchValue] = useState('');
 	const [calendarFull, setCalendarFull] = useState(false);
 	const [searchFocus, setSearchFocus] = useState(false);
@@ -77,32 +78,68 @@ const AdminPageIOS = () => {
 	const viewport = useSelector((state) => state.app.viewPort);
 
 	const onClickCreateEvent = async () => {
-		const formData = new FormData();
-		let attachments = [];
-		let addFileNum = 0;
+		if (!postLoading) {
+			const formData = new FormData();
+			let attachments = [];
+			let addFileNum = 0;
+			setPostLoading(true);
 
-		for (let i = 0; i < formFiles.length; i++) {
-			if (formFiles[i].file) {
-				addFileNum = addFileNum + 1;
-				formData.append('files', formFiles[i]?.file);
-			} else attachments.push(formFiles[i].preview.src);
-		}
+			for (let i = 0; i < formFiles.length; i++) {
+				if (formFiles[i].file) {
+					addFileNum = addFileNum + 1;
+					formData.append('files', formFiles[i]?.file);
+				} else attachments.push(formFiles[i].preview.src);
+			}
 
-		if (
-			isTimeChanged.current &&
-			date.length !== 0 &&
-			formState.title.trim() !== '' &&
-			formState.description.trim() !== '' &&
-			formState.user_id
-		) {
-			if (addFileNum > 0) {
-				const uploadFiles = await fetch(`${config.API_BASE_URL}/notify/upload?token=${token}`, {
-					method: 'POST',
-					body: formData,
-				})
-					.then((res) => res.json())
+			if (
+				isTimeChanged.current &&
+				date.length !== 0 &&
+				formState.title.trim() !== '' &&
+				formState.description.trim() !== '' &&
+				formState.user_id
+			) {
+				if (addFileNum > 0) {
+					const uploadFiles = await fetch(`${config.API_BASE_URL}/notify/upload?token=${token}`, {
+						method: 'POST',
+						body: formData,
+					})
+						.then((res) => res.json())
+						.then((res) => {
+							attachments = res?.files ? [...attachments, ...res.files] : [attachments];
+						})
+						.catch((err) => {
+							setStateToasify({
+								...stateToasify,
+								active: true,
+								text: `Ошибка сервера ${err}`,
+								status: 'negative',
+							});
+						});
+				}
+
+				post('/notify/addNotify', {}, { ...formState, attachments, token })
 					.then((res) => {
-						attachments = res?.files ? [...attachments, ...res.files] : [attachments];
+						dispatch(
+							setFormState({ ...formState, title: '', attachment_url: '', description: '' }),
+						);
+						setActiveTextFields({ ...ACTIVETEXTFIELDS });
+						setStateToasify({
+							...stateToasify,
+							active: true,
+							text: 'Событие создано',
+							status: 'positive',
+						});
+
+						setDate([]);
+						setPostLoading(false);
+
+						if ('vibrate' in navigator) {
+							navigator.vibrate([200]);
+						}
+
+						if (type !== 1) {
+							isTimeChanged.current = false;
+						}
 					})
 					.catch((err) => {
 						setStateToasify({
@@ -111,105 +148,78 @@ const AdminPageIOS = () => {
 							text: `Ошибка сервера ${err}`,
 							status: 'negative',
 						});
-					});
-			}
 
-			post('/notify/addNotify', {}, { ...formState, attachments, token })
-				.then((res) => {
-					dispatch(setFormState({ ...formState, title: '', attachment_url: '', description: '' }));
-					setActiveTextFields({ ...ACTIVETEXTFIELDS });
+						setPostLoading(false);
+					});
+			} else {
+				setPostLoading(false);
+				if (!formState.user_id) {
 					setStateToasify({
 						...stateToasify,
 						active: true,
-						text: 'Событие создано',
-						status: 'positive',
-					});
-
-					setDate([]);
-
-					if ('vibrate' in navigator) {
-						navigator.vibrate([200]);
-					}
-
-					if (type !== 1) {
-						isTimeChanged.current = false;
-					}
-				})
-				.catch((err) => {
-					setStateToasify({
-						...stateToasify,
-						active: true,
-						text: `Ошибка сервера ${err}`,
+						text: 'Выберите пользователя',
 						status: 'negative',
 					});
-				});
-		} else {
-			if (!formState.user_id) {
-				setStateToasify({
-					...stateToasify,
-					active: true,
-					text: 'Выберите пользователя',
-					status: 'negative',
-				});
-				return;
-			}
+					return;
+				}
 
-			if (formState.title === '') {
-				setStateToasify({
-					...stateToasify,
-					active: true,
-					text: 'Введите заголовок',
-					status: 'negative',
-				});
-				setActiveTextFields({
-					...activeTextFields,
-					title: true,
-					description: false,
-					link: false,
-				});
-				return;
-			}
+				if (formState.title === '') {
+					setStateToasify({
+						...stateToasify,
+						active: true,
+						text: 'Введите заголовок',
+						status: 'negative',
+					});
+					setActiveTextFields({
+						...activeTextFields,
+						title: true,
+						description: false,
+						link: false,
+					});
+					return;
+				}
 
-			if (formState.description === '') {
-				setStateToasify({
-					...stateToasify,
-					active: true,
-					text: 'Введите текст',
-					status: 'negative',
-				});
-				setActiveTextFields({
-					...activeTextFields,
-					description: true,
-					title: false,
-					link: false,
-				});
-				return;
-			}
+				if (formState.description === '') {
+					setStateToasify({
+						...stateToasify,
+						active: true,
+						text: 'Введите текст',
+						status: 'negative',
+					});
+					setActiveTextFields({
+						...activeTextFields,
+						description: true,
+						title: false,
+						link: false,
+					});
+					return;
+				}
 
-			if (date.length === 0) {
-				swiperRef?.current?.swiper?.slideTo(0);
-				setMainType(0);
+				if (date.length === 0) {
+					swiperRef?.current?.swiper?.slideTo(0);
+					setMainType(0);
 
-				setStateToasify({
-					...stateToasify,
-					active: true,
-					text: 'Выберите дату',
-					status: 'negative',
-				});
-				return;
-			}
+					setStateToasify({
+						...stateToasify,
+						active: true,
+						text: 'Выберите дату',
+						status: 'negative',
+					});
+					return;
+				}
 
-			if (!isTimeChanged.current) {
-				swiperRef?.current?.swiper?.slideTo(1);
+				if (!isTimeChanged.current) {
+					swiperRef?.current?.swiper?.slideTo(1);
 
-				setMainType(1);
+					setMainType(1);
 
-				setStateToasify({
-					...stateToasify,
-					active: true,
-					text: 'Выберите время',
-					status: 'negative',
-				});
+					setStateToasify({
+						...stateToasify,
+						active: true,
+						text: 'Выберите время',
+						status: 'negative',
+					});
+				}
 			}
 		}
 	};
@@ -476,7 +486,7 @@ const AdminPageIOS = () => {
 							onClickCreateEvent();
 						}}
 						enсtype="multipart/form-data">
-						<HeaderAdmin onClickPreview={onClickPreview} />
+						<HeaderAdmin onClickPreview={onClickPreview} disabledBtn={postLoading} />
 
 						<div className={`container ${styles.container}`}>
 							<div className={`${styles.toggler} ${styles.ios}`}>

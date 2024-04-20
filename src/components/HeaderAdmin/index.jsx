@@ -2,7 +2,7 @@ import SearchSVG from '../Icons/Search';
 import styles from './styles.module.scss';
 import { Link } from 'react-router-dom';
 
-const HeaderAdmin = ({ onClickPreview }) => {
+const HeaderAdmin = ({ onClickPreview, disabledBtn }) => {
 	return (
 		<div className={`${styles.container} container`}>
 			<button
@@ -14,7 +14,10 @@ const HeaderAdmin = ({ onClickPreview }) => {
 				Предпросмотр
 			</button>
 
-			<button className={styles.createEventBtn} type={'submit'}>
+			<button
+				disabled={disabledBtn}
+				className={`${styles.createEventBtn} ${disabledBtn && styles.disabled}`}
+				type={'submit'}>
 				Создать
 			</button>
 		</div>
