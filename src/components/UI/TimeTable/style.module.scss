@@ -34,16 +34,17 @@
         display: flex;
         width: 100%;
         gap: 12px;
-        
 
         span {
-            width: 40px;
+            min-width: 42px;
+            max-width: 42px;
             font-size: 14px;
             font-weight: 400;
             line-height: 17px;
             letter-spacing: -0.03em;
             text-align: right;
             margin-top: -8px;
+            flex: 0 0 auto;
         }
 
         &:last-of-type {
