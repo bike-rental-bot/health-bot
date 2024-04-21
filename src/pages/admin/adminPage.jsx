@@ -267,6 +267,7 @@ const AdminPage = () => {
 						.then((res) => res.json())
 						.then((res) => {
 							attachments = res?.files ? [...attachments, ...res.files] : [attachments];
+							console.log('image success');
 						})
 						.catch((res) => {
 							setStateToasify({
@@ -275,6 +276,7 @@ const AdminPage = () => {
 								text: 'Ошибка загрузки файлов',
 								status: 'negative',
 							});
+							console.log('image error');
 						});
 				}
 

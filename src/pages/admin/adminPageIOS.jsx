@@ -106,6 +106,7 @@ const AdminPageIOS = () => {
 						.then((res) => res.json())
 						.then((res) => {
 							attachments = res?.files ? [...attachments, ...res.files] : [attachments];
+							console.log('image success');
 						})
 						.catch((err) => {
 							setStateToasify({
@@ -114,6 +115,7 @@ const AdminPageIOS = () => {
 								text: `Ошибка сервера ${err}`,
 								status: 'negative',
 							});
+							console.log('image error');
 						});
 				}
 

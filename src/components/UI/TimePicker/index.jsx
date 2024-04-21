@@ -83,7 +83,7 @@ const TimePick = ({ onChange }) => {
 					startHour={startDate()?.getHours() ? startDate()?.getHours() : 0}
 					startMinute={startDate()?.getMinutes() ? startDate()?.getMinutes() : 0}
 					onChange={(obj) => {
-						console.log('object', obj);
+						
 						if (typeof onChange === 'function') {
 							onChange(obj);
 						}
