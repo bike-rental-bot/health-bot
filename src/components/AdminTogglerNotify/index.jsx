@@ -15,18 +15,21 @@ const AdminTogglerNotify = ({ clickSearch, footerRef, className }) => {
 			indicatorTextareaRef.current.style.left = '0px';
 			indicatorTextareaRef.current.style.right = '0px';
 			indicatorTextareaRef.current.style.transform = 'translateX(2px)';
+			indicatorTextareaRef.current.style.background = '#FFF0EA';
 		}
 
 		if (formState.type === EVENTTYPES[1] && indicatorTextareaRef?.current) {
 			indicatorTextareaRef.current.style.left = '0px';
 			indicatorTextareaRef.current.style.right = '0px';
 			indicatorTextareaRef.current.style.transform = 'translateX(100%)';
+			indicatorTextareaRef.current.style.background = '#E0F8F1';
 		}
 
 		if (formState.type === EVENTTYPES[2] && indicatorTextareaRef?.current) {
 			indicatorTextareaRef.current.style.transform = 'translateX(200%)';
 			indicatorTextareaRef.current.style.left = '-2px';
 			indicatorTextareaRef.current.style.right = '0px';
+			indicatorTextareaRef.current.style.background = '#F3E9FF';
 		}
 	}, [formState]);
 

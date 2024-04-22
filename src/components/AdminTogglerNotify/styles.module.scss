@@ -46,6 +46,36 @@
             }
         }
 
+        &:nth-child(1) {
+            input {
+                &:checked {
+                    & + span {
+                        color: #f3752c;
+                    }
+                }
+            }
+        }
+
+        &:nth-child(2) {
+            input {
+                &:checked {
+                    & + span {
+                        color: #00c187;
+                    }
+                }
+            }
+        }
+
+        &:nth-child(3) {
+            input {
+                &:checked {
+                    & + span {
+                        color: #9747ff;
+                    }
+                }
+            }
+        }
+
         span {
             z-index: 1;
             color: $admin-text-color;
