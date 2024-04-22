@@ -27,7 +27,7 @@ const AdminTogglerNotify = ({ clickSearch, footerRef, className }) => {
 
 		if (formState.type === EVENTTYPES[2] && indicatorTextareaRef?.current) {
 			indicatorTextareaRef.current.style.transform = 'translateX(200%)';
-			indicatorTextareaRef.current.style.left = '-2px';""
+			indicatorTextareaRef.current.style.left = '-2px';
 			indicatorTextareaRef.current.style.right = '0px';
 			indicatorTextareaRef.current.style.background = '#F3E9FF';
 		}
