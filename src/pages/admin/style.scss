@@ -1,0 +1,12 @@
+@import "../../index.scss";
+.admin__date-picker {
+    .date-picker__day-today {
+        background: #007aff;
+        color: white;
+    }
+
+    .date-picker__day-selected {
+        background-color: #ff4949;
+        color: white;
+    }
+}

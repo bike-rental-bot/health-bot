@@ -290,6 +290,7 @@ const MyDatePicker = ({
 	full,
 	setFull,
 	min,
+	className,
 	weekDaysContainerClassName,
 	fullBtnClassName,
 	multiple = false,
@@ -579,7 +580,7 @@ const MyDatePicker = ({
 	}, []);
 
 	return (
-		<div ref={calendarRef} className={styles.container}>
+		<div ref={calendarRef} className={`${styles.container} ${className}`}>
 			<div className={styles.panelMonth}>
 				<button
 					type={'button'}

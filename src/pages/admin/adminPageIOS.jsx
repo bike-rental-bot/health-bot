@@ -19,6 +19,7 @@ import Archieve from '../../components/Archieve/index.jsx';
 import { useNavigate } from 'react-router-dom';
 import SearchSVG from '../../components/Icons/Search.jsx';
 import { get } from '../../lib/api.js';
+import "./style.scss"
 
 const ACTIVETEXTFIELDS = {
 	title: false,
@@ -647,7 +648,8 @@ const AdminPageIOS = () => {
 										full={calendarFull}
 										setFull={setCalendarFull}
 										value={date}
-										weekDaysContainerClassName={styles.weekDays}
+										weekDaysContainerClassName={`${styles.weekDays}`}
+										className={"admin__date-picker"}
 										fullBtnClassName={styles.fullBtnDatePicker}
 										multiple={true}
 										onChange={(value) => {

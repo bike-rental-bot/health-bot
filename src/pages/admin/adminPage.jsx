@@ -19,6 +19,7 @@ import { setFormState, setSelectUserValue } from '../../redux/adminSlice.js';
 import AdminTogglerNotify from './../../components/AdminTogglerNotify/index';
 import AdminSearchForm from '../../components/AdminSearchForm/index';
 import config from '../../config.js';
+import './style.scss';
 import {
 	toggleIndicator1,
 	toggleIndicator2,
@@ -650,7 +651,8 @@ const AdminPage = () => {
 									full={calendarFull}
 									setFull={setCalendarFull}
 									value={date}
-									weekDaysContainerClassName={styles.weekDays}
+									weekDaysContainerClassName={`${styles.weekDays}`}
+									className={'admin__date-picker'}
 									fullBtnClassName={styles.fullBtnDatePicker}
 									multiple={true}
 									onChange={(value) => {

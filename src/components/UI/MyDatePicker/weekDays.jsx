@@ -107,6 +107,14 @@ const WeekDays = ({
 							new Date(min.getFullYear(), min.getMonth(), min.getDate()).getTime() >
 								el1.value.getTime() &&
 							'disabled-dates'
+						} ${
+							new Date(
+								new Date().getFullYear(),
+								new Date().getMonth(),
+								new Date().getDate(),
+								0,
+								0,
+							).getTime() === el1.value.getTime() && 'date-picker__day-today'
 						}`}>
 						{el1.value.getDate()}
 					</span>
