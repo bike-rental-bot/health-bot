@@ -169,7 +169,7 @@ const AdminPageIOS = () => {
 					setStateToasify({
 						...stateToasify,
 						active: true,
-						text: 'Выберите пользователя',
+						text: 'Выберите пациента',
 						status: 'negative',
 					});
 

@@ -2,11 +2,10 @@ import SearchSVG from '../Icons/Search';
 import styles from './styles.module.scss';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import avatarPNG from "../../assets/images/user.png";
 
 const HeaderAdmin = ({ onClickPreview, disabledBtn }) => {
-	const photo = useSelector((state) => state.user.user.photo);
-
-	console.log('photo', photo);
+	const photo = useSelector((state) => state.user?.user?.photo);
 
 	return (
 		<div className={`${styles.container} container`}>
@@ -23,7 +22,7 @@ const HeaderAdmin = ({ onClickPreview, disabledBtn }) => {
 
 			<div>
 				<div>
-					<img width={37} height={37} src={photo} />
+					<img width={37} height={37} src={photo ? photo : avatarPNG} />
 				</div>
 			</div>
 

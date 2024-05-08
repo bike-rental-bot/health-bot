@@ -11,6 +11,7 @@
     transition: transform 0.5s linear;
     min-height: 41px;
     padding-left: 12px;
+    justify-content: space-between;
     &.active {
         transform: translateX(0);
     }

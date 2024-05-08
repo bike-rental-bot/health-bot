@@ -85,7 +85,7 @@ function App() {
 					console.log('catch');
 				});
 		} else {
-			navigate('/block');
+			navigate('/admin_panel');
 			setStatus(`empty InitData`);
 		}
 	}, []);
