@@ -26,7 +26,7 @@ const ClientRoute = () => {
 	} else {
 		if (user.role === 'admin' || user.role === 'owner') {
 			if (!patient_id) {
-				return <Navigate to={'/admin'} />;
+				return <Navigate to={'/admin_panel'} />;
 			} else {
 				return <MainPage />;
 			}

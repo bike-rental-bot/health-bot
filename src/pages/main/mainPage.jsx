@@ -48,7 +48,7 @@ const MainPage = () => {
 		}
 
 		function clickMainBtn() {
-			if (userInfo?.user?.role === 'admin') navigate('/admin');
+			if (userInfo?.user?.role === 'admin') navigate('/admin_panel');
 
 			if (userInfo?.user?.role === 'user') WebApp.openTelegramLink('https://t.me/olegin_m');
 		}

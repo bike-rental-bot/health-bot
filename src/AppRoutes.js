@@ -27,7 +27,7 @@ const AppRoutes = () => {
 				}
 			/>
 			<Route path={'/'} element={<ClientRoute />} />
-			<Route path={'/admin'} element={<AdminRoute />} />
+			<Route path={'/admin_panel'} element={<AdminRoute />} />
 			<Route path={'/notify/:notify_id'} element={<NotifyRoute />} />
 		</Routes>
 	);

@@ -34,7 +34,7 @@ const NotifyRoute = () => {
 				.catch(() => {
 					let not = { info: null, loading: false, error: true };
 					if (role === 'admin' || role === 'owner') {
-						navigate('/admin');
+						navigate('/admin_panel');
 					}
 					if (role === 'user') {
 						navigate('/');
