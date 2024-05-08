@@ -69,20 +69,24 @@ function App() {
 	}, []);
 
 	useEffect(() => {
+		console.log('webApp', WebApp?.initData);
 		if (WebApp.initData) {
 			post('/users/loginByInitData', {}, decodeURIComponent(WebApp.initData))
 				.then((data) => {
 					dispatch(setUserInfo(data));
 					dispatch(setUserLoading(false));
+					console.log('then');
 				})
 				.catch((err) => {
 					navigate('/block');
 					dispatch(setUserLoading(false));
 					dispatch(setUserError(true));
 					setStatus(`server error ${err}`);
+					console.log('catch');
 				});
 		} else {
 			navigate('/block');
+			console.log('initData');
 			setStatus(`empty InitData`);
 		}
 	}, []);
@@ -123,7 +127,7 @@ function App() {
 
 	return (
 		<>
-			<AppRoutes />	
+			<AppRoutes />
 		</>
 	);
 }
