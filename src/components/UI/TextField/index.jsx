@@ -17,6 +17,8 @@ const TextField = ({
 	labelRef,
 	onChangeFull,
 	isOpen = false,
+	buttonClassName,
+	className,
 }) => {
 	const [active, setActive] = useState(isOpen);
 	const firstFocus = useRef(false);
@@ -52,19 +54,21 @@ const TextField = ({
 	}, [active]);
 
 	return (
-		<div ref={labelRef} className={styles.textField}>
+		<div ref={labelRef} className={`${styles.textField} ${className}`}>
 			<button
 				ref={buttonRef}
 				type={'button'}
+				className={buttonClassName}
 				onClick={(e) => {
-					e.preventDefault()
-					e.stopPropagation()
+					e.preventDefault();
+					e.stopPropagation();
 					setActive(!active);
 					buttonRef.current.blur();
 
 					if (typeof onClickBtn === 'function') onClickBtn(!active);
 				}}>
-				{name}
+				<span>{name}</span>
+
 				<ArrowSVG className={`${styles.arrow} ${active && styles.active}`} width={19} height={19} />
 			</button>
 

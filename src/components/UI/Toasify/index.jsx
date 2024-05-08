@@ -1,6 +1,7 @@
 import styles from './styles.module.scss';
 import closePNG from '../../../assets/images/close.png';
 import { useEffect, useRef } from 'react';
+import CrossSVG from '../../Icons/Cross';
 
 const Toasify = ({ state, setState, status = 'positive', children }) => {
 	const timer = useRef(null);
@@ -15,7 +16,7 @@ const Toasify = ({ state, setState, status = 'positive', children }) => {
 				clearTimeout(timer.current);
 			}
 		}
-        
+
 		return () => {
 			if (timer.current) {
 				clearTimeout(timer.current);
@@ -24,10 +25,10 @@ const Toasify = ({ state, setState, status = 'positive', children }) => {
 	}, [state]);
 	return (
 		<div className={`${styles.container} ${state.active && styles.active} ${styles[status]}`}>
-			<button onClick={() => setState({ ...state, active: false })} className={styles.closeBtn}>
-				<img src={closePNG} alt="close PNG" width={8} height={8} />
-			</button>
 			{children}
+			<button onClick={() => setState({ ...state, active: false })} className={styles.closeBtn}>
+				<CrossSVG />
+			</button>
 		</div>
 	);
 };

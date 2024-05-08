@@ -150,3 +150,17 @@
     margin-bottom: 24px;
     padding: 0 20px 0 12px;
 }
+
+.buttonTextFieldError {
+    color: #ff4949 !important;
+
+    & > svg {
+        & > path {
+            stroke: #ff4949 !important;
+        }
+    }
+}
+
+.textFieldError{
+    border-color: #ff4949 !important;
+}

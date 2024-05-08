@@ -54,6 +54,14 @@
 
         color: #1f1e1e;
 
+        span {
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: left;
+            text-wrap: nowrap;
+        }
+
         .arrow {
             transform: rotate(270deg);
             transition: 0.25s;

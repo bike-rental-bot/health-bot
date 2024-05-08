@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useDebounce from '../../hooks/useDebounce.js';
-import { setFocusTextField, setFormState } from '../../redux/adminSlice.js';
+import {
+	TEXT_FORM_ERROR,
+	TITLE_FORM_ERROR,
+	setFocusTextField,
+	setFormErrors,
+	setFormState,
+} from '../../redux/adminSlice.js';
 import ArrowSVG from '../Icons/Arrow';
 import ClipSVG from '../Icons/Clip';
 import ImageLoadPreview from '../ImageLoadPreview';
@@ -32,6 +38,7 @@ const AdminTextEditor = ({
 	setFormFiles,
 }) => {
 	const formState = useSelector((state) => state.admin.formState);
+	const formErrors = useSelector((state) => state.admin.formErrors);
 	const WebApp = window.Telegram.WebApp;
 
 	const debounceTextLink = useDebounce(formState.preview_url, 250);
@@ -154,11 +161,18 @@ const AdminTextEditor = ({
 				<TextField
 					onChange={(value) => {
 						dispatch(setFormState({ ...formState, title: value }));
+						dispatch(setFormErrors({ type: TITLE_FORM_ERROR, value: false }));
 					}}
-					name={'Заголовок'}
+					name={
+						formState.title.replace(/(\r\n|\n|\r)/gm, '').length === 0 || activeTextFields.title
+							? 'Заголовок'
+							: formState.title.replace(/(\r\n|\n|\r)/gm, '')
+					}
 					textareaRef={inputRef1}
 					labelRef={labelRef1}
 					placeholder={'Введите заголовок'}
+					buttonClassName={formErrors.title_entered && styles.buttonTextFieldError}
+					className={formErrors.title_entered && styles.textFieldError}
 					isOpen={activeTextFields.title}
 					onClickBtn={(active) => {
 						if (active) {
@@ -187,11 +201,19 @@ const AdminTextEditor = ({
 				<TextField
 					onChange={(value) => {
 						dispatch(setFormState({ ...formState, description: value }));
+						dispatch(setFormErrors({ type: TEXT_FORM_ERROR, value: false }));
 					}}
-					name={'Текст'}
+					name={
+						formState.description.replace(/(\r\n|\n|\r)/gm, '').length === 0 ||
+						activeTextFields.description
+							? 'Текст'
+							: formState.description.replace(/(\r\n|\n|\r)/gm, '')
+					}
 					textareaRef={inputRef2}
 					labelRef={labelRef2}
 					isOpen={activeTextFields.description}
+					buttonClassName={formErrors.text_entered && styles.buttonTextFieldError}
+					className={formErrors.text_entered && styles.textFieldError}
 					onClickBtn={(active) => {
 						if (active) {
 							setActiveTextFields({
@@ -200,7 +222,7 @@ const AdminTextEditor = ({
 								description: true,
 								link: false,
 							});
-						 } else {
+						} else {
 							setActiveTextFields({
 								...activeTextFields,
 								title: false,

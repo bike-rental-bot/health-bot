@@ -15,7 +15,16 @@ import { post } from '../../lib/api.js';
 import Toasify from '../../components/UI/Toasify/index.jsx';
 import Select from '../../components/UI/Select';
 import { useNavigate } from 'react-router-dom';
-import { setFormState, setSelectUserValue } from '../../redux/adminSlice.js';
+import {
+	DATE_FORM_ERROR,
+	TEXT_FORM_ERROR,
+	TIME_FORM_ERROR,
+	TITLE_FORM_ERROR,
+	USER_FORM_ERROR,
+	setFormErrors,
+	setFormState,
+	setSelectUserValue,
+} from '../../redux/adminSlice.js';
 import AdminTogglerNotify from './../../components/AdminTogglerNotify/index';
 import AdminSearchForm from '../../components/AdminSearchForm/index';
 import config from '../../config.js';
@@ -45,9 +54,11 @@ const AdminPage = () => {
 	const WebApp = window.Telegram.WebApp;
 
 	const formState = useSelector((state) => state.admin.formState);
-
+	const formErrors = useSelector((state) => state.admin.formErrors);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+
+	console.log('formErrors', formErrors);
 
 	const userInfo = useSelector((state) => state.user);
 
@@ -324,6 +335,8 @@ const AdminPage = () => {
 						text: 'Выберите пользователя',
 						status: 'negative',
 					});
+
+					dispatch(setFormErrors({ type: USER_FORM_ERROR, value: true }));
 					return;
 				}
 
@@ -340,6 +353,8 @@ const AdminPage = () => {
 						description: false,
 						link: false,
 					});
+
+					dispatch(setFormErrors({ type: TITLE_FORM_ERROR, value: true }));
 					return;
 				}
 
@@ -356,6 +371,8 @@ const AdminPage = () => {
 						title: false,
 						link: false,
 					});
+
+					dispatch(setFormErrors({ type: TEXT_FORM_ERROR, value: true }));
 					return;
 				}
 
@@ -369,6 +386,12 @@ const AdminPage = () => {
 						text: 'Выберите дату',
 						status: 'negative',
 					});
+
+					dispatch(setFormErrors({ type: DATE_FORM_ERROR, value: true }));
+
+					if (!isTimeChanged.current) {
+						dispatch(setFormErrors({ type: TIME_FORM_ERROR, value: true }));
+					}
 					return;
 				}
 
@@ -382,6 +405,8 @@ const AdminPage = () => {
 						text: 'Выберите время',
 						status: 'negative',
 					});
+
+					dispatch(setFormErrors({ type: TIME_FORM_ERROR, value: true }));
 				}
 			}
 		}
@@ -417,7 +442,6 @@ const AdminPage = () => {
 			document.body.style.height = `100vh`;
 			window.scrollTo(0, overflow);
 			const root = document.getElementById('root');
-			// root.style.maxHeight = `${window.innerHeight}`;
 		}
 	}, []);
 
@@ -537,8 +561,10 @@ const AdminPage = () => {
 								onChange={(value, index) => {
 									dispatch(setFormState({ ...formState, user_id: value?.id, token: value?.token }));
 									dispatch(setSelectUserValue(index));
+									dispatch(setFormErrors({ type: USER_FORM_ERROR, value: false }));
 								}}
 								variants={patients}
+								className={formErrors.user_selected && styles.selectError}
 							/>
 							<AdminTextEditor
 								activeTextFields={activeTextFields}
@@ -629,7 +655,11 @@ const AdminPage = () => {
 							<span>Архив</span>
 						</label>
 
-						<span ref={activityIndicatorRef} className={styles.activityTypeIndicator}></span>
+						<span
+							ref={activityIndicatorRef}
+							className={`${styles.activityTypeIndicator} ${
+								(formErrors.time_selected || formErrors.date_selected) && styles.error
+							}`}></span>
 					</div>
 				</div>
 			</form>
@@ -657,6 +687,7 @@ const AdminPage = () => {
 									multiple={true}
 									onChange={(value) => {
 										setDate(value);
+										dispatch(setFormErrors({ type: DATE_FORM_ERROR, value: false }));
 									}}
 								/>
 							</div>
@@ -667,6 +698,7 @@ const AdminPage = () => {
 								<TimePicker
 									onChange={(value) => {
 										setTimeParams({ ...value });
+										dispatch(setFormErrors({ type: TIME_FORM_ERROR, value: false }));
 									}}
 								/>
 							</div>

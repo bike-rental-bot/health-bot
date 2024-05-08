@@ -2,7 +2,7 @@ import HeaderAdmin from '../../components/HeaderAdmin';
 import styles from './styles.module.scss';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setFormState, setSelectUserValue } from '../../redux/adminSlice';
+import { setFormState, setSelectUserValue, setFormErrors } from '../../redux/adminSlice';
 import Select from '../../components/UI/Select';
 import { toggleIndicator1, toggleIndicator2, getPosition, startDateFunction } from './functions.js';
 import AdminTextEditor from '../../components/AdminTextEditor';
@@ -19,7 +19,14 @@ import Archieve from '../../components/Archieve/index.jsx';
 import { useNavigate } from 'react-router-dom';
 import SearchSVG from '../../components/Icons/Search.jsx';
 import { get } from '../../lib/api.js';
-import "./style.scss"
+import './style.scss';
+import {
+	DATE_FORM_ERROR,
+	TEXT_FORM_ERROR,
+	TIME_FORM_ERROR,
+	TITLE_FORM_ERROR,
+	USER_FORM_ERROR,
+} from '../../redux/adminSlice.js';
 
 const ACTIVETEXTFIELDS = {
 	title: false,
@@ -31,6 +38,7 @@ const WebApp = window.Telegram.WebApp;
 
 const AdminPageIOS = () => {
 	const navigate = useNavigate();
+	const formErrors = useSelector((state) => state.admin.formErrors);
 
 	const formState = useSelector((state) => state.admin.formState);
 	const indicatorRef = useRef();
@@ -80,10 +88,10 @@ const AdminPageIOS = () => {
 
 	const onClickCreateEvent = async () => {
 		if (!postLoading) {
+			setPostLoading(true);
 			const formData = new FormData();
 			let attachments = [];
 			let addFileNum = 0;
-			setPostLoading(true);
 
 			for (let i = 0; i < formFiles.length; i++) {
 				if (formFiles[i].file) {
@@ -102,6 +110,7 @@ const AdminPageIOS = () => {
 				if (addFileNum > 0) {
 					const uploadFiles = await fetch(`${config.API_BASE_URL}/notify/upload?token=${token}`, {
 						method: 'POST',
+						mode: 'cors',
 						body: formData,
 					})
 						.then((res) => res.json())
@@ -109,11 +118,11 @@ const AdminPageIOS = () => {
 							attachments = res?.files ? [...attachments, ...res.files] : [attachments];
 							console.log('image success');
 						})
-						.catch((err) => {
+						.catch((res) => {
 							setStateToasify({
 								...stateToasify,
 								active: true,
-								text: `Ошибка сервера ${err}`,
+								text: 'Ошибка загрузки файлов',
 								status: 'negative',
 							});
 							console.log('image error');
@@ -134,24 +143,24 @@ const AdminPageIOS = () => {
 						});
 
 						setDate([]);
-						setPostLoading(false);
 
-						if ('vibrate' in navigator) {
-							navigator.vibrate([200]);
-						}
+						setPostLoading(false);
 
 						if (type !== 1) {
 							isTimeChanged.current = false;
+						}
+
+						if ('vibrate' in navigator) {
+							navigator.vibrate([200]);
 						}
 					})
 					.catch((err) => {
 						setStateToasify({
 							...stateToasify,
 							active: true,
-							text: `Ошибка сервера ${err}`,
+							text: 'Ошибка сервера',
 							status: 'negative',
 						});
-
 						setPostLoading(false);
 					});
 			} else {
@@ -163,6 +172,8 @@ const AdminPageIOS = () => {
 						text: 'Выберите пользователя',
 						status: 'negative',
 					});
+
+					dispatch(setFormErrors({ type: USER_FORM_ERROR, value: true }));
 					return;
 				}
 
@@ -179,6 +190,8 @@ const AdminPageIOS = () => {
 						description: false,
 						link: false,
 					});
+
+					dispatch(setFormErrors({ type: TITLE_FORM_ERROR, value: true }));
 					return;
 				}
 
@@ -195,12 +208,14 @@ const AdminPageIOS = () => {
 						title: false,
 						link: false,
 					});
+
+					dispatch(setFormErrors({ type: TEXT_FORM_ERROR, value: true }));
 					return;
 				}
 
 				if (date.length === 0) {
-					swiperRef?.current?.swiper?.slideTo(0);
-					setMainType(0);
+					swiperRef.current.swiper.slideTo(0);
+					setType(0);
 
 					setStateToasify({
 						...stateToasify,
@@ -208,12 +223,17 @@ const AdminPageIOS = () => {
 						text: 'Выберите дату',
 						status: 'negative',
 					});
+
+					dispatch(setFormErrors({ type: DATE_FORM_ERROR, value: true }));
+
+					if (!isTimeChanged.current) {
+						dispatch(setFormErrors({ type: TIME_FORM_ERROR, value: true }));
+					}
 					return;
 				}
 
 				if (!isTimeChanged.current) {
-					swiperRef?.current?.swiper?.slideTo(1);
-
+					swiperRef.current.swiper.slideTo(1);
 					setMainType(1);
 
 					setStateToasify({
@@ -222,6 +242,8 @@ const AdminPageIOS = () => {
 						text: 'Выберите время',
 						status: 'negative',
 					});
+
+					dispatch(setFormErrors({ type: TIME_FORM_ERROR, value: true }));
 				}
 			}
 		}
@@ -526,9 +548,10 @@ const AdminPageIOS = () => {
 								onChange={(value, index) => {
 									dispatch(setFormState({ ...formState, user_id: value?.id, token: value?.token }));
 									dispatch(setSelectUserValue(index));
+									dispatch(setFormErrors({ type: USER_FORM_ERROR, value: false }));
 								}}
 								variants={patients}
-								className={styles.iosSelect}
+								className={`${styles.iosSelect} ${formErrors.user_selected && styles.selectError}`}
 							/>
 							{type === 0 && (
 								<AdminTextEditor
@@ -624,13 +647,17 @@ const AdminPageIOS = () => {
 								<span>Время</span>
 							</label>
 
-							<span ref={activityIndicatorRef} className={styles.activityTypeIndicator}></span>
+							<span
+								ref={activityIndicatorRef}
+								className={`${styles.activityTypeIndicator} ${
+									(formErrors.time_selected || formErrors.date_selected) && styles.error
+								}`}></span>
 						</div>
 					</div>
 				)}
 			</div>
 
-			<div style={{ flex: '1 0 auto', position: 'relative', minHeight: 50 }}>
+			<div style={{ flex: '1 0 auto', position: 'relative', minHeight: 140 }}>
 				<main ref={mainRef} className={styles.main}>
 					{type === 0 ? (
 						<Swiper
@@ -649,11 +676,12 @@ const AdminPageIOS = () => {
 										setFull={setCalendarFull}
 										value={date}
 										weekDaysContainerClassName={`${styles.weekDays}`}
-										className={"admin__date-picker"}
+										className={'admin__date-picker'}
 										fullBtnClassName={styles.fullBtnDatePicker}
 										multiple={true}
 										onChange={(value) => {
 											setDate(value);
+											dispatch({ type: DATE_FORM_ERROR, value: false });
 										}}
 									/>
 								</div>
@@ -664,6 +692,7 @@ const AdminPageIOS = () => {
 									<TimePicker
 										onChange={(value) => {
 											setTimeParams(value);
+											dispatch({ type: TIME_FORM_ERROR, value: false });
 										}}
 									/>
 								</div>

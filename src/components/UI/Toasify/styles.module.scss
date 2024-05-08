@@ -4,23 +4,23 @@
     align-items: center;
     border-radius: 5px;
     position: fixed;
-    top: 5px;
-    right: 16px;
+    top: 13px;
+    right: 20px;
+    left: 20px;
     transform: translateX(150%);
     transition: transform 0.5s linear;
-    width: auto;
-    max-width: 200px;
-
+    min-height: 41px;
+    padding-left: 12px;
     &.active {
         transform: translateX(0);
     }
 
     &.positive {
-        background: #2dc02d;
+        background: #00c187;
     }
 
     &.negative {
-        background: #ed0000;
+        background: #ff4949;
     }
 
     .closeBtn {
@@ -30,6 +30,6 @@
         color: white;
         font-size: 30px;
         font-weight: 400;
-        flex: 0 0 auto
+        flex: 0 0 auto;
     }
 }
