@@ -78,15 +78,14 @@ function App() {
 					console.log('then');
 				})
 				.catch((err) => {
-					navigate('/block');
+					navigate('/');
 					dispatch(setUserLoading(false));
 					dispatch(setUserError(true));
 					setStatus(`server error ${err}`);
 					console.log('catch');
 				});
 		} else {
-			navigate('/block');
-			console.log('initData');
+			navigate('/');
 			setStatus(`empty InitData`);
 		}
 	}, []);
