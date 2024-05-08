@@ -10,7 +10,7 @@ const Toasify = ({ state, setState, status = 'positive', children }) => {
 		if (state.active) {
 			timer.current = setTimeout(() => {
 				setState({ ...state, active: false });
-			}, 60000);
+			}, 5000);
 		} else {
 			if (timer.current) {
 				clearTimeout(timer.current);
