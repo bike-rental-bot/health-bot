@@ -105,6 +105,8 @@ const NotifyPage = ({
 			isActive: true,
 		}).show();
 
+		WebApp.BackButton.hide();
+
 		const mainBtnClick = () => {
 			if (role === 'user' && !is_completed && !completeClick) {
 				get('/notify/completeNotify', { task_id: id, token: userToken }).then((res) => {

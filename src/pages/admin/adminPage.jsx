@@ -313,11 +313,10 @@ const AdminPage = () => {
 							isTimeChanged.current = false;
 						}
 
-						if ('vibrate' in navigator) {
-							navigator.vibrate([200]);
-						}
+						WebApp.HapticFeedback.notificationOccurred('success');
 					})
 					.catch((err) => {
+						WebApp.HapticFeedback.notificationOccurred('error');
 						setStateToasify({
 							...stateToasify,
 							active: true,
@@ -328,6 +327,7 @@ const AdminPage = () => {
 					});
 			} else {
 				setPostLoading(false);
+				WebApp.HapticFeedback.notificationOccurred('error');
 				if (!formState.user_id) {
 					setStateToasify({
 						...stateToasify,
