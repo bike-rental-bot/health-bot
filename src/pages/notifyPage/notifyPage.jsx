@@ -43,7 +43,7 @@ const NotifyPage = ({
 	const [metaData, setMetaData] = useState({ info: null, loading: true });
 	const userToken = useSelector((state) => state.user.token);
 	const role = useSelector((state) => state.user.user.role);
-	const [completeClick, setCompleteClick] = useState(false);
+	const [completeClick, setCompleteClick] = useState(is_completed);
 
 	const clientEvents = useSelector((state) => state.client);
 
@@ -96,36 +96,40 @@ const NotifyPage = ({
 		}
 	}, [preview_url]);
 
+	const mainBtnClick = () => {
+		if (role === 'user' && !completeClick) {
+			get('/notify/completeNotify', { task_id: id, token: userToken }).then((res) => {
+				WebApp.HapticFeedback.notificationOccurred('success');
+				if (
+					clientEvents[calendarDate.slice(0, 10)] &&
+					clientEvents[calendarDate.slice(0, 10)][TYPESMAP[type]]
+				) {
+					let obj = {
+						date: calendarDate.slice(0, 10),
+						id: id,
+						type: TYPESMAP[type],
+					};
+					dispatch(setEventComplete(obj));
+					setCompleteClick(true);
+
+					setTimeout(()=> {
+						navigate(-1);
+					}, 2000)
+				}
+			}).catch((err) => {
+					WebApp.HapticFeedback.notificationOccurred('error');
+			});
+		}
+		else{
+			WebApp.HapticFeedback.notificationOccurred('error');
+		}
+	};
+
 	useEffect(() => {
 		document.body.style.background = '#f6f6f6';
-		WebApp.MainButton.setParams({
-			text: is_completed ? 'Исполнено' : 'Исполнить',
-			color: is_completed ? '#a9a9a9' : COLORMAP[type],
-			textColor: 'white',
-			isActive: true,
-		}).show();
+		WebApp.MainButton.hide();
 
-		WebApp.BackButton.hide();
-
-		const mainBtnClick = () => {
-			if (role === 'user' && !is_completed && !completeClick) {
-				get('/notify/completeNotify', { task_id: id, token: userToken }).then((res) => {
-					WebApp.MainButton.setParams({ text: 'Исполнено', color: '#a9a9a9' });
-
-					if (
-						clientEvents[calendarDate.slice(0, 10)] &&
-						clientEvents[calendarDate.slice(0, 10)][TYPESMAP[type]]
-					) {
-						let obj = {
-							date: calendarDate.slice(0, 10),
-							id: id,
-							type: TYPESMAP[type],
-						};
-						dispatch(setEventComplete(obj));
-					}
-				});
-			}
-		};
+	    WebApp.BackButton.hide();
 
 		WebApp.onEvent('mainButtonClicked', mainBtnClick);
 
@@ -134,15 +138,6 @@ const NotifyPage = ({
 
 	return (
 		<div className={`container ${styles.container}`}>
-			<button
-				onClick={() => {
-					navigate('/');
-				}}
-				className={styles.backBtn}>
-				<ArrowSVG width={10} height={10} style={{ transform: 'rotate(90deg)' }} />{' '}
-				<span>Назад</span>
-			</button>
-
 			<div className={`${styles.notify}`}>
 				<div>{title}</div>
 				<div>{time}</div>
@@ -200,6 +195,22 @@ const NotifyPage = ({
 					</div>
 				</div>
 			</div>
+
+			<button
+				onClick={() => {
+					navigate('/');
+				}}
+				className={`${styles.closeBtn} ${styles[type]}`}>
+				Закрыть
+			</button>
+
+			<button
+				onClick={() => {
+					mainBtnClick();
+				}}
+				className={`${styles.fullFillBtn} ${styles[type]} ${completeClick && styles.completed}`}>
+				<span>{completeClick ? 'Исполнено' : 'Исполнить'}</span>
+			</button>
 		</div>
 	);
 };

@@ -69,6 +69,7 @@ const NotifyRoute = () => {
 					attachments={notify?.info?.notify?.attachments}
 					preview_url={notify?.info?.notify?.preview_url}
 					is_completed={notify?.info?.is_completed}
+					
 					type={TYPESMAP[notify?.info?.notify?.type]}
 					id={notify_id}
 				/>

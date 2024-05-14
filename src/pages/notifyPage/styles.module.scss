@@ -147,3 +147,102 @@
         }
     }
 }
+
+
+.fullFillBtn {
+    width: 100%;
+    margin: 12px 0 12px 0;
+
+    position: relative;
+    overflow: hidden;
+    transform: translateZ(0);
+    min-height: 51px;
+    border-radius: 5px;
+
+
+    span {
+        z-index: 1;
+        color: white;
+    }
+
+    &:before {
+        content: "";
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        top: 0px;
+        left: 0px;
+        will-change: transform;
+    }
+    &.food {
+        background: $nutricion-color;
+
+        &::before {
+            background-image: linear-gradient(270deg, $nutricion-color 30.44%, #ff976a 50.52%, $nutricion-color 100%);
+
+            animation: bgMove 2s linear infinite;
+        }
+    }
+
+    &.drugs {
+        background: $drugs-color;
+
+        &::before {
+            background-image: linear-gradient(270deg, $drugs-color 30.44%, #00d797 50.52%, $drugs-color 100%);
+
+            animation: bgMove 2s linear infinite;
+        }
+    }
+
+    &.activity {
+        background: $activity-color;
+
+        &::before {
+            background-image: linear-gradient(270deg, $activity-color 30.44%, #ae71ff 50.52%, $activity-color 100%);
+
+            animation: bgMove 2s linear infinite;
+        }
+    }
+
+    &.completed {
+        background: #a9a9a9;
+
+        &::before {
+            background-image: linear-gradient(270deg, #a9a9a9 30.44%, #c9c9c9 50.52%, #a9a9a9 100%);
+
+            animation: bgMove 2s linear infinite;
+        }
+    }
+}
+
+.closeBtn {
+    margin: 24px 0 0 0;
+    background-color: transparent;
+    width: 100%;
+    min-height: 51px;
+    border-radius: 5px;
+
+    &.food {
+        color: $nutricion-color;
+        border: 2px solid $nutricion-color;
+    }
+
+    &.drugs {
+        color: $drugs-color;
+        border: 2px solid $drugs-color;
+    }
+
+    &.activity {
+        color: $activity-color;
+        border: 2px solid $activity-color;
+    }
+}
+
+@keyframes bgMove {
+    0% {
+        transform: translate3D(-100%, 0, 0);
+    }
+    100% {
+        transform: translate3D(100%, 0, 0);
+    }
+}
