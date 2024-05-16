@@ -12,42 +12,42 @@
 
 .slide-day-next-enter {
     transform: translateX(-100%);
-    transition: 250ms linear;
+    transition: 125ms linear;
 }
 
 .slide-day-next-enter-active {
     transform: translateX(0%);
-    transition: 250ms linear;
+    transition: 125ms linear;
 }
 
 .slide-day-next-exit {
     transform: translateX(0%);
-    transition: 250ms linear;
+    transition: 125ms linear;
 }
 
 .slide-day-next-exit-active {
     transform: translateX(100%);
-    transition: 250ms linear;
+    transition: 125ms linear;
 }
 
 //
 
 .slide-day-prev-enter {
     transform: translateX(100%);
-    transition: 250ms linear;
+    transition: 125ms linear;
 }
 
 .slide-day-prev-enter-active {
     transform: translateX(0%);
-    transition: 250ms linear;
+    transition: 125ms linear;
 }
 
 .slide-day-prev-exit {
     transform: translateX(0%);
-    transition: 250ms linear;
+    transition: 125ms linear;
 }
 
 .slide-day-prev-exit-active {
     transform: translateX(-100%);
-    transition: 250ms linear;
+    transition: 125ms linear;
 }

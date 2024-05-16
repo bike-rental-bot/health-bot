@@ -84,7 +84,7 @@
     right: 0;
     bottom: 0;
     background-color: #f6f6f6;
-    transition: 0.5s;
+    transition: 0.25s;
     transform: translateX(-100%);
     position: absolute;
 }
@@ -98,7 +98,7 @@
 
     display: flex;
     justify-content: center;
-    transition: 0.25s ease-in-out;
+    transition: 0.125s ease-in-out;
 
     &.slide-next-start {
         transform: translate3D(-80%, -50%, 0);
@@ -123,7 +123,7 @@
 
 .slide-enter-active {
     opacity: 1;
-    transition: opacity 500ms linear;
+    transition: opacity 250ms linear;
 }
 
 .slide-exit {
@@ -139,42 +139,42 @@
 
 .slide-month-next-enter {
     transform: translate3D(-100%, -50%, 0);
-    transition: 250ms linear;
+    transition: 125ms linear;
 }
 
 .slide-month-next-enter-active {
     transform: translate3D(0, -50%, 0);
-    transition: 250ms linear;
+    transition: 125ms linear;
 }
 
 .slide-month-next-exit {
     transform: translate3D(0, -50%, 0);
-    transition: 250ms linear;
+    transition: 125ms linear;
 }
 
 .slide-month-next-exit-active {
     transform: translate3D(100%, -50%, 0);
-    transition: 250ms linear;
+    transition: 125ms linear;
 }
 
 //
 
 .slide-month-prev-enter {
     transform: translate3D(100%, -50%, 0);
-    transition: 250ms linear;
+    transition: 125ms linear;
 }
 
 .slide-month-prev-enter-active {
     transform: translate3D(0, -50%, 0);
-    transition: 250ms linear;
+    transition: 125ms linear;
 }
 
 .slide-month-prev-exit {
     transform: translate3D(0, -50%, 0);
-    transition: 250ms linear;
+    transition: 125ms linear;
 }
 
 .slide-month-prev-exit-active {
     transform: translate3D(-100%, -50%, 0);
-    transition: 250ms linear;
+    transition: 125ms linear;
 }

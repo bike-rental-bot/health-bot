@@ -24,7 +24,7 @@ const AdminEventItem = ({
 	const contRef = useRef();
 
 	useEffect(() => {
-		infoRef.current.style.transition = 'height 0.25s ease-in-out, opacity 0.25s linear, padding 0s';
+		infoRef.current.style.transition = 'height 0.125s ease-in-out, opacity 0.125s linear, padding 0s';
 		if (isHidden) {
 			infoRef.current.style.height = '0';
 		} else {

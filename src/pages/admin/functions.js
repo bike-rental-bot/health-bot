@@ -5,20 +5,20 @@ export const getPosition = (parentRef, childRef) => {
 };
 
 export const toggleIndicator1 = (iRef) => {
-	iRef.current.style.transition = '0.25s';
+	iRef.current.style.transition = '0.125s';
 	iRef.current.style.transform = `translate(20px)`;
 	iRef.current.style.width = ``;
 };
 
 export const toggleIndicator2 = (iRef, timeRef, typeSwiperContRef) => {
-	iRef.current.style.transition = '0.25s';
+	iRef.current.style.transition = '0.125s';
 	iRef.current.style.width = `${timeRef.current.offsetWidth}px`;
 	let left = getPosition(typeSwiperContRef, timeRef);
 	iRef.current.style.transform = `translate(${left}px)`;
 };
 
 export const toggleIndicator3 = (iRef, archiveRef, typeSwiperContRef) => {
-	iRef.current.style.transition = '0.25s';
+	iRef.current.style.transition = '0.125s';
 	iRef.current.style.width = `${archiveRef.current.offsetWidth}px`;
 	let left = getPosition(typeSwiperContRef, archiveRef);
 	iRef.current.style.transform = `translate(${left}px)`;

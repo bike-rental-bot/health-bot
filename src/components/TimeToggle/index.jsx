@@ -38,10 +38,10 @@ const TimeToggle = ({ calendarDate, setCalendarDate }) => {
 	useEffect(() => {
 		if (type === 0) {
 			if (calendarFull) {
-				swiperRef.current.style.transition = '0.5s';
+				swiperRef.current.style.transition = '0.25s';
 				swiperRef.current.style.height = `390px`;
 			} else {
-				swiperRef.current.style.transition = '0.5s';
+				swiperRef.current.style.transition = '0.25s';
 				swiperRef.current.style.height = `231px`;
 			}
 		}
@@ -106,7 +106,7 @@ const TimeToggle = ({ calendarDate, setCalendarDate }) => {
 				slidesPerView={1}
 				style={{ width: '100%', marginTop: 20 }}
 				onSlideChangeTransitionStart={(swiper) => {
-					swiperRef.current.style.transition = '0.5s linear';
+					swiperRef.current.style.transition = '0.25s linear';
 					if (swiper.activeIndex === 0) {
 						swiperRef.current.style.height = `${calendarRef?.current.offsetHeight}px`;
 					} else swiperRef.current.style.height = `${timetableRef?.current.offsetHeight}px`;

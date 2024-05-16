@@ -631,7 +631,7 @@ const MyDatePicker = ({
 							position: 'relative',
 							overflow: 'hidden',
 							height: full ? 240 : 80,
-							transition: '0.5s',
+							transition: '0.25s',
 						}}>
 						<TransitionGroup>
 							<CSSTransition

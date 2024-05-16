@@ -80,7 +80,7 @@
 
             svg {
                 transform: rotate(270deg);
-                transition: 0.5s;
+                transition: 0.25s;
 
                 path {
                     stroke: #a0a0a0;
@@ -98,7 +98,7 @@
             margin-bottom: 15px;
             overflow: hidden;
 
-            transition: 0.5s height;
+            transition: 0.25s height;
 
             p {
                 &:first-child {
@@ -180,7 +180,7 @@
         &::before {
             background-image: linear-gradient(270deg, $nutricion-color 30.44%, #ff976a 50.52%, $nutricion-color 100%);
 
-            animation: bgMove 2s linear infinite;
+            animation: bgMove 1s linear infinite;
         }
     }
 
@@ -190,7 +190,7 @@
         &::before {
             background-image: linear-gradient(270deg, $drugs-color 30.44%, #00d797 50.52%, $drugs-color 100%);
 
-            animation: bgMove 2s linear infinite;
+            animation: bgMove 1s linear infinite;
         }
     }
 
@@ -200,7 +200,7 @@
         &::before {
             background-image: linear-gradient(270deg, $activity-color 30.44%, #ae71ff 50.52%, $activity-color 100%);
 
-            animation: bgMove 2s linear infinite;
+            animation: bgMove 1s linear infinite;
         }
     }
 
@@ -210,7 +210,7 @@
         &::before {
             background-image: linear-gradient(270deg, #a9a9a9 30.44%, #c9c9c9 50.52%, #a9a9a9 100%);
 
-            animation: bgMove 2s linear infinite;
+            animation: bgMove 1s linear infinite;
         }
     }
 }

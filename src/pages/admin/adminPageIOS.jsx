@@ -253,7 +253,7 @@ const AdminPageIOS = () => {
 		firstRender.current = true;
 		if (firstRender.current) {
 			if (swiper.progress === 0) {
-				activityIndicatorRef.current.style.transition = '0.25s';
+				activityIndicatorRef.current.style.transition = '0.125s';
 				activityIndicatorRef.current.style.transform = `translate(20px)`;
 
 				activityIndicatorRef.current.style.width = ``;
@@ -268,7 +268,7 @@ const AdminPageIOS = () => {
 				activityIndicatorRef.current.style.transform = `translate(${20 + pos}px)`;
 			}
 			if (swiper.progress === 1) {
-				activityIndicatorRef.current.style.transition = '0.25s';
+				activityIndicatorRef.current.style.transition = '0.125s';
 				activityIndicatorRef.current.style.width = `${timeRef.current.offsetWidth}px`;
 				let left = getPosition(typeSwiperContRef, timeRef);
 				activityIndicatorRef.current.style.transform = `translate(${left}px)`;

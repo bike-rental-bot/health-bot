@@ -6,15 +6,15 @@
     right: 0;
     bottom: 0px;
 
-    transition: opacity 0.5s;
+    transition: opacity 0.25s;
     opacity: 0;
 
     &.active {
         opacity: 1;
 
         transition:
-            z-index 0.5s,
-            opacity 0.5s;
+            z-index 0.25s,
+            opacity 0.25s;
 
         &:before {
             opacity: 0.5;
