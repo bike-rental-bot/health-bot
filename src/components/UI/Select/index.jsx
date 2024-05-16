@@ -22,9 +22,12 @@ const SelectValue = ({ value }) => {
 	);
 };
 
+
+
 const Select = ({ variants, onChange, children, value, className }) => {
 	const [activeDropDown, setActiveDropDown] = useState(false);
 	const dropDownRef = useRef(null);
+	
 	const handleVariant = (index) => {
 		setActiveDropDown(!activeDropDown);
 
@@ -69,7 +72,7 @@ const Select = ({ variants, onChange, children, value, className }) => {
 				<ArrowSVG />
 			</div>
 
-			<div
+			<main
 				onTransitionEnd={() => (dropDownRef.current.style.overflow = 'auto')}
 				ref={dropDownRef}
 				className={`${styles.dropDown} ${activeDropDown && styles.active}`}>
@@ -94,7 +97,7 @@ const Select = ({ variants, onChange, children, value, className }) => {
 							</div>
 						);
 					})}
-			</div>
+			</main>
 		</div>
 	);
 };

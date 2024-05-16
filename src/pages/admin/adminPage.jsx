@@ -149,12 +149,12 @@ const AdminPage = () => {
 	};
 
 	const copyClick = (res) => {
-		setActiveTextFields({ title: true, description: true, link: true });
+		setActiveTextFields({ title: false, description: false, link: false });
 
-		let images = [...formFiles];
+		let images = [];
 
 		if (Array.isArray(res.attachments)) {
-			for (let i = 0; i < 3 - formFiles.length && i < res.attachments.length; i++) {
+			for (let i = 0; i < res.attachments.length; i++) {
 				images.push({
 					preview: {
 						src: res.attachments[i],

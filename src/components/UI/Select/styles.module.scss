@@ -45,8 +45,9 @@
         opacity 0.5s;
 
     &.active {
-        // height: 176px;
+        max-height: 176px;
         opacity: 1;
+        overflow: auto;
     }
 }
 

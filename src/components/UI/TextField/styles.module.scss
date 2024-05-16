@@ -60,11 +60,18 @@
             text-overflow: ellipsis;
             text-align: left;
             text-wrap: nowrap;
+            max-height: 18px;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
         }
 
         .arrow {
             transform: rotate(270deg);
             transition: 0.25s;
+            min-width: 20px;
+            max-width: 20px;
+            flex: 0 0 auto;
             path {
                 stroke: #a0a0a0;
             }
