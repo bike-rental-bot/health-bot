@@ -45,6 +45,7 @@ const NotifyPage = ({
 	const role = useSelector((state) => state.user.user.role);
 	const [completeClick, setCompleteClick] = useState(is_completed);
 
+
 	const clientEvents = useSelector((state) => state.client);
 
 	const textRef = useRef(null);
@@ -96,6 +97,8 @@ const NotifyPage = ({
 		}
 	}, [preview_url]);
 
+
+
 	const mainBtnClick = () => {
 		if (role === 'user' && !completeClick) {
 			get('/notify/completeNotify', { task_id: id, token: userToken }).then((res) => {
@@ -127,7 +130,27 @@ const NotifyPage = ({
 
 	useEffect(() => {
 		document.body.style.background = '#f6f6f6';
-		WebApp.MainButton.hide();
+
+		if (role === 'admin' || role === 'owner') {
+			WebApp.MainButton.setParams({
+				text: 'Вернуться в админ-панель',
+				color: '#3192fd',
+			}).show();
+		}
+		else{
+			WebApp.MainButton.setParams({
+				text: 'Задать вопрос',
+				color: '#3192fd',
+			}).show();
+		}
+
+		const mainBtnClick = () => {
+			if (role === 'admin' || role === 'owner') 
+				navigate('/admin_panel');
+			else
+				WebApp.openTelegramLink('https://t.me/olegin_m');
+		}
+		
 
 	    WebApp.BackButton.hide();
 
