@@ -212,7 +212,7 @@ const NotifyPage = ({
 						<div className={styles.imgList}>
 							{Array.isArray(attachments) &&
 								attachments.map((el) => {
-									return <ImageLoadPreview src={el} key={el} />;
+									return <ImageLoadPreview className={styles.image} imgContainerClassName={styles.imgCont} src={el} key={el} />;
 								})}
 						</div>
 					</div>

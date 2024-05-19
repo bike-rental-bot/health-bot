@@ -115,14 +115,25 @@
             .imgList {
                 display: flex;
                 margin: 24px 0 0 0;
+                flex-direction: column;
 
                 div {
-                    margin-right: 12px;
+                    margin-top: 12px;
 
-                    &:last-child {
+                    &:first-child {
                         margin: 0;
                     }
                 }
+
+                .image{
+                    max-width: none;
+                }
+
+                .imgCont{
+                    width: 100%;
+                    padding-bottom: 68%;
+                }
+
             }
 
             .link {
