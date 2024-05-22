@@ -45,7 +45,6 @@ const NotifyPage = ({
 	const role = useSelector((state) => state.user.user.role);
 	const [completeClick, setCompleteClick] = useState(is_completed);
 
-
 	const clientEvents = useSelector((state) => state.client);
 
 	const textRef = useRef(null);
@@ -97,33 +96,32 @@ const NotifyPage = ({
 		}
 	}, [preview_url]);
 
-
-
 	const mainBtnClick = () => {
 		if (role === 'user' && !completeClick) {
-			get('/notify/completeNotify', { task_id: id, token: userToken }).then((res) => {
-				WebApp.HapticFeedback.notificationOccurred('success');
-				if (
-					clientEvents[calendarDate.slice(0, 10)] &&
-					clientEvents[calendarDate.slice(0, 10)][TYPESMAP[type]]
-				) {
-					let obj = {
-						date: calendarDate.slice(0, 10),
-						id: id,
-						type: TYPESMAP[type],
-					};
-					dispatch(setEventComplete(obj));
-					setCompleteClick(true);
+			get('/notify/completeNotify', { task_id: id, token: userToken })
+				.then((res) => {
+					WebApp.HapticFeedback.notificationOccurred('success');
+					if (
+						clientEvents[calendarDate.slice(0, 10)] &&
+						clientEvents[calendarDate.slice(0, 10)][TYPESMAP[type]]
+					) {
+						let obj = {
+							date: calendarDate.slice(0, 10),
+							id: id,
+							type: TYPESMAP[type],
+						};
+						dispatch(setEventComplete(obj));
+						setCompleteClick(true);
 
-					setTimeout(()=> {
-						navigate(-1);
-					}, 2000)
-				}
-			}).catch((err) => {
+						setTimeout(() => {
+							navigate(-1);
+						}, 2000);
+					}
+				})
+				.catch((err) => {
 					WebApp.HapticFeedback.notificationOccurred('error');
-			});
-		}
-		else{
+				});
+		} else {
 			WebApp.HapticFeedback.notificationOccurred('error');
 		}
 	};
@@ -136,27 +134,29 @@ const NotifyPage = ({
 				text: 'Вернуться в админ-панель',
 				color: '#3192fd',
 			}).show();
-		}
-		else{
-			WebApp.MainButton.setParams({
-				text: 'Задать вопрос',
-				color: '#3192fd',
-			}).show();
+		} else {
+			WebApp.MainButton.hide();
 		}
 
 		const mainBtnClick = () => {
-			if (role === 'admin' || role === 'owner') 
-				navigate('/admin_panel');
-			else
-				WebApp.openTelegramLink('https://t.me/olegin_m');
-		}
-		
+			if (role === 'admin' || role === 'owner') navigate('/admin_panel');
+			else WebApp.openTelegramLink('https://t.me/olegin_m');
+		};
 
-	    WebApp.BackButton.hide();
+		const backButtonClick = () => {
+			navigate('/');
+		};
+
+		WebApp.BackButton.show();
+
+		WebApp.onEvent('backButtonClicked', backButtonClick);
 
 		WebApp.onEvent('mainButtonClicked', mainBtnClick);
 
-		return () => WebApp.offEvent('mainButtonClicked', mainBtnClick);
+		return () => {
+			WebApp.offEvent('mainButtonClicked', mainBtnClick);
+			WebApp.offEvent('backButtonClicked', backButtonClick);
+		};
 	}, []);
 
 	return (
@@ -212,7 +212,14 @@ const NotifyPage = ({
 						<div className={styles.imgList}>
 							{Array.isArray(attachments) &&
 								attachments.map((el) => {
-									return <ImageLoadPreview className={styles.image} imgContainerClassName={styles.imgCont} src={el} key={el} />;
+									return (
+										<ImageLoadPreview
+											className={styles.image}
+											imgContainerClassName={styles.imgCont}
+											src={el}
+											key={el}
+										/>
+									);
 								})}
 						</div>
 					</div>

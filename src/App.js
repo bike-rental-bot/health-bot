@@ -34,39 +34,6 @@ function App() {
 		WebApp?.BackButton?.show();
 	}
 
-	useEffect(() => {
-		function clickCloseBtn() {
-			const tagName = document.activeElement.tagName.toLowerCase();
-
-			if (tagName === 'textarea' || tagName === 'input') {
-				document.activeElement.blur();
-			}
-
-			requestAnimationFrame(() => {
-				WebApp.showPopup(
-					{
-						title: 'Ecopulse',
-						message: 'Внесенные изменения могут быть потеряны',
-						buttons: [
-							{ id: 'close', type: 'destructive', text: 'Закрыть' },
-							{ id: 'cancel', type: 'cancel', text: 'Отмена' },
-						],
-					},
-					(id) => {
-						if (id === 'close') {
-							WebApp.close();
-						}
-					},
-				);
-			});
-		}
-
-		WebApp.onEvent('backButtonClicked', clickCloseBtn);
-
-		return () => {
-			WebApp.offEvent('backButtonClicked', clickCloseBtn);
-		};
-	}, []);
 
 	useEffect(() => {
 		console.log('webApp', WebApp?.initData);
