@@ -302,7 +302,7 @@ const AdminTextEditor = ({
 						<LinkPreview
 							titleClassName={styles.linkPreviewTitle}
 							title={metaData?.title}
-							image={metaData?.image}
+							image={metaData?.preview_url}
 							style={{ marginTop: 10 }}
 							href={debounceTextLink}
 						/>

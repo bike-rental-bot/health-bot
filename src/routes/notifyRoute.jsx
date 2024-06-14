@@ -30,6 +30,7 @@ const NotifyRoute = () => {
 				.then((res) => {
 					let notify = { info: res, loading: false };
 					setNotify(notify);
+				
 				})
 				.catch(() => {
 					let not = { info: null, loading: false, error: true };

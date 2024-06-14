@@ -75,7 +75,7 @@ const NotifyPage = ({
 				attachmentRef.current.style.margin = `0px`;
 			}
 		}
-	}, [stateBlocks]);
+	}, [stateBlocks, metaData]);
 
 	useEffect(() => {
 		if (regexLink.test(preview_url)) {
@@ -87,6 +87,7 @@ const NotifyPage = ({
 						loading: false,
 					};
 					setMetaData(obj);
+					console.log('res', res)
 				})
 				.catch((err) => {
 					setMetaData({ info: null, loading: false });
@@ -195,7 +196,7 @@ const NotifyPage = ({
 										className={styles.linkPreview}
 										type={type}
 										href={preview_url}
-										image={metaData?.info?.image}
+										image={metaData?.info?.preview_url}
 										title={metaData?.info?.title}
 										siteName={'Telegraph'}
 									/>
@@ -226,13 +227,7 @@ const NotifyPage = ({
 				</div>
 			</div>
 
-			<button
-				onClick={() => {
-					navigate('/');
-				}}
-				className={`${styles.closeBtn} ${styles[type]}`}>
-				Закрыть
-			</button>
+	
 
 			<button
 				onClick={() => {
