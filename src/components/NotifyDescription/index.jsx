@@ -8,12 +8,14 @@ import img from '../../assets/images/tgImg.png';
 import ImageLoadPreview from '../ImageLoadPreview';
 
 const regexLink = new RegExp(
-	'^(https?:\\/\\/)?' + // Протокол (http:// или https://)
-		'(?:www\\.)?telegra\\.ph' + // Доменное имя telegra.ph
-		'(\\/[\\w\\d-._~%]*)*' + // Путь
-		'(\\?[;&=a-z\\d%_.~+-]*)?' + // Query string
-		'(#[a-z\\d-._~]*)?$', // Anchor ссылка
-	'i',
+  "^(https?:\\/\\/)?" + // Протокол (http:// или https://)
+    "(?:www\\.)?teletype\\.in" + // Доменное имя teletype.in
+    "(/@[a-zA-Z0-9_-]+" + // Usernames can include alphanumeric characters, underscores, and hyphens
+    "(?:/[a-zA-Z0-9_-]+)*" + // Optional paths with the same character set
+    ")?" +
+    "(\\?[;&=a-z\\d%_.~+-]*)?" + // Query string
+    "(#[a-z\\d-._~]*)?$", // Anchor ссылка
+  "i"
 );
 
 const WebApp = window.Telegram.WebApp;
