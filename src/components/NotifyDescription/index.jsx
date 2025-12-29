@@ -1,11 +1,8 @@
-import styles from './style.module.scss';
-import linkIMG from '../../assets/images/tgImg.png';
-import BoltSVG from '../Icons/Bolt';
-import LinkPreview from '../UI/LinkPreview';
+import { useEffect, useRef, useState } from 'react';
 import ArrowSVG from '../Icons/Arrow';
-import { useEffect, useState, useRef } from 'react';
-import img from '../../assets/images/tgImg.png';
 import ImageLoadPreview from '../ImageLoadPreview';
+import LinkPreview from '../UI/LinkPreview';
+import styles from './style.module.scss';
 
 const regexLink = new RegExp(
   "^(https?:\\/\\/)?" + // Протокол (http:// или https://)
@@ -36,7 +33,7 @@ const NotifyDescription = ({
 
 	useEffect(() => {
 		if (regexLink.test(preview_url)) {
-			fetch(`https://impulsrent.ru:8203/api/notify/getTelegraphData?url=${preview_url}`)
+			fetch(`https://eco.impulsrent.ru/api/notify/getTelegraphData?url=${preview_url}`)
 				.then((res) => res.json())
 				.then((res) => {
 					setMetaData(res);

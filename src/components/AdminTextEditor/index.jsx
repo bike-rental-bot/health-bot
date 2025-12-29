@@ -51,6 +51,22 @@ const AdminTextEditor = ({
     dispatch(setFormState({ ...formState, preview_url: e.target.value }));
   };
 
+<<<<<<< HEAD
+	useEffect(() => {
+		if (debounceTextLink && regexLink.test(debounceTextLink)) {
+			fetch(`https://eco.impulsrent.ru/api/notify/getTelegraphData?url=${debounceTextLink}`)
+				.then((res) => res.json())
+				.then((res) => {
+					setMetaData(res);
+				})
+				.catch((err) => {
+					setMetaData(null);
+				});
+		} else {
+			setMetaData(null);
+		}
+	}, [debounceTextLink]);
+=======
   useEffect(() => {
     console.log("deb", debounceTextLink);
     if (debounceTextLink && regexLink.test(debounceTextLink)) {
@@ -68,6 +84,7 @@ const AdminTextEditor = ({
       setMetaData(null);
     }
   }, [debounceTextLink]);
+>>>>>>> da7091cb08d860b812d2a944416ad33f48d5326a
 
   const promFunc = (file) => {
     const promise = new Promise((resolve, reject) => {
